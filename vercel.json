@@ -1,5 +1,15 @@
 {
   "version": 2,
+    "builds": [
+    {
+      "src": "api/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
     { "src": "/ping", "dest": "/api/server" },
     { "src": "/download", "dest": "/api/server" },
@@ -8,11 +18,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "functions": {
-    "api/server.js": {
-      "memory": 512,     
-      "maxDuration": 30
-    }
-  }
+  ]
 }
