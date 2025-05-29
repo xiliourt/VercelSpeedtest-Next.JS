@@ -1,10 +1,5 @@
 {
   "version": 2,
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
-  ],
   "routes": [
     { "src": "/ping", "dest": "/api/server" },
     { "src": "/download", "dest": "/api/server" },
