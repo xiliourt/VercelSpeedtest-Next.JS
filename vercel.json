@@ -11,7 +11,8 @@
   ],
   "functions": {
     "api/server.js": {
-      "memory": 512,       
-      "maxDuration": 30
+      "memory": 512,      HBO "maxDuration": 30      // Increased memory for buffer generation (default 128MB, max 1024MB on Hobby)
+                   // Optional: maxDuration in seconds (Hobby plan default varies, e.g., 10s-60s)
     }
+  }
 }
