@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 // Configuration
 const PING_COUNT = 5;
 const DOWNLOAD_API_URL = '/api/download';
-const DOWNLOAD_FILE_SIZE_BYTES = 100 * 1024 * 1024; // 10MB
+const DOWNLOAD_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 10MB
 const UPLOAD_API_URL = '/api/upload';
 const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 5MB
 const PING_API_URL = '/api/ping';
