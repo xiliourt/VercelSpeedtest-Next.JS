@@ -8,6 +8,13 @@ export const config = {
 };
 
 export default async function handler(req, res) {
+  // Note for Vercel deployment:
+  // Vercel Serverless Functions have execution timeouts (e.g., Hobby: 10s, Pro: up to 60s by default for HTTP, Enterprise: up to 900s)
+  // and request payload size limits (e.g., typically around 4.5MB when bodyParser is false).
+  // For uploads exceeding these limits, especially larger files, consider using Vercel Blob
+  // or a similar direct-to-cloud-storage solution (e.g., presigned URLs for S3).
+  // This handler is suitable for uploads that fit within these platform constraints.
+
   // Set headers to prevent caching.
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
   res.setHeader('Pragma', 'no-cache');
@@ -32,7 +39,10 @@ export default async function handler(req, res) {
     // Handle any errors that occur during the stream.
     req.on('error', (err) => {
       console.error('Upload stream error:', err);
-      res.status(500).json({ message: 'Error receiving upload stream.' });
+      // Ensure response is sent only once
+      if (!res.headersSent) {
+        res.status(500).json({ message: 'Error receiving upload stream.' });
+      }
     });
 
   } else {
