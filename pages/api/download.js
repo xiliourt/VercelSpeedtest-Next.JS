@@ -1,68 +1,54 @@
-// File: pages/api/download.js
+// pages/api/download.js
 import { Readable } from 'stream';
 
-// Configuration for the API route
-export const config = {
-  api: {
-    responseLimit: false, // Disable Next.js default response limit (4MB) for larger files
-  },
-};
+// Function to generate a chunk of random data
+function generateRandomChunk(size) {
+  const buffer = Buffer.alloc(size);
+  for (let i = 0; i < size; i++) {
+    buffer[i] = Math.floor(Math.random() * 256);
+  }
+  return buffer;
+}
 
-export default function handler(req, res) {
-  // --- Configuration ---
-  // This size MUST match or be consistent with DOWNLOAD_FILE_SIZE_BYTES in the frontend.
-  const fileSizeMB = 10; 
-  const fileSize = fileSizeMB * 1024 * 1024; // 10 MB in bytes
-
-  // --- Headers ---
-  // Disable caching to ensure fresh download for speed testing.
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  res.setHeader('Pragma', 'no-cache');
-  
-  // Set content type to binary stream for download.
-  res.setHeader('Content-Type', 'application/octet-stream');
-  // Set the content length header, crucial for the client to know the total size and calculate progress.
-  res.setHeader('Content-Length', fileSize);
-  // Suggest a filename (optional).
-  // res.setHeader('Content-Disposition', `attachment; filename="random_data_${fileSize}.dat"`);
-
-  // --- Data Generation & Streaming ---
-  let bytesSent = 0;
+export default async function handler(req, res) {
+  const requestedSize = parseInt(req.query.size) || (10 * 1024 * 1024); // Default to 10MB if not specified
   const chunkSize = 64 * 1024; // 64KB chunks
 
-  // Create a readable stream that generates data on demand.
-  const readable = new Readable({
+  res.setHeader('Content-Type', 'application/octet-stream');
+  res.setHeader('Content-Disposition', 'attachment; filename="download.dat"');
+  res.setHeader('Content-Length', requestedSize);
+  // Add headers to prevent caching
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+
+  let bytesSent = 0;
+
+  const stream = new Readable({
     read() {
-      if (bytesSent >= fileSize) {
-        this.push(null); // Signal the end of the stream.
+      if (bytesSent >= requestedSize) {
+        this.push(null); // End of stream
         return;
       }
-      
-      // Determine how many bytes to send in the current chunk.
-      const bytesToSend = Math.min(chunkSize, fileSize - bytesSent);
-      // Generate a buffer of dummy data.
-      // Using a simple character 'a'. For more "randomness", you could use Math.random() or crypto.
-      this.push(Buffer.alloc(bytesToSend, 'a')); 
-      bytesSent += bytesToSend;
+      const bytesRemaining = requestedSize - bytesSent;
+      const currentChunkSize = Math.min(chunkSize, bytesRemaining);
+      this.push(generateRandomChunk(currentChunkSize));
+      bytesSent += currentChunkSize;
     }
   });
 
-  // Pipe the readable stream to the response object.
-  // This efficiently streams data to the client without buffering the entire file in memory.
-  readable.pipe(res);
+  stream.pipe(res);
 
-  // Handle errors on the readable stream (e.g., if something goes wrong during generation)
-  readable.on('error', (err) => {
-    console.error('Stream error during download generation:', err);
-    // Try to end the response if it hasn't been ended already
-    if (!res.writableEnded) {
-      res.status(500).end('Internal server error during stream generation.');
-    }
-  });
-
-  // Handle client closing connection prematurely
+  // Handle client disconnect
   req.on('close', () => {
-    // console.log('Client closed connection during download.');
-    readable.destroy(); // Clean up the readable stream
+    stream.destroy();
+    // console.log('Client disconnected, download stream destroyed.');
   });
 }
+
+// Vercel Edge runtime is not suitable for streaming large files like this from a serverless function.
+// Use the default Node.js runtime.
+// export const config = {
+//   runtime: 'edge', // DO NOT USE EDGE for this kind of streaming
+// };
