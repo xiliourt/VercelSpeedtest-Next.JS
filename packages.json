@@ -1,0 +1,23 @@
+{
+  "name": "nextjs-speed-test",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.2.3",  // Or the latest stable version
+    "react": "18.3.1", // Or the latest stable version
+    "react-dom": "18.3.1" // Or the latest stable version
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3", // Or the latest stable version
+    "postcss": "^8.4.38",    // Or the latest stable version
+    "autoprefixer": "^10.4.19", // Or the latest stable version
+    "eslint": "8.57.0", // Or the latest stable version
+    "eslint-config-next": "14.2.3" // Or the latest stable version
+  }
+}
