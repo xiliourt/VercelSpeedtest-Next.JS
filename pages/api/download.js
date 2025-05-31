@@ -1,54 +1,62 @@
 // pages/api/download.js
-import { Readable } from 'stream';
 
-// Function to generate a chunk of random data
+// Configure this API route to run on the Edge Runtime
+export const config = {
+  runtime: 'edge',
+};
+
+// Function to generate a chunk of random data as Uint8Array
 function generateRandomChunk(size) {
-  const buffer = Buffer.alloc(size);
+  const buffer = new Uint8Array(size);
   for (let i = 0; i < size; i++) {
     buffer[i] = Math.floor(Math.random() * 256);
   }
   return buffer;
 }
 
-export default async function handler(req, res) {
-  const requestedSize = parseInt(req.query.size) || (10 * 1024 * 1024); // Default to 10MB if not specified
+export default async function handler(req) {
+  // In the Edge Runtime, req is a standard Request object.
+  // We need to parse query parameters from the URL.
+  const url = new URL(req.url);
+  const requestedSize = parseInt(url.searchParams.get('size')) || (10 * 1024 * 1024); // Default to 10MB
   const chunkSize = 64 * 1024; // 64KB chunks
 
-  res.setHeader('Content-Type', 'application/octet-stream');
-  res.setHeader('Content-Disposition', 'attachment; filename="download.dat"');
-  res.setHeader('Content-Length', requestedSize);
-  // Add headers to prevent caching
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-  res.setHeader('Surrogate-Control', 'no-store');
+  const headers = {
+    'Content-Type': 'application/octet-stream',
+    'Content-Disposition': 'attachment; filename="download.dat"',
+    'Content-Length': requestedSize.toString(),
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+    'Surrogate-Control': 'no-store',
+  };
 
   let bytesSent = 0;
 
-  const stream = new Readable({
-    read() {
+  const stream = new ReadableStream({
+    async pull(controller) {
       if (bytesSent >= requestedSize) {
-        this.push(null); // End of stream
+        controller.close();
         return;
       }
+
       const bytesRemaining = requestedSize - bytesSent;
       const currentChunkSize = Math.min(chunkSize, bytesRemaining);
-      this.push(generateRandomChunk(currentChunkSize));
-      bytesSent += currentChunkSize;
+      
+      try {
+        const chunk = generateRandomChunk(currentChunkSize);
+        controller.enqueue(chunk);
+        bytesSent += currentChunkSize;
+      } catch (error) {
+        console.error("Error generating or enqueuing chunk:", error);
+        controller.error(error); // Signal an error to the stream
+      }
+    },
+    cancel(reason) {
+      console.log('Download stream cancelled by client.', reason);
+      // Perform any cleanup here if necessary
     }
   });
 
-  stream.pipe(res);
-
-  // Handle client disconnect
-  req.on('close', () => {
-    stream.destroy();
-    // console.log('Client disconnected, download stream destroyed.');
-  });
+  return new Response(stream, { headers });
 }
-
-// Vercel Edge runtime is not suitable for streaming large files like this from a serverless function.
-// Use the default Node.js runtime.
-// export const config = {
-//   runtime: 'edge', // DO NOT USE EDGE for this kind of streaming
-// };
