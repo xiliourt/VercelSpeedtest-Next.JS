@@ -1,53 +1,45 @@
-// File: pages/api/upload.js
-
-// Configuration for the API route
-export const config = {
-  api: {
-    bodyParser: false, // Disable Next.js default body parser to handle raw stream
-  },
-};
-
+// pages/api/upload.js
 export default async function handler(req, res) {
-  // Note for Vercel deployment:
-  // Vercel Serverless Functions have execution timeouts (e.g., Hobby: 10s, Pro: up to 60s by default for HTTP, Enterprise: up to 900s)
-  // and request payload size limits (e.g., typically around 4.5MB when bodyParser is false).
-  // For uploads exceeding these limits, especially larger files, consider using Vercel Blob
-  // or a similar direct-to-cloud-storage solution (e.g., presigned URLs for S3).
-  // This handler is suitable for uploads that fit within these platform constraints.
-
-  // Set headers to prevent caching.
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  res.setHeader('Pragma', 'no-cache');
-
   if (req.method === 'POST') {
-    let byteCount = 0;
+    // The client sends data, we just need to acknowledge it.
+    // We don't need to process or save the data for a speed test.
     
-    // Listen for data chunks from the request stream.
-    req.on('data', (chunk) => {
-      byteCount += chunk.length;
-      // You could add logic here if you need to process chunks, but for a speed test,
-      // just counting bytes is usually sufficient.
+    // Consume the stream to ensure data is "received"
+    let receivedBytes = 0;
+    await new Promise((resolve, reject) => {
+      req.on('data', (chunk) => {
+        receivedBytes += chunk.length;
+      });
+      req.on('end', () => {
+        // console.log(`Upload API: Received ${receivedBytes} bytes.`);
+        resolve();
+      });
+      req.on('error', (err) => {
+        console.error('Upload API stream error:', err);
+        reject(err);
+      });
     });
+    
+    // Add headers to prevent caching
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Surrogate-Control', 'no-store');
 
-    // When the entire request body has been received.
-    req.on('end', () => {
-      // console.log(`Upload API: Received ${byteCount} bytes.`);
-      // Send a success response to the client.
-      res.status(200).json({ message: 'Upload received successfully', bytesReceived: byteCount });
-    });
-
-    // Handle any errors that occur during the stream.
-    req.on('error', (err) => {
-      console.error('Upload stream error:', err);
-      // Ensure response is sent only once
-      if (!res.headersSent) {
-        res.status(500).json({ message: 'Error receiving upload stream.' });
-      }
-    });
-
+    res.status(200).json({ message: 'Upload received' });
   } else {
-    // If the request method is not POST, return a 405 Method Not Allowed error.
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+
+// Vercel specific config to increase body size limit if needed,
+// though for 5MB it might be fine with default.
+// For larger uploads, you might need to adjust this.
+// However, serverless functions have limits. For very large uploads,
+// a different architecture (e.g., direct to S3) is better.
+export const config = {
+  api: {
+    bodyParser: false, // We are handling the stream ourselves
+  },
+};
