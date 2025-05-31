@@ -21,15 +21,6 @@ body {
   -webkit-font-smoothing: antialiased; /* Improves font rendering on WebKit (Chrome, Safari) */
   -moz-osx-font-smoothing: grayscale; /* Improves font rendering on Firefox */
   overscroll-behavior-y: contain; /* Prevents scroll chaining from body to html, can feel 'sleeker' */
-
-  /* The SpeedTestPage component already defines its own
-     dark gradient background (bg-gradient-to-br from-slate-900 to-slate-800).
-     If you want a default dark theme for *other* pages or elements not explicitly styled,
-     you could uncomment and use something like this: */
-  /*
-  background-color: #0f172a; /* Example: Tailwind's slate-900 */
-  /* color: #e2e8f0;          /* Example: Tailwind's slate-200 for good readability */
-  */
 }
 
 @layer base {
