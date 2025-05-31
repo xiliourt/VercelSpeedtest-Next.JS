@@ -3,11 +3,18 @@ import { useState, useEffect } from 'react';
 
 // Configuration
 const PING_COUNT = 5;
-const DOWNLOAD_API_URL = '/api/download';
-const DOWNLOAD_FILE_SIZE_BYTES = 20 * 1024 * 1024; // 10MB
+const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB for the initial test
+const EXTENDED_DOWNLOAD_SIZE_MEDIUM_BYTES = 50 * 1024 * 1024; // 50MB
+const EXTENDED_DOWNLOAD_SIZE_LARGE_BYTES = 100 * 1024 * 1024; // 100MB
+
+// Thresholds for triggering extended tests (in Mbps)
+const SPEED_THRESHOLD_FOR_MEDIUM_EXTENDED_MBPS = 25;
+const SPEED_THRESHOLD_FOR_LARGE_EXTENDED_MBPS = 50; // e.g., if initial 10MB test is > 150Mbps, try 100MB extended
+
 const UPLOAD_API_URL = '/api/upload';
 const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 5MB
 const PING_API_URL = '/api/ping';
+const DOWNLOAD_API_URL = '/api/download'; // Base URL, size will be a query param
 
 export default function SpeedTestPage() {
     const [ping, setPing] = useState('--');
@@ -17,7 +24,7 @@ export default function SpeedTestPage() {
     const [progress, setProgress] = useState(0);
     const [isTesting, setIsTesting] = useState(false);
     const [showProgress, setShowProgress] = useState(false);
-    const [currentTest, setCurrentTest] = useState(''); // To show which test is running
+    const [currentTest, setCurrentTest] = useState('');
 
     const resetMetrics = () => {
         setPing('--');
@@ -67,29 +74,31 @@ export default function SpeedTestPage() {
         setProgress(100);
     };
 
-    const measureDownload = async () => {
-        setCurrentTest('Download');
-        setStatus('Testing Download...');
-        setDownloadSpeed('...');
+    // Generic download measurement function
+    const performDownloadTest = async (downloadSizeBytes, testLabel) => {
+        setCurrentTest(testLabel);
+        setStatus(`Testing ${testLabel}...`);
+        // setDownloadSpeed('...'); // Keep previous result visible during extended test setup
         setShowProgress(true);
         setProgress(0);
 
         const startTime = performance.now();
+        let measuredSpeed = '--';
+
         try {
-            const response = await fetch(`${DOWNLOAD_API_URL}?size=${DOWNLOAD_FILE_SIZE_BYTES}&r=${Math.random()}&t=${Date.now()}`, { cache: 'no-store' });
+            const response = await fetch(`${DOWNLOAD_API_URL}?size=${downloadSizeBytes}&r=${Math.random()}&t=${Date.now()}`, { cache: 'no-store' });
             if (!response.ok || !response.body) {
-                throw new Error(`Server error for download: ${response.status} ${response.statusText}`);
+                throw new Error(`Server error for ${testLabel}: ${response.status} ${response.statusText}`);
             }
             
             const reader = response.body.getReader();
             let receivedLength = 0;
-            const totalSize = DOWNLOAD_FILE_SIZE_BYTES; // Use the configured size
             
             while(true) {
                 const {done, value} = await reader.read();
                 if (done) break;
                 receivedLength += value.length;
-                const progressPercentage = Math.min(100, (receivedLength / totalSize) * 100);
+                const progressPercentage = Math.min(100, (receivedLength / downloadSizeBytes) * 100);
                 setProgress(progressPercentage);
             }
 
@@ -97,26 +106,26 @@ export default function SpeedTestPage() {
             const durationSeconds = (endTime - startTime) / 1000;
             
             if (durationSeconds <= 0 || receivedLength === 0) {
-                 setDownloadSpeed('ERR');
-                 setStatus('Error: Download test failed.');
-                 throw new Error('Download test failed (zero duration or size)');
+                 measuredSpeed = 'ERR';
+                 throw new Error(`${testLabel} failed (zero duration or size)`);
             }
 
             const speedBps = (receivedLength * 8) / durationSeconds; 
-            const speedMbps = (speedBps / (1000 * 1000)).toFixed(2);
-            setDownloadSpeed(speedMbps);
+            measuredSpeed = (speedBps / (1000 * 1000)).toFixed(2);
             setProgress(100);
+            return measuredSpeed;
 
         } catch (error) {
-            console.error('Download test failed:', error);
-            setDownloadSpeed('ERR');
+            console.error(`${testLabel} failed:`, error);
+            measuredSpeed = 'ERR';
             setProgress(0);
             setStatus(`Error: ${error.message}`);
-            throw error;
+            throw error; // Re-throw to be caught by startTest
         }
     };
 
-    const measureUpload = async () => { // Changed to async to allow await if needed inside, though not strictly for XHR
+
+    const measureUpload = async () => {
         setCurrentTest('Upload');
         setStatus('Testing Upload...');
         setUploadSpeed('...');
@@ -126,7 +135,7 @@ export default function SpeedTestPage() {
         return new Promise((resolve, reject) => {
             const data = new Uint8Array(UPLOAD_DATA_SIZE_BYTES);
             for (let i = 0; i < UPLOAD_DATA_SIZE_BYTES; i++) {
-                data[i] = Math.floor(Math.random() * 256); // More random data
+                data[i] = Math.floor(Math.random() * 256);
             }
             const blob = new Blob([data]);
 
@@ -183,17 +192,53 @@ export default function SpeedTestPage() {
         resetMetrics();
         setStatus('Initializing test...');
 
+        let finalDownloadSpeed = '--';
+
         try {
             await measurePing();
-            await new Promise(resolve => setTimeout(resolve, 300)); // Small delay before next test
-            await measureDownload();
-            await new Promise(resolve => setTimeout(resolve, 300)); // Small delay
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            // Initial Download Test (10MB)
+            const initialSpeed = await performDownloadTest(INITIAL_DOWNLOAD_SIZE_BYTES, 'Initial Download (10MB)');
+            setDownloadSpeed(initialSpeed); // Display initial speed
+            finalDownloadSpeed = initialSpeed;
+
+            let targetExtendedSize = 0;
+            if (initialSpeed !== 'ERR') {
+                const initialSpeedNum = parseFloat(initialSpeed);
+                if (initialSpeedNum > SPEED_THRESHOLD_FOR_LARGE_EXTENDED_MBPS) {
+                    targetExtendedSize = EXTENDED_DOWNLOAD_SIZE_LARGE_BYTES;
+                } else if (initialSpeedNum > SPEED_THRESHOLD_FOR_MEDIUM_EXTENDED_MBPS) {
+                    targetExtendedSize = EXTENDED_DOWNLOAD_SIZE_MEDIUM_BYTES;
+                }
+            }
+
+            if (targetExtendedSize > 0) {
+                await new Promise(resolve => setTimeout(resolve, 300));
+                const extendedTestLabel = `Extended Download (${targetExtendedSize / (1024*1024)}MB)`;
+                const extendedSpeed = await performDownloadTest(targetExtendedSize, extendedTestLabel);
+                setDownloadSpeed(extendedSpeed); // Update with extended speed
+                finalDownloadSpeed = extendedSpeed;
+            }
+            
+            // Update status after download phase is fully complete
+            if (finalDownloadSpeed !== 'ERR') {
+                setStatus('Download test complete.');
+            } else {
+                // Error status would have been set by performDownloadTest
+            }
+
+
+            await new Promise(resolve => setTimeout(resolve, 300));
             await measureUpload();
+
             setStatus('Test Complete!');
             setCurrentTest('Complete');
+
         } catch (error) {
             console.error("Speed test sequence failed: ", error);
-            if (!status.startsWith('Error:')) { // Avoid overwriting specific error messages
+            // Error status should be set by individual test functions
+            if (!status.startsWith('Error:')) {
                  setStatus(`Error: ${error.message}. Please try again.`);
             }
             setCurrentTest('Error');
@@ -202,7 +247,6 @@ export default function SpeedTestPage() {
         }
     };
 
-    // Determine progress bar color based on current test
     const getProgressBarColor = () => {
         if (currentTest === 'Error') return 'bg-red-500';
         if (currentTest === 'Complete') return 'bg-green-500';
@@ -263,7 +307,7 @@ export default function SpeedTestPage() {
                     >
                         {isTesting ? (
                             <>
-                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
@@ -271,7 +315,7 @@ export default function SpeedTestPage() {
                             </>
                         ) : (
                             <>
-                                <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 mr-2">
                                     <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
                                 </svg>
                                 Start Test
