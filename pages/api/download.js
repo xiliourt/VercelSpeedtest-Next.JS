@@ -1,4 +1,5 @@
 // pages/api/download.js
+export const runtime = 'edge'; 
 
 // Configure this API route to run on the Edge Runtime
 export const config = {
