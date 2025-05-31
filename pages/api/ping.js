@@ -1,10 +1,28 @@
-// File: pages/api/ping.js
+// pages/api/ping.js
 
-export default function handler(req, res) {
-  // Set headers to prevent caching for accurate ping measurement.
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  res.setHeader('Pragma', 'no-cache');
+// Configure this API route to run on the Edge Runtime
+export const config = {
+  runtime: 'edge',
+};
+
+export default function handler(req) {
+  // On the Edge, the 'req' object is a standard Request object.
+  // 'res' is not passed; you return a Response object.
+
+  // This endpoint simply needs to exist and respond quickly.
+  // The client measures the round-trip time.
+
+  // Add headers to prevent caching by browser or intermediaries
+  const headers = {
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+    'Surrogate-Control': 'no-store',
+    'Content-Type': 'text/plain',
+  };
   
-  // Send a minimal response. The client measures the time to receive this.
-  res.status(200).send('pong');
+  return new Response('OK', {
+    status: 200,
+    headers: headers,
+  });
 }
