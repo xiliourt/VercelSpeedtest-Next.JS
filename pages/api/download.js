@@ -1,11 +1,3 @@
-// pages/api/download.js
-export const runtime = 'edge'; 
-
-// Configure this API route to run on the Edge Runtime
-export const config = {
-  runtime: 'edge',
-};
-
 // Function to generate a chunk of random data as Uint8Array
 function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
