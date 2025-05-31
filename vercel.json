@@ -1,18 +1,15 @@
 {
   "version": 2,
-  "routes": [
-    { "src": "/ping", "dest": "/api/server" },
-    { "src": "/download", "dest": "/api/server" },
-    { "src": "/upload", "dest": "/api/server" },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
   "functions": {
-    "api/server.js": {
-      "memory": 512,
-      "maxDuration": 30
+    "/api/*.js": {
+      "maxDuration": 30,
+      "memory": 1024
     }
-  }
+  },
+  "builds": [
+    {
+      "src": "next.config.js",
+      "use": "@vercel/next"
+    }
+  ]
 }
