@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 const PING_COUNT = 5;
 const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB for the initial test
 const EXTENDED_DOWNLOAD_SIZE_MEDIUM_BYTES = 50 * 1024 * 1024; // 50MB
-const EXTENDED_DOWNLOAD_SIZE_LARGE_BYTES = 250 * 1024 * 1024; // 100MB
+const EXTENDED_DOWNLOAD_SIZE_LARGE_BYTES = 1000 * 1024 * 1024; // 100MB
 
 // Thresholds for triggering extended tests (in Mbps)
 const SPEED_THRESHOLD_FOR_MEDIUM_EXTENDED_MBPS = 25;
