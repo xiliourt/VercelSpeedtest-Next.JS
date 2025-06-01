@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
 
 export default function Ping() {
   return (<head>
@@ -9,5 +8,5 @@ export default function Ping() {
       'Surrogate-Control': 'no-store',
       'Content-Type': 'text/plain',
     </head>
-    OK)
+    OK);
 }
