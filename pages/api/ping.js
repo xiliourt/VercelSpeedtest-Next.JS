@@ -1,5 +1,6 @@
-import Head from 'next/head';
-
-export default function ping() {
-  return "OK"
+// pages/my-page/page.js
+function MyPage() {
+  return "OK";
 }
+
+export default MyPage;
