@@ -256,7 +256,7 @@ export default function SpeedTestPage() {
     return (
         <>
             <Head>
-                <title>Sleek Speed Test - Next.js</title>
+                <title>Vercel Speedtest - Next.js</title>
                 <meta name="description" content="Measure your internet speed with Next.js and Tailwind CSS" />
                 {/* Favicon link is in _app.js for global availability, or you can place specific one here */}
             </Head>
