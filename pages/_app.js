@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import '../styles/globals.css'; // Import the global styles
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -13,6 +14,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <Component {...pageProps} />
+      <SpeedInsights />
     </>
   );
 }
