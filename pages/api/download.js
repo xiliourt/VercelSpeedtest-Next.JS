@@ -8,10 +8,11 @@ export const config = {
 
 // Function to generate a chunk of random data as Uint8Array
 function generateRandomChunk(size) {
+  // Create a buffer of the specified size.
   const buffer = new Uint8Array(size);
-  for (let i = 0; i < size; i++) {
-    buffer[i] = Math.floor(Math.random() * 256);
-  }
+  // Use the Web Crypto API to fill the buffer with random values.
+  // This is a single, fast operation.
+  crypto.getRandomValues(buffer);
   return buffer;
 }
 
