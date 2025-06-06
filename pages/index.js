@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 
 // Configuration
 const PING_COUNT = 5;
