@@ -18,8 +18,7 @@ module.exports = {
                         return "https://default.com"; // Or deny the request
                     },
                 },
-                { key: "Access-Control-Allow-Headers", value: "Content-Type",
-                },
+                { key: "Access-Control-Allow-Headers", value: "Content-Type"},
             ],
         },
     ];
