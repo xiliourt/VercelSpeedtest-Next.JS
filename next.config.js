@@ -12,10 +12,12 @@ module.exports = {
             key: 'access-control-allow-headers',
             value: 'Content-Type',
           },
-          {
-            key: 'access-control-allow-origin',
-            value: 'js.aws.dyl.ovh, js.render.dyl.ovh, js.vercel.dyl.ovh, js.syd.dyl.ovh,
-          },
+          value: (req) => {
+            const allowedOrigins = ["https://js.vercel.dyl.ovh", "https://js.render.dyl.ovh", "https://js.aws.dyl.ovh", "https://js.syd.dyl.ovh", "http://js.syd.dyl.ovh" ];
+            const origin = req.headers.origin;
+            if (allowedOrigins.includes(origin)) {
+              return origin;
+            }
       
         ],
     },
