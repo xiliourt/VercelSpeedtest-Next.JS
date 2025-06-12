@@ -38,6 +38,8 @@ export default async function handler(req) {
         'Pragma': 'no-cache',
         'Expires': '0',
         'Surrogate-Control': 'no-store',
+        'Access-Control-Allow-Origi': '*',
+        'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
       };
 
       return new Response(JSON.stringify({ message: 'Upload received' }), {
