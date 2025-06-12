@@ -20,7 +20,7 @@ module.exports = {
               if (allowedOrigins.includes(origin)) {
                 return origin;
             }
-              return "https://js.vercel.dyl.ovh"
+              return "https://js.vercel.dyl.ovh";
           }, 
         ],
     },
