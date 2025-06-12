@@ -261,6 +261,7 @@ export default function InternetSpeedTest() {
             <Head>
                 <title>Internet Speed Test</title>
                 <meta name="description" content="Measure your internet speed with Next.js and Tailwind CSS" />
+                <script src="https://cdn.tailwindcss.com"></script>
             </Head>
             <div className="text-white flex items-center justify-center min-h-screen p-4">
                 <div className="bg-slate-800 p-6 sm:p-10 rounded-xl shadow-2xl w-full max-w-lg border border-slate-700">
