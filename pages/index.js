@@ -260,7 +260,6 @@ export default function SpeedTestPage() {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Internet Speed Test</title>
             <meta name="description" content="Measure your internet speed with HTML, Tailwind CSS, and plain JavaScript" />
-            <!-- Tailwind CSS for styling -->
             <script src="https://cdn.tailwindcss.com"></script>
         </head>
         <body class="bg-gradient-to-br from-slate-900 to-slate-800">
@@ -272,13 +271,10 @@ export default function SpeedTestPage() {
                         <p class="text-slate-400 mt-2 text-sm sm:text-base">Measure your connection speed.</p>
                     </header>
         
-                    <!-- Server Selection Dropdown -->
                     <div class="mb-8">
                         <label for="server-select" class="block mb-2 text-sm font-medium text-slate-400">Select Server</label>
                         <select id="server-select" class="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 transition duration-150 ease-in-out disabled:opacity-50"></select>
                     </div>
-        
-                    <!-- Metrics Display -->
                     <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-8 sm:mb-10 text-center">
                         <div>
                             <p class="text-xs sm:text-sm text-slate-400 uppercase tracking-wider">Ping</p>
@@ -296,18 +292,13 @@ export default function SpeedTestPage() {
                             <p class="text-xs text-slate-500">Mbps</p>
                         </div>
                     </div>
-        
-                    <!-- Progress and Status Area -->
                     <div class="mb-8 sm:mb-10 h-10 sm:h-12 flex flex-col justify-end">
                         <div id="progress-bar-container" class="w-full bg-slate-700 rounded-full h-2.5 mb-2 overflow-hidden hidden">
                             <div id="progress-bar" class="h-2.5 rounded-full transition-all duration-300 ease-out bg-sky-500" style="width: 0%"></div>
                         </div>
                         <p id="status-text" class="text-center text-sky-400 text-sm h-5 transition-colors duration-300">Select a server and click "Start Test".</p>
                     </div>
-                    
-                    <!-- Start Button -->
                     <button id="start-button" class="w-full bg-sky-500 hover:bg-sky-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-opacity-75 flex items-center justify-center transform hover:scale-102 active:scale-98">
-                        <!-- Button content will be set by JavaScript -->
                     </button>
         
                     <footer class="text-center mt-8 sm:mt-10">
