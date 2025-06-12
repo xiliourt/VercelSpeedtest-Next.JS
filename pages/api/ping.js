@@ -19,6 +19,9 @@ export default function handler(req) {
     'Expires': '0',
     'Surrogate-Control': 'no-store',
     'Content-Type': 'text/plain',
+    'Access-Control-Allow-Origin: '*',
+    'Access-Control-Allow-Methods': 'GET',
+    'Access-Control-Allow-Headers' 'X-Requested-With, Content-Type, Authorization'
   };
   
   return new Response('OK', {
