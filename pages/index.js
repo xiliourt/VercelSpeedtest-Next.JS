@@ -5,15 +5,15 @@ import Head from 'next/head';
 const SERVERS = [
     {
         name: 'AWS',
-        pingUrl: '/api/ping',
-        downloadUrl: '/api/download',
+        pingUrl: 'js.aws.dyl.ovh/api/ping',
+        downloadUrl: 'js.aws.dyl.ovh/api/download',
         uploadUrl: 'https://vha7zsy647pevemjz7qise7t3m0zvzvm.lambda-url.us-east-1.on.aws/'
     },
     {
         name: 'Vercel',
-        pingUrl: 'https://speedtestjs.vercel.app/api/ping',
-        downloadUrl: 'https://speedtestjs.vercel.app/api/download',
-        uploadUrl: 'https://speedtestjs.vercel.app/api/upload'
+        pingUrl: '/api/ping',
+        downloadUrl: '/api/download',
+        uploadUrl: '/api/upload'
     },
     {
         name: 'Render',
