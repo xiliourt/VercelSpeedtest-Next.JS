@@ -22,6 +22,12 @@ const SERVERS = [
         uploadUrl: 'https://js.render.dyl.ovh/api/upload'
     },
     {
+        name: 'Netlify',
+        pingUrl: 'https://js.netlify.dyl.ovh/api/ping',
+        downloadUrl: 'https://js.netlify.dyl.ovh/api/download',
+        uploadUrl: 'https://js.netlify.dyl.ovh/api/upload'
+    },
+    {
         name: 'Sydney Server',
         pingUrl: 'https://js.syd.dyl.ovh/api/ping',
         downloadUrl: 'https://js.syd.dyl.ovh/api/download',
