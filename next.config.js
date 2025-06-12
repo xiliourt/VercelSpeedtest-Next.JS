@@ -1,15 +1,13 @@
-
-module.exports = {
-  async headers() {
+async headers() {
     return [
         {
-            source: '/:api*',
+            source: "/:api*",
             headers: [
                 { key: "Access-Control-Allow-Credentials", value: "true" },
                 {
                     key: "Access-Control-Allow-Origin",
                     value: (req) => {
-                        const allowedOrigins = ["https://js.vercel.dyl.ovh", "https://js.render.dyl.ovh", "https://js.aws.dyl.ovh", "https://js.syd.dyl.ovh", "http://js.syd.dyl.ovh" ];
+                        const allowedOrigins = ["https://js.vercel.dyl.ovh", "https://js.render.dyl.ovh", "https://js.aws.dyl.ovh", "https://js.syd.dyl.ovh", "http://js.syd.dyl.ovh" ];;
                         const origin = req.headers.origin;
                         if (allowedOrigins.includes(origin)) {
                             return origin;
@@ -17,10 +15,17 @@ module.exports = {
                         return "https://default.com"; // Or deny the request
                     },
                 },
-                { key: "Access-Control-Allow-Headers", value: "Content-Type"},
+                {
+                    key: "Access-Control-Allow-Methods",
+                    value: "GET,DELETE,PATCH,POST,PUT",
+                },
+                {
+                    key: "Access-Control-Allow-Headers",
+                    value:
+                        "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+                },
             ],
         },
     ];
-  }
 }
 
