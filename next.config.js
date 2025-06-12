@@ -15,10 +15,10 @@ module.exports = {
           {
             key: 'access-control-allow-origin',
             value: 'js.*.dyl.ovh',
-          }
+          },
       
-        ]
-    }
+        ],
+    },
     ];
   },
 };
