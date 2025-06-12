@@ -21,7 +21,7 @@ body {
   -webkit-font-smoothing: antialiased; /* Improves font rendering on WebKit (Chrome, Safari) */
   -moz-osx-font-smoothing: grayscale; /* Improves font rendering on Firefox */
   overscroll-behavior-y: contain; /* Prevents scroll chaining from body to html, can feel 'sleeker' */
-  background: theme('bg-gradient-to-br from-slate-900 to-slate-800');
+  background: theme('color.slate.900');
 }
 
 @layer base {
