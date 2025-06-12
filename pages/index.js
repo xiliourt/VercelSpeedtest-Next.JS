@@ -11,9 +11,9 @@ const SERVERS = [
     },
     {
         name: 'Vercel',
-        pingUrl: 'https://js.vercel.dyl.ovh/api/ping',
-        downloadUrl: 'https://js.vercel.dyl.ovh/api/download',
-        uploadUrl: 'https://js.vercel.dyl.ovh/api/upload'
+        pingUrl: 'https://speedtestjs.vercel.app/api/ping',
+        downloadUrl: 'https://speedtestjs.vercel.app/api/download',
+        uploadUrl: 'https://speedtestjs.vercel.app/api/upload'
     },
     {
         name: 'Render',
