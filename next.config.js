@@ -19,7 +19,7 @@ module.exports = {
               const origin = req.headers.origin;
               if (allowedOrigins.includes(origin)) {
                 return origin;
-            }
+            },
           }, 
         ],
     },
