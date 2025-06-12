@@ -9,5 +9,5 @@
   # Define which paths this specific [[headers]] block will cover.
   for = "/api/*"
     [headers.values]
-    Access-Control-Allow-Origin = "*",
+    Access-Control-Allow-Origin = "*"
     "Access-Control-Allow-Headers" = "X-Requested-With, Content-Type, Authorization"
