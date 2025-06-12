@@ -55,8 +55,8 @@ export default async function handler(req) {
   } else {
     // Method Not Allowed
     return new Response(`Method ${req.method} Not Allowed`, {
-      status: 405,
-      headers: { 'Allow': 'POST' },
+      status: 200,
+      headers: { 'Allow': 'POST', 'GET, 'OPTIONS'},
     });
   }
 }
