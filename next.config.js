@@ -14,7 +14,7 @@ module.exports = {
           },
           {
             key: 'access-control-allow-origin',
-            value: 'js.*.dyl.ovh',
+            value: '[js.aws.dyl.ovh, js.render.dyl.ovh, js.vercel.dyl.ovh, js.syd.dyl.ovh],
           },
       
         ],
