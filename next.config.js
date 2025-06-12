@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         // This applies the headers to all routes in your application.
-        source: "*",
+        source: "/*",
         headers: [
           {
             key: "Access-Control-Allow-Origin",
