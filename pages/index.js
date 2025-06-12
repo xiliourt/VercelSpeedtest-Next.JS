@@ -35,9 +35,9 @@ const SERVERS = [
     },
     {
         name: 'Sydney Server',
-        pingUrl: 'https://js.syd.dyl.ovh/api/ping',
-        downloadUrl: 'https://js.syd.dyl.ovh/api/download',
-        uploadUrl: 'https://js.syd.dyl.ovh/api/upload'
+        pingUrl: 'http://js.syd.dyl.ovh/api/ping',
+        downloadUrl: 'http://js.syd.dyl.ovh/api/download',
+        uploadUrl: 'http://js.syd.dyl.ovh/api/upload'
     }
 ];
 
