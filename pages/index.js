@@ -40,7 +40,7 @@ const SERVERS = [
 // --- TEST CONFIGURATION ---
 const PING_COUNT = 4;
 const DOWNLOAD_SIZE_BYTES = 25 * 1024 * 1024; // 25MB for a quicker but still effective test
-const UPLOAD_DATA_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 5MB
 
 export default function InternetSpeedTest() {
     const [testResults, setTestResults] = useState([]);
