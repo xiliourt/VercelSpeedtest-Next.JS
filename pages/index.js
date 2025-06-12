@@ -256,11 +256,8 @@ export default function SpeedTestPage() {
     return (
         <>
         <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" name="description" content="Measure your internet speed with HTML, Tailwind CSS, and plain JavaScript" >
             <title>Internet Speed Test</title>
-            <meta name="description" content="Measure your internet speed with HTML, Tailwind CSS, and plain JavaScript" />
-            <script src="https://cdn.tailwindcss.com"></script>
         </head>
         <body class="bg-gradient-to-br from-slate-900 to-slate-800">
         
