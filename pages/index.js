@@ -38,9 +38,10 @@ const SERVERS = [
 ];
 
 // --- TEST CONFIGURATION ---
-const PING_COUNT = 4;
-const DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 25MB for a quicker but still effective test
-const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 5MB
+const PING_COUNT = 4;0
+const PING_TIMEOUT_MS = 2000; // 2-second timeout for each ping
+const DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
+const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 4MB
 
 export default function InternetSpeedTest() {
     const [testResults, setTestResults] = useState([]);
@@ -67,17 +68,34 @@ export default function InternetSpeedTest() {
         const pingProgressIncrement = 100 / PING_COUNT;
 
         for (let i = 0; i < PING_COUNT; i++) {
+            // Use AbortController for fetch timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), PING_TIMEOUT_MS);
+            
             const startTime = performance.now();
             try {
                 // Unique URL to prevent caching
-                await fetch(`${pingUrl}?r=${Math.random()}&t=${Date.now()}`, { method: 'GET', cache: 'no-store' });
+                await fetch(`${pingUrl}?r=${Math.random()}&t=${Date.now()}`, { 
+                    method: 'GET', 
+                    cache: 'no-store',
+                    signal: controller.signal // Pass the abort signal to fetch
+                });
                 const endTime = performance.now();
                 pings.push(endTime - startTime);
             } catch (error) {
-                console.error('Ping request failed:', error);
-                pings.push(null); // Mark failed ping
+                if (error.name === 'AbortError') {
+                    console.error('Ping request timed out.');
+                } else {
+                    console.error('Ping request failed:', error);
+                }
+                pings.push(null); // Mark failed or timed-out ping
+            } finally {
+                // Important: clear the timeout to prevent it from firing after the fetch has completed
+                clearTimeout(timeoutId);
             }
+            
             onProgress( (i + 1) * pingProgressIncrement );
+            // Add a small delay between pings
             if (i < PING_COUNT - 1) await new Promise(resolve => setTimeout(resolve, 200));
         }
 
@@ -86,7 +104,7 @@ export default function InternetSpeedTest() {
             const avgPing = validPings.reduce((a, b) => a + b, 0) / validPings.length;
             return Math.round(avgPing);
         } else {
-            throw new Error('Ping test failed');
+            throw new Error('Ping test failed for all attempts.');
         }
     };
 
@@ -154,6 +172,7 @@ export default function InternetSpeedTest() {
         // Reset all results to pending state before starting
         const initialResults = SERVERS.map(s => ({ name: s.name, ping: '--', download: '--', upload: '--', status: 'pending' }));
         setTestResults(initialResults);
+        setOverallProgress(0);
 
         // Loop through each server and test it sequentially
         for (let i = 0; i < SERVERS.length; i++) {
@@ -211,10 +230,10 @@ export default function InternetSpeedTest() {
              <div className={`grid grid-cols-4 items-center gap-4 p-4 rounded-lg transition-all duration-300 ${isTestingThis ? 'bg-sky-900/50' : 'bg-slate-800'}`}>
                 <div className="flex items-center gap-3">
                     <div className="w-5 h-5 flex items-center justify-center">
-                       {isTestingThis && <SpinnerIcon />}
-                       {isComplete && <CheckCircleIcon />}
-                       {isError && <ExclamationTriangleIcon />}
-                       {isPending && <div className="w-2 h-2 rounded-full bg-slate-600"></div>}
+                        {isTestingThis && <SpinnerIcon />}
+                        {isComplete && <CheckCircleIcon />}
+                        {isError && <ExclamationTriangleIcon />}
+                        {isPending && <div className="w-2 h-2 rounded-full bg-slate-600"></div>}
                     </div>
                     <span className="font-medium text-slate-300">{result.name}</span>
                 </div>
@@ -246,10 +265,10 @@ export default function InternetSpeedTest() {
                 <div className="bg-slate-800/50 p-6 rounded-xl shadow-2xl w-full border border-slate-700/50">
                     {/* Results Header */}
                     <div className="grid grid-cols-4 gap-4 px-4 pb-2 border-b border-slate-700">
-                       <h3 className="font-semibold text-slate-400 text-sm">Server</h3>
-                       <h3 className="font-semibold text-slate-400 text-sm text-center">Ping</h3>
-                       <h3 className="font-semibold text-slate-400 text-sm text-center">Download</h3>
-                       <h3 className="font-semibold text-slate-400 text-sm text-center">Upload</h3>
+                        <h3 className="font-semibold text-slate-400 text-sm">Server</h3>
+                        <h3 className="font-semibold text-slate-400 text-sm text-center">Ping</h3>
+                        <h3 className="font-semibold text-slate-400 text-sm text-center">Download</h3>
+                        <h3 className="font-semibold text-slate-400 text-sm text-center">Upload</h3>
                     </div>
 
                     {/* Results List */}
@@ -263,21 +282,21 @@ export default function InternetSpeedTest() {
                  {/* Controls and Progress Footer */}
                 <div className="mt-8 bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
                      <div className="mb-4">
-                        <p className={`text-center text-sky-300 h-5 transition-opacity duration-300 ${isTesting ? 'opacity-100' : 'opacity-0'}`}>{statusMessage}</p>
-                        <div className={`w-full bg-slate-700 rounded-full h-2 mt-2 overflow-hidden ${isTesting ? 'opacity-100' : 'opacity-0'}`}>
-                            <div className="bg-sky-500 h-2 rounded-full transition-all duration-300 ease-out" style={{ width: `${currentTestProgress}%` }}></div>
-                        </div>
-                    </div>
+                         <p className={`text-center text-sky-300 h-5 transition-opacity duration-300 ${isTesting ? 'opacity-100' : 'opacity-0'}`}>{statusMessage}</p>
+                         <div className={`w-full bg-slate-700 rounded-full h-2 mt-2 overflow-hidden ${isTesting ? 'opacity-100' : 'opacity-0'}`}>
+                             <div className="bg-sky-500 h-2 rounded-full transition-all duration-300 ease-out" style={{ width: `${currentTestProgress}%` }}></div>
+                         </div>
+                     </div>
 
                      <div className="mb-4">
-                        <div className="flex justify-between items-center mb-1">
-                            <span className="text-sm font-medium text-slate-300">Overall Progress</span>
-                            <span className="text-sm font-medium text-slate-300">{Math.round(overallProgress)}%</span>
-                        </div>
-                         <div className="w-full bg-slate-700 rounded-full h-2.5">
-                            <div className="bg-green-500 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallProgress}%` }}></div>
-                        </div>
-                    </div>
+                         <div className="flex justify-between items-center mb-1">
+                             <span className="text-sm font-medium text-slate-300">Overall Progress</span>
+                             <span className="text-sm font-medium text-slate-300">{Math.round(overallProgress)}%</span>
+                         </div>
+                          <div className="w-full bg-slate-700 rounded-full h-2.5">
+                             <div className="bg-green-500 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallProgress}%` }}></div>
+                         </div>
+                     </div>
 
                     <button
                         onClick={startAllTests}
