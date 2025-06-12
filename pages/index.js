@@ -1,355 +1,312 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
+
+// --- ICONS (as SVG components for better control) ---
+const PlayIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 mr-2">
+        <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
+    </svg>
+);
+
+const SpinnerIcon = () => (
+    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+);
+
+const CheckCircleIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-green-400">
+        <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clipRule="evenodd" />
+    </svg>
+);
+
+const ExclamationTriangleIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-red-400">
+        <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clipRule="evenodd" />
+    </svg>
+);
+
 
 // --- SERVER CONFIGURATION ---
 const SERVERS = [
-    {
-        name: 'AWS',
-        pingUrl: 'https://js.aws.dyl.ovh/api/ping',
-        downloadUrl: 'https://js.aws.dyl.ovh/api/download',
-        uploadUrl: 'https://vha7zsy647pevemjz7qise7t3m0zvzvm.lambda-url.us-east-1.on.aws/'
-    },
-    {
-        name: 'Vercel',
-        pingUrl: 'https://speedtestjs.vercel.app/api/ping',
-        downloadUrl: 'https://speedtestjs.vercel.app/api/download',
-        uploadUrl: 'https://speedtestjs.vercel.app/api/upload'
-    },
-    {
-        name: 'Render',
-        pingUrl: 'https://js.render.dyl.ovh/api/ping',
-        downloadUrl: 'https://js.render.dyl.ovh/api/download',
-        uploadUrl: 'https://js.render.dyl.ovh/api/upload'
-    },
-    {
-        name: 'Netlify',
-        pingUrl: 'https://js.netlify.dyl.ovh/api/ping',
-        downloadUrl: 'https://js.netlify.dyl.ovh/api/download',
-        uploadUrl: 'https://js.netlify.dyl.ovh/api/upload'
-    },
-    {
-        name: 'Cloudflare Pages',
-        pingUrl: 'https://js.cf.dyl.ovh/api/ping',
-        downloadUrl: 'https://js.cf.dyl.ovh/api/download',
-        uploadUrl: 'https://js.cf.dyl.ovh/api/upload'
-    },
-    {
-        name: 'Sydney Server',
-        pingUrl: 'http://js.syd.dyl.ovh/api/ping',
-        downloadUrl: 'http://js.syd.dyl.ovh/api/download',
-        uploadUrl: 'http://js.syd.dyl.ovh/api/upload'
-    }
+    { name: 'AWS', pingUrl: 'https://js.aws.dyl.ovh/api/ping', downloadUrl: 'https://js.aws.dyl.ovh/api/download', uploadUrl: 'https://vha7zsy647pevemjz7qise7t3m0zvzvm.lambda-url.us-east-1.on.aws/' },
+    { name: 'Vercel', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload' },
+    { name: 'Render', pingUrl: 'https://js.render.dyl.ovh/api/ping', downloadUrl: 'https://js.render.dyl.ovh/api/download', uploadUrl: 'https://js.render.dyl.ovh/api/upload' },
+    { name: 'Netlify', pingUrl: 'https://js.netlify.dyl.ovh/api/ping', downloadUrl: 'https://js.netlify.dyl.ovh/api/download', uploadUrl: 'https://js.netlify.dyl.ovh/api/upload' },
+    { name: 'Cloudflare', pingUrl: 'https://js.cf.dyl.ovh/api/ping', downloadUrl: 'https://js.cf.dyl.ovh/api/download', uploadUrl: 'https://js.cf.dyl.ovh/api/upload' },
+    { name: 'Sydney, AU', pingUrl: 'http://js.syd.dyl.ovh/api/ping', downloadUrl: 'http://js.syd.dyl.ovh/api/download', uploadUrl: 'http://js.syd.dyl.ovh/api/upload' }
 ];
 
 // --- TEST CONFIGURATION ---
-const PING_COUNT = 5;
-const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
-const EXTENDED_DOWNLOAD_SIZE_MEDIUM_BYTES = 50 * 1024 * 1024; // 50MB
-const EXTENDED_DOWNLOAD_SIZE_LARGE_BYTES = 100 * 1024 * 1024; // 100MB
-const SPEED_THRESHOLD_FOR_MEDIUM_EXTENDED_MBPS = 50;
-const SPEED_THRESHOLD_FOR_LARGE_EXTENDED_MBPS = 125;
-const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 4MB
+const PING_COUNT = 4;
+const DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 25MB for a quicker but still effective test
+const UPLOAD_DATA_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
 export default function InternetSpeedTest() {
-    const [ping, setPing] = useState('--');
-    const [downloadSpeed, setDownloadSpeed] = useState('--');
-    const [uploadSpeed, setUploadSpeed] = useState('--');
-    const [status, setStatus] = useState('Select a server and click "Start Test".');
-    const [progress, setProgress] = useState(0);
+    const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
-    const [showProgress, setShowProgress] = useState(false);
-    const [currentTest, setCurrentTest] = useState('');
-    const [selectedServerIndex, setSelectedServerIndex] = useState(0);
+    const [statusMessage, setStatusMessage] = useState('Click "Start All Tests" to begin.');
+    const [currentTestProgress, setCurrentTestProgress] = useState(0);
+    const [overallProgress, setOverallProgress] = useState(0);
 
-    const serverSelectEl = useRef(null);
+    // Initialize results on component mount
+    useEffect(() => {
+        setTestResults(SERVERS.map(s => ({
+            name: s.name,
+            ping: '--',
+            download: '--',
+            upload: '--',
+            status: 'pending' // pending, testing, complete, error
+        })));
+    }, []);
 
-    const resetMetrics = () => {
-        setPing('--');
-        setDownloadSpeed('--');
-        setUploadSpeed('--');
-        setStatus('Click "Start Test" to begin.');
-        setProgress(0);
-        setShowProgress(false);
-        setCurrentTest('');
-    };
+    // --- Core Measurement Functions (Refactored to be pure and accept progress callbacks) ---
 
-    const measurePing = async (pingUrl) => {
-        setCurrentTest('Ping');
-        setStatus('Testing Ping...');
-        setPing('...');
-        setShowProgress(true);
-        setProgress(0);
-
+    const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
         const pingProgressIncrement = 100 / PING_COUNT;
 
         for (let i = 0; i < PING_COUNT; i++) {
             const startTime = performance.now();
             try {
+                // Unique URL to prevent caching
                 await fetch(`${pingUrl}?r=${Math.random()}&t=${Date.now()}`, { method: 'GET', cache: 'no-store' });
                 const endTime = performance.now();
                 pings.push(endTime - startTime);
             } catch (error) {
                 console.error('Ping request failed:', error);
-                pings.push(null);
+                pings.push(null); // Mark failed ping
             }
-            setProgress(prev => Math.min(100, prev + pingProgressIncrement));
-            if (i < PING_COUNT - 1) {
-                await new Promise(resolve => setTimeout(resolve, 200));
-            }
+            onProgress( (i + 1) * pingProgressIncrement );
+            if (i < PING_COUNT - 1) await new Promise(resolve => setTimeout(resolve, 200));
         }
 
         const validPings = pings.filter(p => p !== null);
         if (validPings.length > 0) {
             const avgPing = validPings.reduce((a, b) => a + b, 0) / validPings.length;
-            setPing(Math.round(avgPing));
+            return Math.round(avgPing);
         } else {
-            setPing('ERR');
-            setStatus('Error: Ping test failed.');
             throw new Error('Ping test failed');
         }
-        setProgress(100);
     };
 
-    const performDownloadTest = async (downloadUrl, downloadSizeBytes, testLabel) => {
-        setCurrentTest(testLabel);
-        setStatus(`Testing ${testLabel}...`);
-        setShowProgress(true);
-        setProgress(0);
-
+    const measureDownload = async (downloadUrl, onProgress) => {
         const startTime = performance.now();
-        let measuredSpeed = '--';
-
         try {
-            const response = await fetch(`${downloadUrl}?size=${downloadSizeBytes}&r=${Math.random()}&t=${Date.now()}`, { cache: 'no-store' });
+            const response = await fetch(`${downloadUrl}?size=${DOWNLOAD_SIZE_BYTES}&r=${Math.random()}&t=${Date.now()}`, { cache: 'no-store' });
             if (!response.ok || !response.body) {
-                throw new Error(`Server error for ${testLabel}: ${response.status} ${response.statusText}`);
+                throw new Error(`Server error: ${response.status} ${response.statusText}`);
             }
 
             const reader = response.body.getReader();
             let receivedLength = 0;
-
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
                 receivedLength += value.length;
-                setProgress(Math.min(100, (receivedLength / downloadSizeBytes) * 100));
+                onProgress((receivedLength / DOWNLOAD_SIZE_BYTES) * 100);
             }
+            onProgress(100);
 
             const endTime = performance.now();
             const durationSeconds = (endTime - startTime) / 1000;
-
-            if (durationSeconds <= 0 || receivedLength === 0) {
-                measuredSpeed = 'ERR';
-                throw new Error(`${testLabel} failed (zero duration or size)`);
-            }
+            if (durationSeconds <= 0 || receivedLength === 0) throw new Error('Download failed (zero duration or size)');
 
             const speedBps = (receivedLength * 8) / durationSeconds;
-            measuredSpeed = (speedBps / (1000 * 1000)).toFixed(2);
-            setProgress(100);
-            return measuredSpeed;
-
+            return (speedBps / (1000 * 1000)).toFixed(2);
         } catch (error) {
-            console.error(`${testLabel} failed:`, error);
-            setDownloadSpeed('ERR');
-            setProgress(0);
-            setStatus(`Error: ${error.message}`);
+            console.error(`Download failed:`, error);
+            onProgress(0);
             throw error;
         }
     };
 
-    const measureUpload = async (uploadUrl) => {
-        setCurrentTest('Upload');
-        setStatus('Testing Upload...');
-        setUploadSpeed('...');
-        setShowProgress(true);
-        setProgress(0);
-
+    const measureUpload = async (uploadUrl, onProgress) => {
         try {
-            const randomData = new Uint8Array(UPLOAD_DATA_SIZE_BYTES);
-            for (let i = 0; i < UPLOAD_DATA_SIZE_BYTES; i++) {
-                randomData[i] = Math.floor(Math.random() * 256);
-            }
-            const payload = new Blob([randomData], { type: 'application/octet-stream' });
+            // Generate a client-side payload
+            const payload = new Blob([new Uint8Array(UPLOAD_DATA_SIZE_BYTES)], { type: 'application/octet-stream' });
+            onProgress(10); // Initial progress
 
-            const startTime = Date.now();
-            const response = await fetch(uploadUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/octet-stream'
-                },
-                body: payload,
-            });
+            const startTime = performance.now();
+            const response = await fetch(uploadUrl, { method: 'POST', body: payload, headers: { 'Content-Type': 'application/octet-stream' }});
+            onProgress(90); // Most of the time is the transfer
 
-            const duration = (Date.now() - startTime) / 1000;
+            const durationSeconds = (performance.now() - startTime) / 1000;
+            if (!response.ok) throw new Error(`Server responded with status: ${response.status}`);
+            if (durationSeconds <= 0) throw new Error('Upload test failed (zero duration)');
 
-            if (!response.ok) {
-                throw new Error(`Server responded with status: ${response.status}`);
-            }
-
-            if (duration <= 0) {
-                throw new Error('Upload test failed (zero duration).');
-            }
-
-            const speedBps = (UPLOAD_DATA_SIZE_BYTES * 8) / duration;
-            const speedMbps = (speedBps / (1000 * 1000)).toFixed(2);
-
-            setUploadSpeed(speedMbps);
-            setProgress(100);
-
+            const speedBps = (UPLOAD_DATA_SIZE_BYTES * 8) / durationSeconds;
+            onProgress(100);
+            return (speedBps / (1000 * 1000)).toFixed(2);
         } catch (error) {
             console.error('Upload test failed:', error);
-            setUploadSpeed('ERR');
-            setStatus(`Error: ${error.message}`);
-            setProgress(0);
+            onProgress(0);
             throw error;
         }
     };
 
-    const startTest = async () => {
+
+    // --- Main Test Orchestration ---
+    const startAllTests = async () => {
         if (isTesting) return;
-
-        const selectedServer = SERVERS[selectedServerIndex];
-        if (!selectedServer) {
-            setStatus('Error: Please select a valid server.');
-            return;
-        }
-
         setIsTesting(true);
-        resetMetrics();
-        setStatus(`Initializing test with ${selectedServer.name}...`);
 
-        let finalDownloadSpeed = '--';
+        // Reset all results to pending state before starting
+        const initialResults = SERVERS.map(s => ({ name: s.name, ping: '--', download: '--', upload: '--', status: 'pending' }));
+        setTestResults(initialResults);
 
-        try {
-            await measurePing(selectedServer.pingUrl);
-            await new Promise(resolve => setTimeout(resolve, 300));
+        // Loop through each server and test it sequentially
+        for (let i = 0; i < SERVERS.length; i++) {
+            const server = SERVERS[i];
 
-            const initialSpeed = await performDownloadTest(selectedServer.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, 'Download (10MB)');
-            setDownloadSpeed(initialSpeed);
-            finalDownloadSpeed = initialSpeed;
+            // Update status for the current server to 'testing'
+            setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'testing' } : r));
+
+            let finalPing = 'ERR', finalDownload = 'ERR', finalUpload = 'ERR';
+
+            try {
+                // PING
+                setStatusMessage(`Pinging ${server.name}...`);
+                finalPing = await measurePing(server.pingUrl, (p) => setCurrentTestProgress(p));
+                setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: finalPing } : r));
+                await new Promise(res => setTimeout(res, 200));
+
+                // DOWNLOAD
+                setStatusMessage(`Downloading from ${server.name}...`);
+                finalDownload = await measureDownload(server.downloadUrl, (p) => setCurrentTestProgress(p));
+                setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownload } : r));
+                await new Promise(res => setTimeout(res, 200));
 
 
-            let targetExtendedSize = 0;
-            if (initialSpeed !== 'ERR') {
-                const initialSpeedNum = parseFloat(initialSpeed);
-                if (initialSpeedNum > SPEED_THRESHOLD_FOR_LARGE_EXTENDED_MBPS) {
-                    targetExtendedSize = EXTENDED_DOWNLOAD_SIZE_LARGE_BYTES;
-                } else if (initialSpeedNum > SPEED_THRESHOLD_FOR_MEDIUM_EXTENDED_MBPS) {
-                    targetExtendedSize = EXTENDED_DOWNLOAD_SIZE_MEDIUM_BYTES;
-                }
+                // UPLOAD
+                setStatusMessage(`Uploading to ${server.name}...`);
+                finalUpload = await measureUpload(server.uploadUrl, (p) => setCurrentTestProgress(p));
+                setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
+
+                // Mark as complete
+                setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'complete' } : r));
+
+            } catch (error) {
+                console.error(`Test failed for ${server.name}:`, error);
+                setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r));
+            } finally {
+                // Update overall progress after each server test completes or fails
+                setOverallProgress(((i + 1) / SERVERS.length) * 100);
+                setCurrentTestProgress(0);
             }
-
-            if (targetExtendedSize > 0) {
-                await new Promise(resolve => setTimeout(resolve, 300));
-                const extendedTestLabel = `Download (${targetExtendedSize / (1024 * 1024)}MB)`;
-                const extendedSpeed = await performDownloadTest(selectedServer.downloadUrl, targetExtendedSize, extendedTestLabel);
-                setDownloadSpeed(extendedSpeed);
-                finalDownloadSpeed = extendedSpeed;
-            }
-
-            if (finalDownloadSpeed !== 'ERR') {
-                setStatus('Download test complete.');
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 300));
-            await measureUpload(selectedServer.uploadUrl);
-
-            setStatus('Test Complete!');
-            setCurrentTest('Complete');
-        } catch (error) {
-            console.error("Speed test sequence failed: ", error);
-            if (!status.startsWith('Error:')) {
-                setStatus(`Error: ${error.message}. Please try again.`);
-            }
-            setCurrentTest('Error');
-        } finally {
-            setIsTesting(false);
         }
+
+        setIsTesting(false);
+        setStatusMessage('All tests complete!');
     };
+    
+    // -- Render Helper for result rows
+    const ResultRow = ({ result }) => {
+        const isTestingThis = result.status === 'testing';
+        const isComplete = result.status === 'complete';
+        const isError = result.status === 'error';
+        const isPending = result.status === 'pending';
+
+        return (
+             <div className={`grid grid-cols-4 items-center gap-4 p-4 rounded-lg transition-all duration-300 ${isTestingThis ? 'bg-sky-900/50' : 'bg-slate-800'}`}>
+                <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 flex items-center justify-center">
+                       {isTestingThis && <SpinnerIcon />}
+                       {isComplete && <CheckCircleIcon />}
+                       {isError && <ExclamationTriangleIcon />}
+                       {isPending && <div className="w-2 h-2 rounded-full bg-slate-600"></div>}
+                    </div>
+                    <span className="font-medium text-slate-300">{result.name}</span>
+                </div>
+                <div className="text-center">
+                    <span className={`font-mono text-lg ${result.ping === 'ERR' ? 'text-red-400' : 'text-slate-200'}`}>{result.ping}</span>
+                    <span className="text-xs text-slate-400 ml-1">ms</span>
+                </div>
+                <div className="text-center">
+                    <span className={`font-mono text-lg ${result.download === 'ERR' ? 'text-red-400' : 'text-slate-200'}`}>{result.download}</span>
+                    <span className="text-xs text-slate-400 ml-1">Mbps</span>
+                </div>
+                <div className="text-center">
+                    <span className={`font-mono text-lg ${result.upload === 'ERR' ? 'text-red-400' : 'text-slate-200'}`}>{result.upload}</span>
+                    <span className="text-xs text-slate-400 ml-1">Mbps</span>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <>
             <Head>
-                <title>Internet Speed Test</title>
-                <meta name="description" content="Measure your internet speed with Next.js and Tailwind CSS" />
+                <title>Multi-Server Speed Test</title>
+                <meta name="description" content="Automatically test your internet speed against multiple servers." />
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet"/>
             </Head>
-            <div className="text-white flex items-center justify-center min-h-screen p-4">
-                <div className="bg-slate-800 p-6 sm:p-10 rounded-xl shadow-2xl w-full max-w-lg border border-slate-700">
-                    <header className="text-center mb-6">
-                        <h1 className="text-3xl sm:text-4xl font-bold text-sky-400">Internet Speed Test</h1>
-                        <p className="text-slate-400 mt-2 text-sm sm:text-base">Measure your connection speed.</p>
+            <div className="bg-slate-900 text-white flex items-center justify-center min-h-screen p-4 font-['Inter']">
+                <div className="w-full max-w-2xl mx-auto">
+
+                    <header className="text-center mb-8">
+                        <h1 className="text-4xl font-bold text-sky-400">Multi-Server Speed Test</h1>
+                        <p className="text-slate-400 mt-2">Sequentially testing all available servers for a comprehensive overview.</p>
                     </header>
+                    
+                    <div className="bg-slate-800/50 p-6 rounded-xl shadow-2xl w-full border border-slate-700/50">
+                        {/* Results Header */}
+                        <div className="grid grid-cols-4 gap-4 px-4 pb-2 border-b border-slate-700">
+                           <h3 className="font-semibold text-slate-400 text-sm">Server</h3>
+                           <h3 className="font-semibold text-slate-400 text-sm text-center">Ping</h3>
+                           <h3 className="font-semibold text-slate-400 text-sm text-center">Download</h3>
+                           <h3 className="font-semibold text-slate-400 text-sm text-center">Upload</h3>
+                        </div>
 
-                    <div className="mb-8">
-                        <label htmlFor="server-select" className="block mb-2 text-sm font-medium text-slate-400">Select Server</label>
-                        <select
-                            id="server-select"
-                            ref={serverSelectEl}
-                            onChange={(e) => setSelectedServerIndex(e.target.value)}
-                            disabled={isTesting}
-                            className="bg-slate-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 transition duration-150 ease-in-out disabled:opacity-50"
-                        >
-                            {SERVERS.map((server, index) => (
-                                <option key={index} value={index}>{server.name}</option>
+                        {/* Results List */}
+                        <div className="space-y-2 mt-4">
+                            {testResults.map((result, index) => (
+                                <ResultRow key={index} result={result} />
                             ))}
-                        </select>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8 sm:mb-10 text-center">
-                        <div>
-                            <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wider">Ping</p>
-                            <p className={`text-2xl sm:text-3xl font-bold transition-colors duration-300 ${ping === 'ERR' ? 'text-red-500' : 'text-sky-400'}`}>{ping}</p>
-                            <p className="text-xs text-slate-500">ms</p>
-                        </div>
-                        <div>
-                            <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wider">Download</p>
-                            <p className={`text-2xl sm:text-3xl font-bold transition-colors duration-300 ${downloadSpeed === 'ERR' ? 'text-red-500' : 'text-sky-400'}`}>{downloadSpeed}</p>
-                            <p className="text-xs text-slate-500">Mbps</p>
-                        </div>
-                        <div>
-                            <p className="text-xs sm:text-sm text-slate-400 uppercase tracking-wider">Upload</p>
-                            <p className={`text-2xl sm:text-3xl font-bold transition-colors duration-300 ${uploadSpeed === 'ERR' ? 'text-red-500' : 'text-sky-400'}`}>{uploadSpeed}</p>
-                            <p className="text-xs text-slate-500">Mbps</p>
                         </div>
                     </div>
-
-                    <div className="mb-8 sm:mb-10 h-10 sm:h-12 flex flex-col justify-end">
-                        <div className={`w-full bg-slate-700 rounded-full h-2.5 mb-2 overflow-hidden ${showProgress ? 'block' : 'hidden'}`}>
-                            <div
-                                className={`h-2.5 rounded-full transition-all duration-300 ease-out ${currentTest === 'Error' ? 'bg-red-500' : currentTest === 'Complete' ? 'bg-green-500' : 'bg-sky-500'}`}
-                                style={{ width: `${progress}%` }}
-                            ></div>
+                    
+                     {/* Controls and Progress Footer */}
+                    <div className="mt-8 bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
+                         <div className="mb-4">
+                            <p className={`text-center text-sky-300 h-5 transition-opacity duration-300 ${isTesting ? 'opacity-100' : 'opacity-0'}`}>{statusMessage}</p>
+                            <div className={`w-full bg-slate-700 rounded-full h-2 mt-2 overflow-hidden ${isTesting ? 'opacity-100' : 'opacity-0'}`}>
+                                <div className="bg-sky-500 h-2 rounded-full transition-all duration-300 ease-out" style={{ width: `${currentTestProgress}%` }}></div>
+                            </div>
                         </div>
-                        <p className={`text-center text-sm h-5 transition-colors duration-300 ${status.startsWith('Error:') ? 'text-red-400' : 'text-sky-400'}`}>{status}</p>
+
+                         <div className="mb-4">
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-sm font-medium text-slate-300">Overall Progress</span>
+                                <span className="text-sm font-medium text-slate-300">{Math.round(overallProgress)}%</span>
+                            </div>
+                             <div className="w-full bg-slate-700 rounded-full h-2.5">
+                                <div className="bg-green-500 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallProgress}%` }}></div>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={startAllTests}
+                            disabled={isTesting}
+                            className="w-full mt-6 bg-sky-600 hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-sky-400/50 flex items-center justify-center transform active:scale-98"
+                        >
+                            {isTesting ? (
+                                <>
+                                    <SpinnerIcon />
+                                    <span className="ml-3">Testing in Progress...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <PlayIcon />
+                                    <span>Start All Tests</span>
+                                </>
+                            )}
+                        </button>
                     </div>
 
-                    <button
-                        onClick={startTest}
-                        disabled={isTesting}
-                        className="w-full bg-sky-500 hover:bg-sky-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-opacity-75 flex items-center justify-center transform hover:scale-102 active:scale-98"
-                    >
-                        {isTesting ? (
-                            <>
-                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                {currentTest ? `Testing ${currentTest}...` : 'Testing...'}
-                            </>
-                        ) : (
-                            <>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 mr-2">
-                                    <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
-                                </svg>
-                                Start Test
-                            </>
-                        )}
-                    </button>
-
-                    <footer className="text-center mt-8 sm:mt-10">
-                        <p className="text-xs text-slate-500">Powered by Next.js & Tailwind CSS</p>
-                    </footer>
                 </div>
             </div>
         </>
