@@ -28,6 +28,12 @@ const SERVERS = [
         uploadUrl: 'https://js.netlify.dyl.ovh/api/upload'
     },
     {
+        name: 'Cloudflare Pages',
+        pingUrl: 'https://js.cf.dyl.ovh/api/ping',
+        downloadUrl: 'https://js.cf.dyl.ovh/api/download',
+        uploadUrl: 'https://js.cf.dyl.ovh/api/upload'
+    },
+    {
         name: 'Sydney Server',
         pingUrl: 'https://js.syd.dyl.ovh/api/ping',
         downloadUrl: 'https://js.syd.dyl.ovh/api/download',
