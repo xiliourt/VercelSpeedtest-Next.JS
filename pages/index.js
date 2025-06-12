@@ -5,8 +5,8 @@ import Head from 'next/head';
 const SERVERS = [
     {
         name: 'AWS',
-        pingUrl: 'js.aws.dyl.ovh/api/ping',
-        downloadUrl: 'js.aws.dyl.ovh/api/download',
+        pingUrl: 'https://js.aws.dyl.ovh/api/ping',
+        downloadUrl: 'https://js.aws.dyl.ovh/api/download',
         uploadUrl: 'https://vha7zsy647pevemjz7qise7t3m0zvzvm.lambda-url.us-east-1.on.aws/'
     },
     {
