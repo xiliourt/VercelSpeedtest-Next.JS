@@ -11,15 +11,15 @@ const SERVERS = [
     },
     {
         name: 'Vercel',
-        pingUrl: '/api/ping',
-        downloadUrl: '/api/download',
-        uploadUrl: '/api/upload'
+        pingUrl: 'https://js.vercel.dyl.ovh/api/ping',
+        downloadUrl: 'https://js.vercel.dyl.ovh/api/download',
+        uploadUrl: 'https://js.vercel.dyl.ovh/api/upload'
     },
     {
         name: 'Render',
         pingUrl: 'https://js.render.dyl.ovh/api/ping',
         downloadUrl: 'https://js.render.dyl.ovh/api/download',
-        uploadUrl: 'https://js.render.dyl.ovh/upload'
+        uploadUrl: 'https://js.render.dyl.ovh/api/upload'
     },
     {
         name: 'Sydney Server',
