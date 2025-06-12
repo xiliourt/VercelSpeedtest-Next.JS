@@ -21,7 +21,7 @@ export default function handler(req) {
     'Content-Type': 'text/plain',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET',
-    'Access-Control-Allow-Headers' 'X-Requested-With, Content-Type, Authorization'
+    'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
   };
   
   return new Response('OK', {
