@@ -26,7 +26,6 @@ const ExclamationTriangleIcon = () => (
     </svg>
 );
 
-
 // --- SERVER CONFIGURATION ---
 const SERVERS = [
     { name: 'Vercel', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload', maxUpload: '4194304'},
