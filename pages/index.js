@@ -29,9 +29,9 @@ const ExclamationTriangleIcon = () => (
 
 // --- SERVER CONFIGURATION ---
 const SERVERS = [
-    { name: 'Vercel', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload' },
+    { name: 'Vercel', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload'},
     { name: 'Render', pingUrl: 'https://js.render.dyl.ovh/api/ping', downloadUrl: 'https://js.render.dyl.ovh/api/download', uploadUrl: 'https://js.render.dyl.ovh/api/upload' },
-    { name: 'Netlify', pingUrl: 'https://js.netlify.dyl.ovh/api/ping', downloadUrl: 'https://js.netlify.dyl.ovh/api/download', uploadUrl: 'https://js.netlify.dyl.ovh/api/upload' },
+    { name: 'Netlify', pingUrl: 'https://js.netlify.dyl.ovh/api/ping', downloadUrl: 'https://js.netlify.dyl.ovh/api/download', uploadUrl: 'https://js.netlify.dyl.ovh/api/upload', maxUpload: '4194304'},
     { name: 'Cloudflare', pingUrl: 'https://js.cf.dyl.ovh/api/ping', downloadUrl: 'https://js.cf.dyl.ovh/api/download', uploadUrl: 'https://js.cf.dyl.ovh/api/upload' },
     { name: 'Sydney, AU (Onidel)', pingUrl: 'https://js.s.dyl.ovh/api/ping', downloadUrl: 'https://js.s.dyl.ovh/api/download', uploadUrl: 'https://js.s.dyl.ovh/api/upload' },
     { name: 'Sydney, AU (via CF)', pingUrl: 'https://jsscf.dyl.ovh/api/ping', downloadUrl: 'https://jsscf.dyl.ovh/api/download', uploadUrl: 'https://jsscf.dyl.ovh/api/upload' },
@@ -45,8 +45,12 @@ const PING_TIMEOUT_MS = 2000;
 // **UPDATED**: Added two download sizes and a threshold for switching between them.
 const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
 const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 100MB
+const INITIAL_UPLOAD_SIZE_BYTES = 4 * 1024 * 1024; // 50MB
+const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024; // 25MB
 const FAST_CONNECTION_THRESHOLD_MBPS = 50; // Speed threshold to trigger larger downloads
-const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 4MB
+const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10; // Speed threshold to trigger larger downloads
+
+
 
 // --- Main App Component ---
 export default function App() {
@@ -132,7 +136,7 @@ export default function App() {
         }
     };
 
-    const measureUpload = (uploadUrl, onProgress) => {
+    const measureUpload = (uploadUrl, size, onProgress) => {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             const startTime = performance.now();
@@ -159,7 +163,7 @@ export default function App() {
             xhr.onerror = () => { onProgress(0); reject(new Error(`Upload failed due to a network error.`)); };
             xhr.onabort = () => { onProgress(0); reject(new Error('Upload test was aborted.')); };
             
-            const payload = new Blob([new Uint8Array(UPLOAD_DATA_SIZE_BYTES)], { type: 'application/octet-stream' });
+            const payload = new Blob([new Uint8Array(size)], { type: 'application/octet-stream' });
             xhr.send(payload);
         });
     };
@@ -172,35 +176,57 @@ export default function App() {
         setTestResults(initialResults);
         setOverallProgress(0);
 
-        // **UPDATED**: This variable will track whether to use the large download size.
-        let useLargeDownload = false;
-
         for (let i = 0; i < SERVERS.length; i++) {
             const server = SERVERS[i];
             setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'testing' } : r));
             let finalPing = 'ERR', finalDownload = 'ERR', finalUpload = 'ERR';
 
             try {
+                // Ping
                 setStatusMessage(`Pinging ${server.name}...`);
-                finalPing = await measurePing(server.pingUrl, (p) => setCurrentTestProgress(p));
-                setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: finalPing } : r));
-                await new Promise(res => setTimeout(res, 200));
-
-                // **UPDATED**: Logic to select download size and check speed after first test.
-                setStatusMessage(`Downloading from ${server.name}...`);
-                finalDownload = await measureDownload(server.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
-                setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownload } : r));
-                
-                // If it's the first test and the speed is above the threshold, enable large downloads for subsequent tests.
-                if (i === 0 && parseFloat(finalDownload) > FAST_CONNECTION_THRESHOLD_MBPS) {
-                    finalDownload = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                try {
+                    finalPing = await measurePing(server.pingUrl, (p) => setCurrentTestProgress(p));
+                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: finalPing } : r));
+                } catch (error) {
+                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: 'error' } : r))
+                    console.error(`Ping test failed for ${server.name}:`, error);
                 }
+                
                 await new Promise(res => setTimeout(res, 200));
 
+                // Download Test
+                setStatusMessage(`Downloading from ${server.name}...`);
+                try {
+                    finalDownload = await measureDownload(server.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownload } : r));
+                    
+                    // If it's the first test and the speed is above the threshold, enable large downloads for subsequent tests.
+                    if (i === 0 && parseFloat(finalDownload) > FAST_CONNECTION_THRESHOLD_MBPS) {
+                        finalDownload = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                    }
+                } catch(error) {
+                    console.error(`Download test failed for ${server.name}:`, error);
+                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: 'error' } : r))
+                }
+                
+                await new Promise(res => setTimeout(res, 200));
+
+                // Upload Test
                 setStatusMessage(`Uploading to ${server.name}...`);
-                finalUpload = await measureUpload(server.uploadUrl, (p) => setCurrentTestProgress(p));
-                setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
-                setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'complete' } : r));
+                try {
+                    finalUpload = await measureUpload(server.uploadUrl, INITIAL_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                    
+                    
+                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS) {
+                        if (!(server.maxUpload < LARGE_UPLOAD_SIZE_BYTES)) {
+                            finalUpload = await measureDownload(server.downloadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                            setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
+                        }
+                    setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'complete' } : r));
+                } catch (error) {
+                    console.error(`Upload test failed for ${server.name}:`, error);
+                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: 'error' } : r));
+                }
             } catch (error) {
                 console.error(`Test failed for ${server.name}:`, error);
                 setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r));
