@@ -47,7 +47,7 @@ const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
 const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 100MB
 const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
 const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024; // 25MB
-const FAST_CONNECTION_THRESHOLD_MBPS = 50; // Speed threshold to trigger larger downloads
+const FAST_CONNECTION_THRESHOLD_MBPS = 25; // Speed threshold to trigger larger downloads
 const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10; // Speed threshold to trigger larger downloads
 
 
@@ -179,7 +179,7 @@ export default function App() {
         for (let i = 0; i < SERVERS.length; i++) {
             const server = SERVERS[i];
             setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'testing' } : r));
-            let finalPing = 'ERR', finalDownload = 'ERR', finalUpload = 'ERR', finalUploadLarge = 0;
+            let finalPing = 'ERR', finalDownload = 'ERR', finalUpload = 'ERR', finalUploadLarge = 0, finalDownloadLarge = 0;
 
             try {
                 // Ping
