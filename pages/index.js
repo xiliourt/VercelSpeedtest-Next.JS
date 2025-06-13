@@ -135,7 +135,7 @@ export default function App() {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             const startTime = performance.now();
-            xhr.open('POST', `${uploadUrl}?r=${Math.random()}&t=${Date.now()}`, true);
+            xhr.open('POST', `${uploadUrl}`, true);
             xhr.setRequestHeader('Content-Type', 'application/octet-stream');
             
             xhr.upload.onprogress = (event) => {
@@ -187,14 +187,12 @@ export default function App() {
 
                 // **UPDATED**: Logic to select download size and check speed after first test.
                 setStatusMessage(`Downloading from ${server.name}...`);
-                const currentDownloadSize = useLargeDownload ? LARGE_DOWNLOAD_SIZE_BYTES : INITIAL_DOWNLOAD_SIZE_BYTES;
-                finalDownload = await measureDownload(server.downloadUrl, currentDownloadSize, (p) => setCurrentTestProgress(p));
+                finalDownload = await measureDownload(server.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                 setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownload } : r));
                 
                 // If it's the first test and the speed is above the threshold, enable large downloads for subsequent tests.
                 if (i === 0 && parseFloat(finalDownload) > FAST_CONNECTION_THRESHOLD_MBPS) {
-                    useLargeDownload = true;
-                    console.log(`Fast connection detected (> ${FAST_CONNECTION_THRESHOLD_MBPS} Mbps). Switching to large downloads.`);
+                    finalDownload = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                 }
                 await new Promise(res => setTimeout(res, 200));
 
