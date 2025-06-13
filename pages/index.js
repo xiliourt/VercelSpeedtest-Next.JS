@@ -179,7 +179,7 @@ export default function App() {
         for (let i = 0; i < SERVERS.length; i++) {
             const server = SERVERS[i];
             setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'testing' } : r));
-            let finalPing = 'ERR', finalDownload = 'ERR', finalUpload = 'ERR';
+            let finalPing = 'ERR', finalDownload = 'ERR', finalUpload = 'ERR', finalUploadLarge = 0;
 
             try {
                 // Ping
