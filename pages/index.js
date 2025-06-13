@@ -215,7 +215,7 @@ export default function App() {
                 setStatusMessage(`Uploading to ${server.name}...`);
                 try {
                     finalUpload = await measureUpload(server.uploadUrl, INITIAL_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
-                    
+                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
                     
                     if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS) {
                         if (!(server.maxUpload < LARGE_UPLOAD_SIZE_BYTES)) {
