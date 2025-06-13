@@ -29,7 +29,7 @@ const ExclamationTriangleIcon = () => (
 
 // --- SERVER CONFIGURATION ---
 const SERVERS = [
-    { name: 'Vercel', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://vvydtf8haz1xapgp.public.blob.vercel-storage.com/test10MB-hyCEAj60zgIqt1SOCyjXGA5ec8aQ49', uploadUrl: 'https://speedtestjs.vercel.app/api/upload', maxUpload: '4194304'},
+    { name: 'Vercel', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload', maxUpload: '4194304'},
     { name: 'Render', pingUrl: 'https://js.render.dyl.ovh/api/ping', downloadUrl: 'https://js.render.dyl.ovh/api/download', uploadUrl: 'https://js.render.dyl.ovh/api/upload', maxUpload: '107374182400'},
     { name: 'Netlify', pingUrl: 'https://js.netlify.dyl.ovh/api/ping', downloadUrl: 'https://js.netlify.dyl.ovh/api/download', uploadUrl: 'https://js.netlify.dyl.ovh/api/upload', maxUpload: '4194304'},
     { name: 'Cloudflare', pingUrl: 'https://js.cf.dyl.ovh/api/ping', downloadUrl: 'https://js.cf.dyl.ovh/api/download', uploadUrl: 'https://js.cf.dyl.ovh/api/upload', maxUpload: '107374182400' },
