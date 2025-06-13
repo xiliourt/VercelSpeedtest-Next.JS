@@ -45,7 +45,7 @@ const PING_TIMEOUT_MS = 2000;
 // **UPDATED**: Added two download sizes and a threshold for switching between them.
 const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
 const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 100MB
-const INITIAL_UPLOAD_SIZE_BYTES = 4 * 1024 * 1024; // 50MB
+const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
 const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024; // 25MB
 const FAST_CONNECTION_THRESHOLD_MBPS = 50; // Speed threshold to trigger larger downloads
 const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10; // Speed threshold to trigger larger downloads
@@ -216,7 +216,7 @@ export default function App() {
                 // Upload Test
                 setStatusMessage(`Uploading to ${server.name}...`);
                 try {
-                    finalUpload = await measureUpload(server.uploadUrl, INITIAL_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                    finalUpload = await measureUpload(server.uploadUrl, (server.maxUpload < INITIAL_UPLOAD_SIZE_BYTES ? server.maxUpload : INITIAL_DOWNLOAD_SIZE_BYTES), (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
                     
                     if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS) {
