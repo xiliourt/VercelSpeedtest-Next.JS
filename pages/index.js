@@ -227,7 +227,6 @@ export default function App() {
                         if (server.maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
                             setStatusMessage(`Uploading to ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                             finalUploadLarge = await measureUpload(server.uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
-                            console.log(finalUploadLarge);
                             if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
                                 setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUploadLarge } : r));
                             }
