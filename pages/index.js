@@ -222,6 +222,7 @@ export default function App() {
                             finalUpload = await measureDownload(server.downloadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                             setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
                         }
+                    }
                     setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'complete' } : r));
                 } catch (error) {
                     console.error(`Upload test failed for ${server.name}:`, error);
