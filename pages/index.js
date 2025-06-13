@@ -304,9 +304,9 @@ export default function App() {
             <div className="w-full max-w-3xl mx-auto">
                 <header className="text-center mb-6 md:mb-8">
                     <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-cyan-300 py-2">
-                        Multi-Server Speed Test
+                        Next.Js Deployment Speedtests
                     </h1>
-                    <p className="text-slate-400 mt-1 text-base md:text-lg">Test your connection speed against multiple global servers.</p>
+                    <p className="text-slate-400 mt-1 text-base md:text-lg">Test your connection to available free Next.js hosts.</p>
                 </header>
 
                 {/* Main Results Panel */}
