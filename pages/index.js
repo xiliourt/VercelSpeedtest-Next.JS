@@ -35,7 +35,7 @@ const SERVERS = [
     { name: 'Cloudflare', pingUrl: 'https://js.cf.dyl.ovh/api/ping', downloadUrl: 'https://js.cf.dyl.ovh/api/download', uploadUrl: 'https://js.cf.dyl.ovh/api/upload' },
     { name: 'Sydney, AU (Onidel)', pingUrl: 'https://js.s.dyl.ovh/api/ping', downloadUrl: 'https://js.s.dyl.ovh/api/download', uploadUrl: 'https://js.s.dyl.ovh/api/upload' },
     { name: 'Stockholm (Hosthatch)', pingUrl: 'https://js.sto.dyl.ovh/api/ping', downloadUrl: 'https://js.sto.dyl.ovh/api/download', uploadUrl: 'https://js.sto.dyl.ovh/api/upload' },
-    { name: 'Stockholm (via CF)', pingUrl: 'https://js.stocf.dyl.ovh/api/ping', downloadUrl: 'https://js.stocf.dyl.ovh/api/download', uploadUrl: 'https://js.stocf.dyl.ovh/api/upload' }
+    { name: 'Stockholm (via CF)', pingUrl: 'https://jsstocf.dyl.ovh/api/ping', downloadUrl: 'https://jsstocf.dyl.ovh/api/download', uploadUrl: 'https://jsstocf.dyl.ovh/api/upload' }
 ];
 
 // --- TEST CONFIGURATION ---
