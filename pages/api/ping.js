@@ -1,3 +1,5 @@
+import { get } from '@vercel/edge-config';
+
 export const runtime = 'edge'; 
 
 // Configure this API route to run on the Edge Runtime
