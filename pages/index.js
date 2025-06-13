@@ -136,7 +136,7 @@ export default function App() {
         }
     };
 
-    const measureUpload = (uploadUrl, size, onProgress) => {
+    const measureUpload = (uploadUrl, uploadsize, onProgress) => {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             const startTime = performance.now();
@@ -151,7 +151,7 @@ export default function App() {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     const durationSeconds = (performance.now() - startTime) / 1000;
                     if (durationSeconds <= 0) return reject(new Error('Upload test failed (zero duration)'));
-                    const speedBps = (UPLOAD_DATA_SIZE_BYTES * 8) / durationSeconds;
+                    const speedBps = (uploadsize * 8) / durationSeconds;
                     onProgress(100);
                     resolve((speedBps / (1000 * 1000)).toFixed(2));
                 } else {
@@ -163,7 +163,7 @@ export default function App() {
             xhr.onerror = () => { onProgress(0); reject(new Error(`Upload failed due to a network error.`)); };
             xhr.onabort = () => { onProgress(0); reject(new Error('Upload test was aborted.')); };
             
-            const payload = new Blob([new Uint8Array(size)], { type: 'application/octet-stream' });
+            const payload = new Blob([new Uint8Array(uploadsize)], { type: 'application/octet-stream' });
             xhr.send(payload);
         });
     };
