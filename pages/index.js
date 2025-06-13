@@ -41,7 +41,10 @@ const SERVERS = [
 // --- TEST CONFIGURATION ---
 const PING_COUNT = 4;
 const PING_TIMEOUT_MS = 2000;
-const DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 10MB
+// **UPDATED**: Added two download sizes and a threshold for switching between them.
+const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
+const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 100MB
+const FAST_CONNECTION_THRESHOLD_MBPS = 50; // Speed threshold to trigger larger downloads
 const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 4MB
 
 // --- Main App Component ---
@@ -63,7 +66,7 @@ export default function App() {
         })));
     }, []);
 
-    // --- Core Measurement Functions (Logically unchanged, formatting added) ---
+    // --- Core Measurement Functions ---
 
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
@@ -95,23 +98,30 @@ export default function App() {
         }
     };
 
-    const measureDownload = async (downloadUrl, onProgress) => {
+    // **UPDATED**: The function now accepts `downloadSize` as a parameter.
+    const measureDownload = async (downloadUrl, downloadSize, onProgress) => {
         const startTime = performance.now();
         try {
-            const response = await fetch(`${downloadUrl}?size=${DOWNLOAD_SIZE_BYTES}&r=${Math.random()}&t=${Date.now()}`, { cache: 'no-store' });
+            // Use the passed `downloadSize` in the request URL.
+            const response = await fetch(`${downloadUrl}?size=${downloadSize}&r=${Math.random()}&t=${Date.now()}`, { cache: 'no-store' });
             if (!response.ok || !response.body) throw new Error(`Server error: ${response.status} ${response.statusText}`);
+            
             const reader = response.body.getReader();
             let receivedLength = 0;
+            
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
                 receivedLength += value.length;
-                onProgress((receivedLength / DOWNLOAD_SIZE_BYTES) * 100);
+                // Calculate progress based on the current `downloadSize`.
+                onProgress((receivedLength / downloadSize) * 100);
             }
+            
             onProgress(100);
             const endTime = performance.now();
             const durationSeconds = (endTime - startTime) / 1000;
             if (durationSeconds <= 0 || receivedLength === 0) throw new Error('Download failed (zero duration or size)');
+            
             const speedBps = (receivedLength * 8) / durationSeconds;
             return (speedBps / (1000 * 1000)).toFixed(2);
         } catch (error) {
@@ -127,9 +137,11 @@ export default function App() {
             const startTime = performance.now();
             xhr.open('POST', `${uploadUrl}?r=${Math.random()}&t=${Date.now()}`, true);
             xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+            
             xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable) onProgress((event.loaded / event.total) * 100);
             };
+            
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     const durationSeconds = (performance.now() - startTime) / 1000;
@@ -142,8 +154,10 @@ export default function App() {
                     reject(new Error(`Server responded with status: ${xhr.status}`));
                 }
             };
+            
             xhr.onerror = () => { onProgress(0); reject(new Error(`Upload failed due to a network error.`)); };
             xhr.onabort = () => { onProgress(0); reject(new Error('Upload test was aborted.')); };
+            
             const payload = new Blob([new Uint8Array(UPLOAD_DATA_SIZE_BYTES)], { type: 'application/octet-stream' });
             xhr.send(payload);
         });
@@ -157,6 +171,9 @@ export default function App() {
         setTestResults(initialResults);
         setOverallProgress(0);
 
+        // **UPDATED**: This variable will track whether to use the large download size.
+        let useLargeDownload = false;
+
         for (let i = 0; i < SERVERS.length; i++) {
             const server = SERVERS[i];
             setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'testing' } : r));
@@ -168,9 +185,17 @@ export default function App() {
                 setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: finalPing } : r));
                 await new Promise(res => setTimeout(res, 200));
 
+                // **UPDATED**: Logic to select download size and check speed after first test.
                 setStatusMessage(`Downloading from ${server.name}...`);
-                finalDownload = await measureDownload(server.downloadUrl, (p) => setCurrentTestProgress(p));
+                const currentDownloadSize = useLargeDownload ? LARGE_DOWNLOAD_SIZE_BYTES : INITIAL_DOWNLOAD_SIZE_BYTES;
+                finalDownload = await measureDownload(server.downloadUrl, currentDownloadSize, (p) => setCurrentTestProgress(p));
                 setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownload } : r));
+                
+                // If it's the first test and the speed is above the threshold, enable large downloads for subsequent tests.
+                if (i === 0 && parseFloat(finalDownload) > FAST_CONNECTION_THRESHOLD_MBPS) {
+                    useLargeDownload = true;
+                    console.log(`Fast connection detected (> ${FAST_CONNECTION_THRESHOLD_MBPS} Mbps). Switching to large downloads.`);
+                }
                 await new Promise(res => setTimeout(res, 200));
 
                 setStatusMessage(`Uploading to ${server.name}...`);
