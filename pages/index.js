@@ -234,7 +234,7 @@ export default function App() {
                 setOverallProgress(((i + 1) / SERVERS.length) * 100);
                 setCurrentTestProgress(0);
             }
-        }
+        };
         setIsTesting(false);
         setStatusMessage('All tests complete!');
     };
