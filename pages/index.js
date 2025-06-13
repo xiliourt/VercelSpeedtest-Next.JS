@@ -41,7 +41,7 @@ const SERVERS = [
 // --- TEST CONFIGURATION ---
 const PING_COUNT = 4;
 const PING_TIMEOUT_MS = 2000;
-const DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
+const DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 10MB
 const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 4MB
 
 // --- Main App Component ---
