@@ -203,7 +203,10 @@ export default function App() {
                     
                     // If it's the first test and the speed is above the threshold, enable large downloads for subsequent tests.
                     if (parseFloat(finalDownload) > FAST_CONNECTION_THRESHOLD_MBPS) {
-                        finalDownload = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                        finalDownloadLarge = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                        if (finalDownloadLarge > finalDownload) {
+                            setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownloadLarge } : r));
+                        }
                     }
                 } catch(error) {
                     console.error(`Download test failed for ${server.name}:`, error);
@@ -221,8 +224,10 @@ export default function App() {
                     
                     if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS) {
                         if (server.maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
-                            finalUpload = await measureUpload(server.uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
-                            setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
+                            finalUploadLarge = await measureUpload(server.uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                            if (finalUploadLarge > finalUpload) {
+                                setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUploadLarge } : r));
+                            }
                         }
                     }
                     setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'complete' } : r));
