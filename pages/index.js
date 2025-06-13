@@ -188,7 +188,7 @@ export default function App() {
                     finalPing = await measurePing(server.pingUrl, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: finalPing } : r));
                 } catch (error) {
-                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: 'error' } : r))
+                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: 'error' } : r));
                     console.error(`Ping test failed for ${server.name}:`, error);
                 }
                 
@@ -206,7 +206,7 @@ export default function App() {
                     }
                 } catch(error) {
                     console.error(`Download test failed for ${server.name}:`, error);
-                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: 'error' } : r))
+                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: 'error' } : r));
                 }
                 
                 await new Promise(res => setTimeout(res, 200));
