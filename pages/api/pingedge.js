@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { get } from '@vercel/edge-config';
 
-export const config = { matcher: '/api/ping' };
+export const config = { matcher: '/api/ping2' };
 
 export async function middleware() {
   const greeting = await get('ok');
