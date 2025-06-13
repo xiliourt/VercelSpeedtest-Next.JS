@@ -35,6 +35,27 @@ jobs:
           push: true
           tags: blurred123131/speedjs:latest
 
+      - name: create new ssh server
+        run: |
+          docker run -d \
+          --name=openssh-server \
+          --hostname=openssh-server \
+          -p 2222:2222 \
+          -e SUDO_ACCESS=false \
+          -e PASSWORD_ACCESS=true  \
+          -e USER_PASSWORD=password  \
+          -e USER_NAME=linuxserver.io \
+          --restart unless-stopped \
+          lscr.io/linuxserver/openssh-server:latest
+          docker exec openssh-server sh -c "hostname -i" > ip.txt
+          echo "REMOTE_HOST<<EOF" >> $GITHUB_ENV
+          cat ip.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          echo "======= container ip address ========="
+          cat ip.txt
+          echo "======================================"
+          sleep 2
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
