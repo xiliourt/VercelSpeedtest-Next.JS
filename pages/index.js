@@ -190,6 +190,7 @@ export default function App() {
                 } catch (error) {
                     setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: 'error' } : r));
                     console.error(`Ping test failed for ${server.name}:`, error);
+                    setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r))
                 }
                 
                 await new Promise(res => setTimeout(res, 200));
@@ -207,6 +208,7 @@ export default function App() {
                 } catch(error) {
                     console.error(`Download test failed for ${server.name}:`, error);
                     setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: 'error' } : r));
+                    setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r))
                 }
                 
                 await new Promise(res => setTimeout(res, 200));
@@ -227,6 +229,7 @@ export default function App() {
                 } catch (error) {
                     console.error(`Upload test failed for ${server.name}:`, error);
                     setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: 'error' } : r));
+                    setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r))
                 }
             } catch (error) {
                 console.error(`Test failed for ${server.name}:`, error);
