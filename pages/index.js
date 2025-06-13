@@ -218,7 +218,7 @@ export default function App() {
                 await new Promise(res => setTimeout(res, 200));
 
                 // Upload Test
-                setStatusMessage(`Uploading ${INITIAL_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
+                setStatusMessage(`Uploading ${(server.maxUpload < INITIAL_UPLOAD_SIZE_BYTES ? server.maxUpload : INITIAL_DOWNLOAD_SIZE_BYTES)}MB to ${server.name}...`);
                 try {
                     finalUpload = await measureUpload(server.uploadUrl, (server.maxUpload < INITIAL_UPLOAD_SIZE_BYTES ? server.maxUpload : INITIAL_DOWNLOAD_SIZE_BYTES), (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
