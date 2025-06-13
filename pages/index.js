@@ -37,12 +37,12 @@ const SERVERS = [
 ];
 
 // --- TEST CONFIGURATION ---
-const PING_COUNT = 4;0
+const PING_COUNT = 4;
 const PING_TIMEOUT_MS = 2000; // 2-second timeout for each ping
 const DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const UPLOAD_DATA_SIZE_BYTES = 4 * 1024 * 1024; // 4MB
 
-export default function InternetSpeedTest() {
+export default function App() {
     const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
     const [statusMessage, setStatusMessage] = useState('Click "Start All Tests" to begin.');
@@ -60,14 +60,13 @@ export default function InternetSpeedTest() {
         })));
     }, []);
 
-    // --- Core Measurement Functions (Refactored to be pure and accept progress callbacks) ---
+    // --- Core Measurement Functions ---
 
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
         const pingProgressIncrement = 100 / PING_COUNT;
 
         for (let i = 0; i < PING_COUNT; i++) {
-            // Use AbortController for fetch timeout
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), PING_TIMEOUT_MS);
             
@@ -77,7 +76,7 @@ export default function InternetSpeedTest() {
                 await fetch(`${pingUrl}?r=${Math.random()}&t=${Date.now()}`, { 
                     method: 'GET', 
                     cache: 'no-store',
-                    signal: controller.signal // Pass the abort signal to fetch
+                    signal: controller.signal
                 });
                 const endTime = performance.now();
                 pings.push(endTime - startTime);
@@ -89,12 +88,10 @@ export default function InternetSpeedTest() {
                 }
                 pings.push(null); // Mark failed or timed-out ping
             } finally {
-                // Important: clear the timeout to prevent it from firing after the fetch has completed
                 clearTimeout(timeoutId);
             }
             
             onProgress( (i + 1) * pingProgressIncrement );
-            // Add a small delay between pings
             if (i < PING_COUNT - 1) await new Promise(resolve => setTimeout(resolve, 200));
         }
 
@@ -137,29 +134,67 @@ export default function InternetSpeedTest() {
             throw error;
         }
     };
-
-    const measureUpload = async (uploadUrl, onProgress) => {
-        try {
-            // Generate a client-side payload
-            const payload = new Blob([new Uint8Array(UPLOAD_DATA_SIZE_BYTES)], { type: 'application/octet-stream' });
-            onProgress(10); // Initial progress
-
+    
+    /**
+     * Measures upload speed to a server using XMLHttpRequest for progress tracking.
+     * @param {string} uploadUrl - The URL to upload the data to.
+     * @param {(progress: number) => void} onProgress - Callback to report progress (0-100).
+     * @returns {Promise<string>} A promise that resolves with the upload speed in Mbps.
+     */
+    const measureUpload = (uploadUrl, onProgress) => {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
             const startTime = performance.now();
-            const response = await fetch(uploadUrl, { method: 'POST', body: payload, headers: { 'Content-Type': 'application/octet-stream' }});
-            onProgress(90); // Most of the time is the transfer
 
-            const durationSeconds = (performance.now() - startTime) / 1000;
-            if (!response.ok) throw new Error(`Server responded with status: ${response.status}`);
-            if (durationSeconds <= 0) throw new Error('Upload test failed (zero duration)');
+            // Open a POST request
+            xhr.open('POST', `${uploadUrl}?r=${Math.random()}&t=${Date.now()}`, true);
+            xhr.setRequestHeader('Content-Type', 'application/octet-stream');
 
-            const speedBps = (UPLOAD_DATA_SIZE_BYTES * 8) / durationSeconds;
-            onProgress(100);
-            return (speedBps / (1000 * 1000)).toFixed(2);
-        } catch (error) {
-            console.error('Upload test failed:', error);
-            onProgress(0);
-            throw error;
-        }
+            // --- Event listener for upload progress ---
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    onProgress(percentComplete);
+                }
+            };
+
+            // --- Event listener for successful completion ---
+            xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const durationSeconds = (performance.now() - startTime) / 1000;
+                    if (durationSeconds <= 0) {
+                        reject(new Error('Upload test failed (zero duration)'));
+                        return;
+                    }
+                    const speedBps = (UPLOAD_DATA_SIZE_BYTES * 8) / durationSeconds;
+                    onProgress(100); // Final progress update
+                    resolve((speedBps / (1000 * 1000)).toFixed(2));
+                } else {
+                    onProgress(0);
+                    reject(new Error(`Server responded with status: ${xhr.status}`));
+                }
+            };
+
+            // --- Event listener for network errors ---
+            xhr.onerror = () => {
+                console.error('Upload test failed:', xhr.statusText);
+                onProgress(0);
+                reject(new Error(`Upload failed due to a network error.`));
+            };
+
+            // --- Event listener for abortion ---
+            xhr.onabort = () => {
+                console.error('Upload aborted.');
+                onProgress(0);
+                reject(new Error('Upload test was aborted.'));
+            };
+
+            // Create a random data payload
+            const payload = new Blob([new Uint8Array(UPLOAD_DATA_SIZE_BYTES)], { type: 'application/octet-stream' });
+            
+            // Send the request
+            xhr.send(payload);
+        });
     };
 
 
@@ -168,18 +203,13 @@ export default function InternetSpeedTest() {
         if (isTesting) return;
         setIsTesting(true);
 
-        // Reset all results to pending state before starting
         const initialResults = SERVERS.map(s => ({ name: s.name, ping: '--', download: '--', upload: '--', status: 'pending' }));
         setTestResults(initialResults);
         setOverallProgress(0);
 
-        // Loop through each server and test it sequentially
         for (let i = 0; i < SERVERS.length; i++) {
             const server = SERVERS[i];
-
-            // Update status for the current server to 'testing'
             setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'testing' } : r));
-
             let finalPing = 'ERR', finalDownload = 'ERR', finalUpload = 'ERR';
 
             try {
@@ -195,20 +225,18 @@ export default function InternetSpeedTest() {
                 setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownload } : r));
                 await new Promise(res => setTimeout(res, 200));
 
-
                 // UPLOAD
                 setStatusMessage(`Uploading to ${server.name}...`);
+                // Note the await here for the promise-based XMLHttpRequest function
                 finalUpload = await measureUpload(server.uploadUrl, (p) => setCurrentTestProgress(p));
                 setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
 
-                // Mark as complete
                 setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'complete' } : r));
 
             } catch (error) {
                 console.error(`Test failed for ${server.name}:`, error);
                 setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r));
             } finally {
-                // Update overall progress after each server test completes or fails
                 setOverallProgress(((i + 1) / SERVERS.length) * 100);
                 setCurrentTestProgress(0);
             }
@@ -281,20 +309,20 @@ export default function InternetSpeedTest() {
                  {/* Controls and Progress Footer */}
                 <div className="mt-8 bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
                      <div className="mb-4">
-                         <p className={`text-center text-sky-300 h-5 transition-opacity duration-300 ${isTesting ? 'opacity-100' : 'opacity-0'}`}>{statusMessage}</p>
-                         <div className={`w-full bg-slate-700 rounded-full h-2 mt-2 overflow-hidden ${isTesting ? 'opacity-100' : 'opacity-0'}`}>
-                             <div className="bg-sky-500 h-2 rounded-full transition-all duration-300 ease-out" style={{ width: `${currentTestProgress}%` }}></div>
-                         </div>
+                          <p className={`text-center text-sky-300 h-5 transition-opacity duration-300 ${isTesting ? 'opacity-100' : 'opacity-0'}`}>{statusMessage}</p>
+                          <div className={`w-full bg-slate-700 rounded-full h-2 mt-2 overflow-hidden ${isTesting ? 'opacity-100' : 'opacity-0'}`}>
+                               <div className="bg-sky-500 h-2 rounded-full transition-all duration-300 ease-linear" style={{ width: `${currentTestProgress}%` }}></div>
+                          </div>
                      </div>
 
                      <div className="mb-4">
-                         <div className="flex justify-between items-center mb-1">
-                             <span className="text-sm font-medium text-slate-300">Overall Progress</span>
-                             <span className="text-sm font-medium text-slate-300">{Math.round(overallProgress)}%</span>
-                         </div>
-                          <div className="w-full bg-slate-700 rounded-full h-2.5">
-                             <div className="bg-green-500 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallProgress}%` }}></div>
-                         </div>
+                          <div className="flex justify-between items-center mb-1">
+                              <span className="text-sm font-medium text-slate-300">Overall Progress</span>
+                              <span className="text-sm font-medium text-slate-300">{Math.round(overallProgress)}%</span>
+                          </div>
+                           <div className="w-full bg-slate-700 rounded-full h-2.5">
+                               <div className="bg-green-500 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallProgress}%` }}></div>
+                          </div>
                      </div>
 
                     <button
