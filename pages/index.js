@@ -196,14 +196,14 @@ export default function App() {
                 await new Promise(res => setTimeout(res, 200));
 
                 // Download Test
-                setStatusMessage(`Downloading ${INITIAL_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}... )`);
+                setStatusMessage(`Downloading ${INITIAL_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                 try {
                     finalDownload = await measureDownload(server.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownload } : r));
                     
                     // If it's the first test and the speed is above the threshold, enable large downloads for subsequent tests.
                     if (parseFloat(finalDownload) > FAST_CONNECTION_THRESHOLD_MBPS) {
-                        setStatusMessage(`Downloading ${LARGE_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}... )`);
+                        setStatusMessage(`Downloading ${LARGE_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                         finalDownloadLarge = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                         if (finalDownloadLarge > finalDownload) {
                             setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownloadLarge } : r));
