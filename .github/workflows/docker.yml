@@ -43,7 +43,7 @@ jobs:
         with:
           host: '160.22.78.169'
           username: 'root'
-          key: ${{ secrets.DEPLOY_KEY }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
           script: |
             docker pull blurred123131/speedjs:latest
             docker compose up -d
