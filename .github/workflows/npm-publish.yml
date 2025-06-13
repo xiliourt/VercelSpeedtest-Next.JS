@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 20
       - run: npm audit fix
-      - run: npm i --package-lock-only
+      - run: npm install --save
       - run: npm ci
       - run: npm test
 
