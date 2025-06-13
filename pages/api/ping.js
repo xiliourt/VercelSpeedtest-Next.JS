@@ -15,8 +15,6 @@ export const config = {
   }
 };
 
-export const config = {
-
 export default function handler(req) {
   // On the Edge, the 'req' object is a standard Request object.
   // 'res' is not passed; you return a Response object.
