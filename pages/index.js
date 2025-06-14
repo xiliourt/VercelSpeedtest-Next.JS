@@ -28,6 +28,7 @@ const ExclamationTriangleIcon = () => (
 
 // --- SERVER CONFIGURATION ---
 const SERVERS = [
+    { name: 'Azure', pingUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/ping', downloadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/download', uploadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/upload', maxUpload: '107374182400' },
     { name: 'Vercel', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload', maxUpload: '4194304'},
     { name: 'Render', pingUrl: 'https://js.render.dyl.ovh/api/ping', downloadUrl: 'https://js.render.dyl.ovh/api/download', uploadUrl: 'https://js.render.dyl.ovh/api/upload', maxUpload: '107374182400'},
     { name: 'Netlify', pingUrl: 'https://js.netlify.dyl.ovh/api/ping', downloadUrl: 'https://js.netlify.dyl.ovh/api/download', uploadUrl: 'https://js.netlify.dyl.ovh/api/upload', maxUpload: '4194304'},
@@ -36,6 +37,7 @@ const SERVERS = [
     { name: 'Sydney, AU (via CF)', pingUrl: 'https://jsscf.dyl.ovh/api/ping', downloadUrl: 'https://jsscf.dyl.ovh/api/download', uploadUrl: 'https://jsscf.dyl.ovh/api/upload', maxUpload: '107374182400' },
     { name: 'Stockholm (Hosthatch)', pingUrl: 'https://js.sto.dyl.ovh/api/ping', downloadUrl: 'https://js.sto.dyl.ovh/api/download', uploadUrl: 'https://js.sto.dyl.ovh/api/upload', maxUpload: '107374182400' },
     { name: 'Stockholm (via CF)', pingUrl: 'https://jsstocf.dyl.ovh/api/ping', downloadUrl: 'https://jsstocf.dyl.ovh/api/download', uploadUrl: 'https://jsstocf.dyl.ovh/api/upload', maxUpload: '107374182400' }
+    
 ];
 
 // --- TEST CONFIGURATION ---
