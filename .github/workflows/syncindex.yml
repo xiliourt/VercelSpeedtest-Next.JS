@@ -3,8 +3,7 @@ name: Push generated index page to another repository
 on:
   push:
     branches: [ "main" ]
-    paths-ignore:
-      - '/**'
+    paths:
       - '!pages/index.js'
 jobs:
    sync:
