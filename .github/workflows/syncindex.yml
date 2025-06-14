@@ -49,4 +49,4 @@ jobs:
         destination-directory: '/'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-        step: 'api'
+        step: 'style'
