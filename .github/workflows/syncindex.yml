@@ -1,4 +1,4 @@
-name: Docker Image build
+name: Push generated index page to another repository
 
 on:
   push:
@@ -6,15 +6,13 @@ on:
     paths-ignore:
       - '/**'
       - '!pages/index.js'
-jobs:
-  sync:
-    - name: Push generated index page to another repository
-      uses: nkoppel/push-files-to-another-repository@v1.1.4
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-          source-files: '/pages/index.js'
-          destination-username: 'xiliout'
-          destination-repository: 'https://github.com/xiliourt/CFPages-Speedtest-NextJS'
-          destination-directory: '/pages/'
-          commit-email: 'nathankoppel0@gmail.com'
+      
+    uses: nkoppel/push-files-to-another-repository@v1.1.4
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+            source-files: '/pages/index.js'
+            destination-username: 'xiliout'
+            destination-repository: 'https://github.com/xiliourt/CFPages-Speedtest-NextJS'
+            destination-directory: '/pages/'
+            commit-email: 'nathankoppel0@gmail.com'
