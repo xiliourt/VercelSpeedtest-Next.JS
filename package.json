@@ -7,7 +7,6 @@
     "start": "next start",
     "lint": "next lint",
     "startAzure": "./node_modules/next/dist/bin/next start"
-}
   },
   "dependencies": {
     "next": "14.2.3",
