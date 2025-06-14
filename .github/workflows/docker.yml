@@ -6,11 +6,19 @@ on:
     paths-ignore:
       - 'README.md'
       - '.github/**'
+      - 'fly.toml'
+      - '.vercalignore'
+      - '.dockerignore'
+      -  'host.json'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - 'README.md'
       - '.github/**'
+      - 'fly.toml'
+      - '.vercalignore'
+      - '.dockerignore'
+      -  'host.json'
 
 jobs:
   build:
