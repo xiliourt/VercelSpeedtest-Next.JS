@@ -2,8 +2,6 @@
 export const runtime = 'edge'; 
 export const config = {
   runtime: 'edge',
-  // bodyParser is not a valid config for Edge Runtime.
-  // You handle the body stream directly.
 };
 
 export default async function handler(req) {
