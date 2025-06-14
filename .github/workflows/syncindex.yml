@@ -18,7 +18,7 @@ jobs:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
         source-files: '/pages/index.js'
-        destination-username: 'xiliout'
+        destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
         destination-directory: '/pages'
         commit-email: 'xiliout@xilout'
