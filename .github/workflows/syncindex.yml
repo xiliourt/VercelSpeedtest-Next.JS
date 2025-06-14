@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Push generated index page
-      uses: nkoppel/push-files-to-another-repository@v1.1.4
+      uses: xiliourt/push-files-to-another-repository@latest
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
@@ -28,7 +28,7 @@ jobs:
       run: rm -rf repo
       
     - name: Push API
-      uses: nkoppel/push-files-to-another-repository@v1.1.4
+      uses: xiliourt/push-files-to-another-repository@latest
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
@@ -43,7 +43,7 @@ jobs:
       run: rm -rf repo
       
     - name: Sync Style
-      uses: nkoppel/push-files-to-another-repository@v1.1.4
+      uses: xiliourt/push-files-to-another-repository@latest
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
