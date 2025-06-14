@@ -16,6 +16,7 @@ function generateRandomChunk(size) {
   return buffer;
 }
 
+
 export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
   // We need to parse query parameters from the URL.
