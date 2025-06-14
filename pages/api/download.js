@@ -1,3 +1,5 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+
 // pages/api/ping.js
 export const runtime = 'edge'; 
 
@@ -5,6 +7,11 @@ export const runtime = 'edge';
 export const config = {
   runtime: 'edge',
 };
+ 
+export default function handler(
+  request: NextApiRequest,
+  response: NextApiResponse,
+)
 
 // Function to generate a chunk of random data as Uint8Array
 function generateRandomChunk(size) {
@@ -33,7 +40,8 @@ export default async function handler(req) {
     'Surrogate-Control': 'no-store',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET',
-    'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization'
+    'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
+    'Cache-Control': 'public, s-maxage=3600, max-age=3600'
   };
 
   let bytesSent = 0;
