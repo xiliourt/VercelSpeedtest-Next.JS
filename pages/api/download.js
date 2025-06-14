@@ -1,75 +1,63 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-
-// pages/api/ping.js
-export const runtime = 'edge'; 
-
-// Configure this API route to run on the Edge Runtime
 export const config = {
   runtime: 'edge',
 };
- 
-export default function handler(
-  request: NextApiRequest,
-  response: NextApiResponse,
-)
 
-// Function to generate a chunk of random data as Uint8Array
-function generateRandomChunk(size) {
-  // Create a buffer of the specified size.
-  const buffer = new Uint8Array(size);
-  // Use the Web Crypto API to fill the buffer with random values.
-  // This is a single, fast operation.
-  crypto.getRandomValues(buffer);
-  return buffer;
-}
+// This is the main handler for the API route.
+// It handles requests to /api/junk
+export default function handler(req) {
+  
+  // Get the target download size in megabytes from the URL query parameters.
+  // Example: /api/junk?size=100 for a 100MB file.
+  // It defaults to 10MB if no size is specified.
+  const { searchParams } = new URL(req.url);
+  const totalSizeInBytes = parseInt(searchParams.get('size'), (10 * 1024 * 1024)) || (10 * 1024 * 1024);
 
-export default async function handler(req) {
-  // In the Edge Runtime, req is a standard Request object.
-  // We need to parse query parameters from the URL.
-  const url = new URL(req.url);
-  const requestedSize = parseInt(url.searchParams.get('size')) || (10 * 1024 * 1024); // Default to 10MB
-  const chunkSize = 64 * 1024; // 64KB chunks
-
-  const headers = {
-    'Content-Type': 'application/octet-stream',
-    'Content-Disposition': 'attachment; filename="download.dat"',
-    'Content-Length': requestedSize.toString(),
-    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-    'Surrogate-Control': 'no-store',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET',
-    'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
-    'Cache-Control': 'public, s-maxage=3600, max-age=3600'
-  };
+  // We will generate the data in chunks. This is the size of each chunk in bytes.
+  // 64KB is a reasonable size that balances memory usage and performance.
+  const chunkSize = 64 * 1024; // 64KB
 
   let bytesSent = 0;
 
+  // A ReadableStream is used to generate data on the fly.
+  // This is highly memory-efficient as the entire file is never stored in memory.
   const stream = new ReadableStream({
-    async pull(controller) {
-      if (bytesSent >= requestedSize) {
-        controller.close();
-        return;
+    start(controller) {
+      // This function is called when the stream is first read from.
+      function push() {
+        // If we've sent enough data, we close the stream.
+        if (bytesSent >= totalSizeInBytes) {
+          controller.close();
+          return;
+        }
+
+        // Determine the size of the next chunk to send.
+        const chunk = new Uint8Array(Math.min(chunkSize, totalSizeInBytes - bytesSent));
+        
+        // Fill the chunk with cryptographically secure random values.
+        // This is fast and provides a good source of "junk" data.
+        crypto.getRandomValues(chunk);
+
+        // Add the chunk to the stream's queue.
+        controller.enqueue(chunk);
+        bytesSent += chunk.length;
+        
+        // Continue pushing data immediately. The stream will handle backpressure.
+        push();
       }
 
-      const bytesRemaining = requestedSize - bytesSent;
-      const currentChunkSize = Math.min(chunkSize, bytesRemaining);
-      
-      try {
-        const chunk = generateRandomChunk(currentChunkSize);
-        controller.enqueue(chunk);
-        bytesSent += currentChunkSize;
-      } catch (error) {
-        console.error("Error generating or enqueuing chunk:", error);
-        controller.error(error); // Signal an error to the stream
-      }
+      // Start the data generation process.
+      push();
     },
-    cancel(reason) {
-      console.log('Download stream cancelled by client.', reason);
-      // Perform any cleanup here if necessary
-    }
   });
 
+  // Set the response headers to trigger a file download in the browser.
+  const headers = {
+    'Content-Type': 'application/octet-stream',
+    'Content-Disposition': `attachment; filename="junk-${sizeMB}mb.dat"`,
+    // We can't set Content-Length reliably with a dynamic stream,
+    // but the browser will handle it as the data arrives.
+  };
+
+  // Return the stream as the response.
   return new Response(stream, { headers });
 }
