@@ -19,15 +19,11 @@ export default async function handler(req) {
       // Consume the stream to simulate receiving the upload
       // The client measures the time it takes to send this data.
       const reader = req.body.getReader();
-      let receivedBytes = 0;
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
         if (done) {
           break;
-        }
-        if (value) {
-            receivedBytes += value.length;
         }
       }
       // console.log(`Upload API (Edge): Consumed ${receivedBytes} bytes.`);
