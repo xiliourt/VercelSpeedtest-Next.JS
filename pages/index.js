@@ -80,7 +80,7 @@ export default function App() {
             const timeoutId = setTimeout(() => controller.abort(), PING_TIMEOUT_MS);
             const startTime = performance.now();
             try {
-                await fetch(`${pingUrl}?r=${Math.random()}&t=${Date.now()}`, { method: 'GET', cache: 'no-store', signal: controller.signal });
+                await fetch(`${pingUrl}`, { method: 'GET', cache: 'no-store', signal: controller.signal });
                 const endTime = performance.now();
                 pings.push(endTime - startTime);
             } catch (error) {
