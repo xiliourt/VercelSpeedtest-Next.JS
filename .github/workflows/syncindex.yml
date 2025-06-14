@@ -4,16 +4,17 @@ on:
   push:
     branches: [ "main" ]
     paths-ignore:
-      - '/**',
+      - '/**'
       - '!pages/index.js'
-
- - name: Push generated index page to another repository
-        uses: nkoppel/push-files-to-another-repository@v1.1.4
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-        with:
-          source-files: '/pages/index.js'
-          destination-username: 'xiliout'
-          destination-repository: 'https://github.com/xiliourt/CFPages-Speedtest-NextJS'
-          destination-directory: '/pages/'
-          commit-email: 'nathankoppel0@gmail.com'
+jobs:
+  sync:
+    - name: Push generated index page to another repository
+      uses: nkoppel/push-files-to-another-repository@v1.1.4
+          env:
+            API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          with:
+            source-files: '/pages/index.js'
+            destination-username: 'xiliout'
+            destination-repository: 'https://github.com/xiliourt/CFPages-Speedtest-NextJS'
+            destination-directory: '/pages/'
+            commit-email: 'nathankoppel0@gmail.com'
