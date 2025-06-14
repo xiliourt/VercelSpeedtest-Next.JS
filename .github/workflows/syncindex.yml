@@ -19,6 +19,6 @@ jobs:
       with:
         source-files: '/pages/index.js'
         destination-username: 'xiliout'
-        destination-repository: 'https://github.com/xiliourt/CFPages-Speedtest-NextJS'
+        destination-repository: 'CFPages-Speedtest-NextJS'
         destination-directory: '/pages'
         commit-email: 'xiliout@xilout'
