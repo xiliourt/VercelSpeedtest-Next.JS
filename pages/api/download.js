@@ -6,8 +6,6 @@ export const config = { runtime: 'edge', };
 function generateRandomChunk(size) {
   // Create a buffer of the specified size.
   const buffer = new Uint8Array(size);
-  // Use the Web Crypto API to fill the buffer with random values.
-  // This is a single, fast operation.
   crypto.getRandomValues(buffer);
   return buffer;
 }
