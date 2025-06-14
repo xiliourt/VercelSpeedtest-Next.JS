@@ -9,6 +9,10 @@ on:
     paths-ignore:
       - 'README.md'
       - '.github/**'
+      - 'fly.toml'
+      - '.vercalignore'
+      - '.dockerignore'
+      -  'host.json'
   workflow_dispatch:
 
 jobs:
