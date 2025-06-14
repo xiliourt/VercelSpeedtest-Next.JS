@@ -1,2 +1,3 @@
 .github/*
 .npm/*
+.fly.toml
