@@ -70,7 +70,6 @@ export default function App() {
     }, []);
 
     // --- Core Measurement Functions ---
-
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
         const pingProgressIncrement = 100 / PING_COUNT;
