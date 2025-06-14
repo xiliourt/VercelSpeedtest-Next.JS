@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "next build"
+    "startAzure": "./node_modules/next/dist/bin/next start"
 }
   },
   "dependencies": {
