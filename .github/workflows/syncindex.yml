@@ -44,7 +44,7 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source-files: '/styles, postcss.config.js'
+        source-files: 'styles/*, postcss.config.js'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
         destination-directory: ''
