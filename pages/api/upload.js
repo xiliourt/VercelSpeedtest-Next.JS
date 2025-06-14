@@ -1,7 +1,5 @@
 // pages/api/upload.js
 export const runtime = 'edge'; 
-
-// Configure this API route to run on the Edge Runtime
 export const config = {
   runtime: 'edge',
   // bodyParser is not a valid config for Edge Runtime.
