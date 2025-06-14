@@ -49,6 +49,7 @@ const SERVERS = [
     { name: 'Render', pingUrl: 'https://js.render.dyl.ovh/api/ping', downloadUrl: 'https://js.render.dyl.ovh/api/download', uploadUrl: 'https://js.render.dyl.ovh/api/upload', maxUpload: '107374182400'},
     { name: 'Netlify', pingUrl: 'https://js.netlify.dyl.ovh/api/ping', downloadUrl: 'https://js.netlify.dyl.ovh/api/download', uploadUrl: 'https://js.netlify.dyl.ovh/api/upload', maxUpload: '4194304'},
     { name: 'Cloudflare', pingUrl: 'https://js.cf.dyl.ovh/api/ping', downloadUrl: 'https://js.cf.dyl.ovh/api/download', uploadUrl: 'https://js.cf.dyl.ovh/api/upload', maxUpload: '107374182400' },
+    { name: 'Germany (Hostbrr Storage)', pingUrl: 'https://speeddirect.xiliourt.ovh/api/ping/', downloadUrl: 'https://speeddirect.xiliourt.ovh/api/download', uploadUrl: 'https://speeddirect.xiliourt.ovh/api/upload', maxUpload: '107374182400' },
     { name: 'Sydney, AU (Onidel)', pingUrl: 'https://js.s.dyl.ovh/api/ping', downloadUrl: 'https://js.s.dyl.ovh/api/download', uploadUrl: 'https://js.s.dyl.ovh/api/upload', maxUpload: '107374182400' },
     { name: 'Sydney, AU (via CF)', pingUrl: 'https://jsscf.dyl.ovh/api/ping', downloadUrl: 'https://jsscf.dyl.ovh/api/download', uploadUrl: 'https://jsscf.dyl.ovh/api/upload', maxUpload: '107374182400' },
     { name: 'Stockholm (Hosthatch)', pingUrl: 'https://js.sto.dyl.ovh/api/ping', downloadUrl: 'https://js.sto.dyl.ovh/api/download', uploadUrl: 'https://js.sto.dyl.ovh/api/upload', maxUpload: '107374182400' },
