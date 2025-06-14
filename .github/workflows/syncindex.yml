@@ -24,7 +24,9 @@ jobs:
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
 
-    - run: rm -rf repo
+    - name: Clear repo
+      run: rm -rf repo
+      
     - name: Push API
       uses: nkoppel/push-files-to-another-repository@v1.1.4
       env:
@@ -37,7 +39,9 @@ jobs:
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
 
-    - run: rm -rf repo
+    - name: Clear repo
+      run: rm -rf repo
+      
     - name: Sync Style
       uses: nkoppel/push-files-to-another-repository@v1.1.4
       env:
