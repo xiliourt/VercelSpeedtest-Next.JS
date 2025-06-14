@@ -5,10 +5,8 @@ name: Build and deploy Node.js app to Azure Web App - speedjstest
 
 on:
   push:
-    branches: [ "main" ]
-    paths-ignore:
-      - 'README.md'
-      - '.github/**'
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -27,15 +25,12 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm i --package-lock-only
           npm install
-          npm run build
+          npm run build --if-present
+          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
-
-      - name: Add .next folder
-        run: zip -r release.zip ".next"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -65,9 +60,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_740A47C8591C40778F991D4DA069DD62 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_3FDAF15450E541AB97068E64E3274BAD }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A76C86E9FA7E440BBC01217332E01BD4 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A940D0FFA20C4F928C0739E11E89D550 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_AE18E4B494BC42CC82390722D3CD8FA0 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B377EEA9715B4D9E90C5BC4886745BF2 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
