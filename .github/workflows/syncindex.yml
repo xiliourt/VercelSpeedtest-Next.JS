@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - '/**',
-      = '!pages/index.js'
+      - '!pages/index.js'
 
  - name: Push generated index page to another repository
         uses: nkoppel/push-files-to-another-repository@v1.1.4
