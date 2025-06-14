@@ -55,14 +55,6 @@ body {
   background-color: theme('colors.sky.400');
 }
 
-/* For Firefox scrollbar styling (more limited than Webkit) */
-/*
-html {
-  scrollbar-width: thin;
-  /* scrollbar-color: theme('colors.sky.500') theme('colors.slate.800'); */
-/*}
-*/
-
 *:focus-visible {
   outline: 2px solid theme('colors.sky.400');
   outline-offset: 2px;
