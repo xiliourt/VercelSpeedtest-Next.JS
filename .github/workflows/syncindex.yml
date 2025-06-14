@@ -21,4 +21,5 @@ jobs:
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
         destination-directory: '/pages'
+        destination-branch: 'main'
         commit-email: 'xiliout@xilout'
