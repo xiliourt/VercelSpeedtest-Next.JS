@@ -46,7 +46,7 @@ const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
 const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 100MB
 const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
 const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024; // 25MB
-const FAST_CONNECTION_THRESHOLD_MBPS = 25; // Speed threshold to trigger larger downloads
+const FAST_CONNECTION_THRESHOLD_MBPS = 50; // Speed threshold to trigger larger downloads
 const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10; // Speed threshold to trigger larger downloads
 
 
