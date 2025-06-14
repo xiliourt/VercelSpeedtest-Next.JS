@@ -23,9 +23,6 @@ jobs:
         destination-directory: '/functions'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-
-    - name: Clear repo
-      run: rm -rf repo
       
     - name: Push API
       uses: xiliourt/push-files-to-another-repository@latest
@@ -38,9 +35,6 @@ jobs:
         destination-directory: 'functions/api'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-
-    - name: Clear repo
-      run: rm -rf repo
       
     - name: Sync Style
       uses: xiliourt/push-files-to-another-repository@latest
