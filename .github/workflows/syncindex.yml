@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - 'pages/**'
+      - 'styles/*'
 jobs:
    sync:
     name: Push generated index page to another repository
@@ -32,5 +33,29 @@ jobs:
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
         destination-directory: 'functions/'
+        destination-branch: 'main'
+        commit-email: 'xiliout@xilout'
+
+    - name: Sync Style
+      uses: nkoppel/push-files-to-another-repository@v1.1.4
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source-files: 'styles/'
+        destination-username: 'xiliourt'
+        destination-repository: 'CFPages-Speedtest-NextJS'
+        destination-directory: 'styles/'
+        destination-branch: 'main'
+        commit-email: 'xiliout@xilout'
+
+    - name: Sync Style Postcss
+      uses: nkoppel/push-files-to-another-repository@v1.1.4
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source-files: 'postcss.config.js'
+        destination-username: 'xiliourt'
+        destination-repository: 'CFPages-Speedtest-NextJS'
+        destination-directory: '/'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
