@@ -8,7 +8,7 @@ on:
       - 'styles/*'
 jobs:
    sync:
-    name: Push generated index page to another repository
+    name: Sync Cloudflare Repo
     runs-on: ubuntu-latest
 
     steps:
