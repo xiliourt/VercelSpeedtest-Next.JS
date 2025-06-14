@@ -29,10 +29,10 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source-files: 'pages/api'
+        source-files: 'pages/api/*'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: 'functions/'
+        destination-directory: 'functions/api'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
 
@@ -41,19 +41,7 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source-files: 'styles/'
-        destination-username: 'xiliourt'
-        destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: '/'
-        destination-branch: 'main'
-        commit-email: 'xiliout@xilout'
-
-    - name: Sync Style Postcss
-      uses: nkoppel/push-files-to-another-repository@v1.1.4
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source-files: 'postcss.config.js'
+        source-files: 'styles/, postcss.config.js'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
         destination-directory: '/'
