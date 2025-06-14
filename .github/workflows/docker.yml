@@ -43,3 +43,13 @@ jobs:
           script: |
             docker pull blurred123131/speedjs:latest
             docker compose up -d
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: '1176.126.84.41'
+          username: 'root'
+          password: ${{ secrets.DEPLOY_PASSWORD2 }}
+          script: |
+            docker pull blurred123131/speedjs:latest
+            cd plex && docker compose up -d
