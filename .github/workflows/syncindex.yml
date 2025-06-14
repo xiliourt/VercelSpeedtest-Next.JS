@@ -17,8 +17,8 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source-files: 'webpage/'
-        destination-username: 'nkoppel'
-        destination-repository: 'nkoppel.github.io'
-        destination-directory: 'projects/my-project'
-        commit-email: 'nathankoppel0@gmail.com'
+        source-files: '/pages/index.js'
+        destination-username: 'xiliout'
+        destination-repository: 'https://github.com/xiliourt/CFPages-Speedtest-NextJS'
+        destination-directory: '/pages'
+        commit-email: 'xiliout@xilout'
