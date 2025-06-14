@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+// --- Icon Components ---
+
 const PlayIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
         <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
@@ -25,6 +27,22 @@ const ExclamationTriangleIcon = () => (
     </svg>
 );
 
+// --- **NEW** Icons for selection ---
+const CheckboxCheckedIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-sky-400">
+        <path fillRule="evenodd" d="M8.25 12a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V13.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M12.75 12a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V13.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
+    </svg>
+);
+
+const CheckboxUncheckedIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-slate-500 hover:text-slate-400">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+);
+
+
 // --- SERVER CONFIGURATION ---
 const SERVERS = [
     { name: 'Azure', pingUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/ping', downloadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/download', uploadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/upload', maxUpload: '107374182400' },
@@ -35,26 +53,28 @@ const SERVERS = [
     { name: 'Sydney, AU (Onidel)', pingUrl: 'https://js.s.dyl.ovh/api/ping', downloadUrl: 'https://js.s.dyl.ovh/api/download', uploadUrl: 'https://js.s.dyl.ovh/api/upload', maxUpload: '107374182400' },
     { name: 'Sydney, AU (via CF)', pingUrl: 'https://jsscf.dyl.ovh/api/ping', downloadUrl: 'https://jsscf.dyl.ovh/api/download', uploadUrl: 'https://jsscf.dyl.ovh/api/upload', maxUpload: '107374182400' },
     { name: 'Stockholm (Hosthatch)', pingUrl: 'https://js.sto.dyl.ovh/api/ping', downloadUrl: 'https://js.sto.dyl.ovh/api/download', uploadUrl: 'https://js.sto.dyl.ovh/api/upload', maxUpload: '107374182400' },
-    { name: 'Stockholm (via CF)', pingUrl: 'https://jsstocf.dyl.ovh/api/ping', downloadUrl: 'https://jsstocf.dyl.ovh/api/download', uploadUrl: 'https://jsstocf.dyl.ovh/api/upload', maxUpload: '107374182400' }];
+    { name: 'Stockholm (via CF)', pingUrl: 'https://jsstocf.dyl.ovh/api/ping', downloadUrl: 'https://jsstocf.dyl.ovh/api/download', uploadUrl: 'https://jsstocf.dyl.ovh/api/upload', maxUpload: '107374182400' }
+];
 
 // --- TEST CONFIGURATION ---
 const PING_COUNT = 4;
 const PING_TIMEOUT_MS = 2000;
-// **UPDATED**: Added two download sizes and a threshold for switching between them.
-const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
-const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 100MB
-const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 50MB
+const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
+const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024; // 25MB
-const FAST_CONNECTION_THRESHOLD_MBPS = 50; // Speed threshold to trigger larger downloads
-const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10; // Speed threshold to trigger larger downloads
+const FAST_CONNECTION_THRESHOLD_MBPS = 50;
+const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10;
 
 // --- Main App Component ---
 export default function App() {
     const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
-    const [statusMessage, setStatusMessage] = useState('Click "Start All Tests" to begin.');
+    const [statusMessage, setStatusMessage] = useState('Select servers and click "Start Tests" to begin.');
     const [currentTestProgress, setCurrentTestProgress] = useState(0);
     const [overallProgress, setOverallProgress] = useState(0);
+    // **NEW**: State to manage which servers are selected for testing.
+    const [selectedServers, setSelectedServers] = useState(() => new Set(SERVERS.map(s => s.name)));
 
     // Initialize results on component mount
     useEffect(() => {
@@ -67,7 +87,21 @@ export default function App() {
         })));
     }, []);
 
-    // --- Core Measurement Functions ---
+    // **NEW**: Handler to toggle a server's selected state
+    const handleToggleServer = (serverName) => {
+        if (isTesting) return; // Prevent changes during a test run
+        setSelectedServers(prevSelected => {
+            const newSelected = new Set(prevSelected);
+            if (newSelected.has(serverName)) {
+                newSelected.delete(serverName);
+            } else {
+                newSelected.add(serverName);
+            }
+            return newSelected;
+        });
+    };
+    
+    // --- Core Measurement Functions (unchanged) ---
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
         const pingProgressIncrement = 100 / PING_COUNT;
@@ -98,11 +132,9 @@ export default function App() {
         }
     };
 
-    // **UPDATED**: The function now accepts `downloadSize` as a parameter.
     const measureDownload = async (downloadUrl, downloadSize, onProgress) => {
         const startTime = performance.now();
         try {
-            // Use the passed `downloadSize` in the request URL.
             const response = await fetch(`${downloadUrl}?size=${downloadSize}&r=${Math.random()}&t=${Date.now()}`, { cache: 'no-store' });
             if (!response.ok || !response.body) throw new Error(`Server error: ${response.status} ${response.statusText}`);
             
@@ -113,7 +145,6 @@ export default function App() {
                 const { done, value } = await reader.read();
                 if (done) break;
                 receivedLength += value.length;
-                // Calculate progress based on the current `downloadSize`.
                 onProgress((receivedLength / downloadSize) * 100);
             }
             
@@ -163,29 +194,48 @@ export default function App() {
         });
     };
 
-    // --- Main Test Orchestration ---
+    // --- **UPDATED** Main Test Orchestration ---
     const startAllTests = async () => {
         if (isTesting) return;
+        
+        // **UPDATED**: Filter servers based on selection
+        const serversToTest = SERVERS.filter(s => selectedServers.has(s.name));
+        
+        if (serversToTest.length === 0) {
+            setStatusMessage("Please select at least one server to test.");
+            return;
+        }
+
         setIsTesting(true);
-        const initialResults = SERVERS.map(s => ({ name: s.name, ping: '--', download: '--', upload: '--', status: 'pending' }));
-        setTestResults(initialResults);
+        // **UPDATED**: Reset results only for the selected servers
+        setTestResults(prevResults => prevResults.map(res => {
+            if (selectedServers.has(res.name)) {
+                return { ...res, ping: '--', download: '--', upload: '--', status: 'pending' };
+            }
+            return res;
+        }));
         setOverallProgress(0);
 
-        for (let i = 0; i < SERVERS.length; i++) {
-            const server = SERVERS[i];
-            setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'testing' } : r));
-            let finalPing = 'ERR', finalDownload = 'ERR', finalUpload = 'ERR', finalUploadLarge = 0, finalDownloadLarge = 0;
+        // **UPDATED**: Loop through only the selected servers
+        for (let i = 0; i < serversToTest.length; i++) {
+            const server = serversToTest[i];
+            // **UPDATED**: Find the original index to update the correct row in the UI
+            const originalIndex = SERVERS.findIndex(s => s.name === server.name);
+
+            setTestResults(prev => prev.map((r, index) => index === originalIndex ? { ...r, status: 'testing' } : r));
+            
+            let finalDownload = 'ERR', finalUpload = 'ERR';
 
             try {
                 // Ping
                 setStatusMessage(`Pinging ${server.name}...`);
                 try {
-                    finalPing = await measurePing(server.pingUrl, (p) => setCurrentTestProgress(p));
-                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: finalPing } : r));
+                    const finalPing = await measurePing(server.pingUrl, (p) => setCurrentTestProgress(p));
+                    setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, ping: finalPing } : r));
                 } catch (error) {
-                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, ping: 'error' } : r));
+                    setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, ping: 'ERR', status: 'error' } : r));
                     console.error(`Ping test failed for ${server.name}:`, error);
-                    setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r))
+                    continue; // Skip to next server if ping fails
                 }
                 
                 await new Promise(res => setTimeout(res, 200));
@@ -194,65 +244,78 @@ export default function App() {
                 setStatusMessage(`Downloading ${INITIAL_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                 try {
                     finalDownload = await measureDownload(server.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
-                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownload } : r));
+                    setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: finalDownload } : r));
                     
-                    // If it's the first test and the speed is above the threshold, enable large downloads for subsequent tests.
                     if (parseFloat(finalDownload) > FAST_CONNECTION_THRESHOLD_MBPS) {
                         setStatusMessage(`Downloading ${LARGE_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
-                        finalDownloadLarge = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
-                        if (finalDownloadLarge > finalDownload) {
-                            setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: finalDownloadLarge } : r));
+                        const finalDownloadLarge = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                        if (parseFloat(finalDownloadLarge) > parseFloat(finalDownload)) {
+                            setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: finalDownloadLarge } : r));
                         }
                     }
                 } catch(error) {
                     console.error(`Download test failed for ${server.name}:`, error);
-                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, download: 'error' } : r));
-                    setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r))
+                    setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: 'ERR', status: 'error' } : r));
                 }
                 
                 await new Promise(res => setTimeout(res, 200));
 
                 // Upload Test
-                setStatusMessage(`Uploading ${(server.maxUpload < INITIAL_UPLOAD_SIZE_BYTES ? server.maxUpload : INITIAL_DOWNLOAD_SIZE_BYTES) / 1024 / 1024}MB to ${server.name}...`);
+                const initialUploadSize = Math.min(INITIAL_UPLOAD_SIZE_BYTES, server.maxUpload);
+                setStatusMessage(`Uploading ${initialUploadSize / 1024 / 1024}MB to ${server.name}...`);
                 try {
-                    finalUpload = await measureUpload(server.uploadUrl, (server.maxUpload < INITIAL_UPLOAD_SIZE_BYTES ? server.maxUpload : INITIAL_DOWNLOAD_SIZE_BYTES), (p) => setCurrentTestProgress(p));
-                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUpload } : r));
+                    finalUpload = await measureUpload(server.uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
+                    setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUpload } : r));
                     
-                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS) {
-                        if (server.maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
-                            setStatusMessage(`Uploading to ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
-                            finalUploadLarge = await measureUpload(server.uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
-                            if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
-                                setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: finalUploadLarge } : r));
-                            }
-                        }
+                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && server.maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
+                         setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
+                         const finalUploadLarge = await measureUpload(server.uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                         if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
+                             setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUploadLarge } : r));
+                         }
                     }
-                    setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'complete' } : r));
                 } catch (error) {
                     console.error(`Upload test failed for ${server.name}:`, error);
-                    setTestResults(prev => prev.map((r, idx) => idx === i ? { ...r, upload: 'error' } : r));
-                    setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r))
+                    setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'ERR', status: 'error' } : r));
                 }
+
+                // Mark as complete if no errors occurred in the process
+                setTestResults(prev => prev.map((r, idx) => {
+                    if (idx === originalIndex && r.status !== 'error') {
+                        return { ...r, status: 'complete' };
+                    }
+                    return r;
+                }));
+
             } catch (error) {
                 console.error(`Test failed for ${server.name}:`, error);
-                setTestResults(prev => prev.map((r, index) => index === i ? { ...r, status: 'error' } : r));
+                setTestResults(prev => prev.map((r, index) => index === originalIndex ? { ...r, status: 'error' } : r));
             } finally {
-                setOverallProgress(((i + 1) / SERVERS.length) * 100);
+                // **UPDATED**: Calculate progress based on the number of selected servers
+                setOverallProgress(((i + 1) / serversToTest.length) * 100);
                 setCurrentTestProgress(0);
             }
         };
         setIsTesting(false);
-        setStatusMessage('All tests complete!');
+        setStatusMessage('All selected tests complete!');
     };
 
-    // --- Result Row Sub-component for better organization ---
-    const ResultRow = ({ result }) => {
+    // --- **UPDATED** Result Row Sub-component ---
+    const ResultRow = ({ result, isSelected, onToggle, isTestingGlobal }) => {
         const isTestingThis = result.status === 'testing';
         const isComplete = result.status === 'complete';
         const isError = result.status === 'error';
-        const isPending = result.status === 'pending';
         
         const rowBg = isTestingThis ? 'bg-sky-900/50' : 'bg-slate-800/60';
+
+        const StatusIcon = () => {
+            if (isTestingThis) return <SpinnerIcon />;
+            if (isComplete) return <CheckCircleIcon />;
+            if (isError) return <ExclamationTriangleIcon />;
+            // When not testing, show selection state
+            if (isSelected) return <CheckboxCheckedIcon />;
+            return <CheckboxUncheckedIcon />;
+        };
 
         return (
             <div className={`rounded-xl transition-all duration-300 ${rowBg} hover:bg-slate-700/60 transform hover:scale-[1.02]`}>
@@ -260,17 +323,19 @@ export default function App() {
                     {/* Server Name & Status */}
                     <div className="flex items-center justify-between md:w-1/3 lg:w-2/5 md:pr-4">
                         <div className="flex items-center gap-4">
-                            <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center">
-                                {isTestingThis && <SpinnerIcon />}
-                                {isComplete && <CheckCircleIcon />}
-                                {isError && <ExclamationTriangleIcon />}
-                                {isPending && <div className="w-3 h-3 rounded-full bg-slate-600 border-2 border-slate-500"></div>}
-                            </div>
+                            {/* **UPDATED**: This is now a button for selection */}
+                            <button
+                                onClick={() => onToggle(result.name)}
+                                disabled={isTestingGlobal}
+                                className="flex-shrink-0 flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500/50 disabled:cursor-not-allowed transition-transform active:scale-90"
+                            >
+                                <StatusIcon />
+                            </button>
                             <span className="font-semibold text-slate-200 truncate">{result.name}</span>
                         </div>
                     </div>
 
-                    {/* Stats container (grid on mobile, flex on desktop) */}
+                    {/* Stats container */}
                     <div className="mt-3 md:mt-0 grid grid-cols-3 gap-2 md:flex md:w-2/3 lg:w-3/5 md:justify-around">
                         {['ping', 'download', 'upload'].map(statType => {
                             const value = result[statType];
@@ -306,10 +371,10 @@ export default function App() {
 
                 {/* Main Results Panel */}
                 <div className="bg-slate-800/60 p-3 md:p-4 rounded-2xl shadow-2xl w-full border border-slate-700/80 backdrop-blur-xl">
-                    {/* -- DESKTOP-ONLY Results Header -- */}
-                    <div className="hidden md:flex px-4 pb-3 border-b border-slate-700">
+                    {/* -- Results Header -- */}
+                    <div className="flex px-4 pb-3 border-b border-slate-700">
                         <h3 className="font-bold text-slate-300 text-sm w-1/3 lg:w-2/5">Server</h3>
-                        <div className="flex w-2/3 lg:w-3/5 justify-around">
+                        <div className="hidden md:flex w-2/3 lg:w-3/5 justify-around">
                             <h3 className="font-bold text-slate-300 text-sm w-1/3 text-center">Ping</h3>
                             <h3 className="font-bold text-slate-300 text-sm w-1/3 text-center">Download</h3>
                             <h3 className="font-bold text-slate-300 text-sm w-1/3 text-center">Upload</h3>
@@ -319,7 +384,13 @@ export default function App() {
                     {/* Results List */}
                     <div className="space-y-2 mt-2 md:mt-3">
                         {testResults.map((result, index) => (
-                            <ResultRow key={index} result={result} />
+                            <ResultRow 
+                                key={index} 
+                                result={result}
+                                isSelected={selectedServers.has(result.name)}
+                                onToggle={handleToggleServer}
+                                isTestingGlobal={isTesting}
+                            />
                         ))}
                     </div>
                 </div>
@@ -330,7 +401,7 @@ export default function App() {
                     <div className={`transition-opacity duration-300 h-10 ${isTesting ? 'opacity-100' : 'opacity-0'}`}>
                          <p className="text-center text-sky-300/80 text-sm h-5">{statusMessage}</p>
                          <div className="w-full bg-slate-700/50 rounded-full h-1.5 mt-1 overflow-hidden">
-                             <div className="bg-gradient-to-r from-sky-500 to-cyan-400 h-1.5 rounded-full transition-all duration-300 ease-linear" style={{ width: `${currentTestProgress}%` }}></div>
+                              <div className="bg-gradient-to-r from-sky-500 to-cyan-400 h-1.5 rounded-full transition-all duration-300 ease-linear" style={{ width: `${currentTestProgress}%` }}></div>
                          </div>
                     </div>
 
@@ -348,7 +419,7 @@ export default function App() {
                     {/* Start Button */}
                     <button
                         onClick={startAllTests}
-                        disabled={isTesting}
+                        disabled={isTesting || selectedServers.size === 0}
                         className="w-full mt-4 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-sky-400/50 flex items-center justify-center transform active:scale-98 shadow-lg hover:shadow-sky-500/20"
                     >
                         {isTesting ? (
@@ -359,7 +430,7 @@ export default function App() {
                         ) : (
                             <>
                                 <PlayIcon />
-                                <span className="ml-2 text-lg">Start All Tests</span>
+                                <span className="ml-2 text-lg">Start Tests ({selectedServers.size})</span>
                             </>
                         )}
                     </button>
