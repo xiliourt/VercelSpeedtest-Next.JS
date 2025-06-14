@@ -1,4 +1,4 @@
-name: Push generated index page to another repository
+name: Sync Cloudflare Repo
 
 on:
   push:
