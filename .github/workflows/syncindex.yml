@@ -44,7 +44,7 @@ jobs:
         source-files: 'styles/'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: 'styles/'
+        destination-directory: '/'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
 
