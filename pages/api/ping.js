@@ -3,7 +3,6 @@ export const runtime = 'edge';
 export const config = { runtime: 'edge', };
 
 export default function handler(req) {
-  // Add headers to prevent caching by browser or intermediaries
   const headers = {
     'Cache-Control': 's-maxage=3600',
     'Content-Type': 'text/plain',
