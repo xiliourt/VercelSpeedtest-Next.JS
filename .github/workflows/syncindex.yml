@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'pages/index.js'
+      - 'pages/**'
 jobs:
    sync:
     name: Push generated index page to another repository
