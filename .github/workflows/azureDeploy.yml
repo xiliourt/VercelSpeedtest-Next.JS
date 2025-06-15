@@ -46,13 +46,14 @@ jobs:
         with:
           artifacts: "release.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: "${{ steps.release_tag.outputs.new_tag }}"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
           path: release.zip
-          tag: latest
+          
           
   deploy:
     runs-on: ubuntu-latest
