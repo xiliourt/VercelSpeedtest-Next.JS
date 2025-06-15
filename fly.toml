@@ -1,8 +1,3 @@
-# fly.toml app configuration file generated for vercelspeedtest-next-js on 2025-06-14T22:45:36Z
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
 app = 'vercelspeedtest-next-js'
 primary_region = 'syd'
 
