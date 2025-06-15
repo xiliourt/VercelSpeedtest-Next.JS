@@ -52,6 +52,7 @@ jobs:
         with:
           name: node-app
           path: release.zip
+          tag: latest
           
   deploy:
     runs-on: ubuntu-latest
