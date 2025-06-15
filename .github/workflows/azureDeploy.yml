@@ -46,7 +46,7 @@ jobs:
         with:
           artifacts: "release.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: "${{ steps.release_tag.outputs.new_tag }}"
+          tag: "latest"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
