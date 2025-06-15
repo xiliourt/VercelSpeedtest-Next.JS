@@ -10,7 +10,6 @@ export default async function handler(req) {
     if (!req.body) {
       return new Response('Request body is missing.', { status: 400 });
     }
-
     try {
       // Consume the stream to simulate receiving the upload
       // The client measures the time it takes to send this data.
