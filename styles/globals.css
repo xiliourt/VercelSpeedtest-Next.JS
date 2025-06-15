@@ -21,14 +21,12 @@ body {
 
 @layer base {
   h1, h2, h3, h4, h5, h6 {
-    /* font-weight: theme('fontWeight.semibold'); */
   }
 
   p {
     /* line-height: 1.7; */
   }
 }
-
 /* Optional: Sleek, dark-themed scrollbars (for WebKit-based browsers like Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 10px;
