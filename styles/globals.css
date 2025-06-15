@@ -7,11 +7,6 @@
 html {
   scroll-behavior: smooth; /* For smooth scrolling on anchor links */
   height: 100%; /* Ensure html takes full height */
-  /* Set the default font family. 'Inter' is a good modern choice.
-     Ensure you import it in your _app.js or _document.js via a <link> tag in <Head>
-     or by installing it as a package.
-     Example for <Head>: <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap)" rel="stylesheet">
-  */
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
                Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
