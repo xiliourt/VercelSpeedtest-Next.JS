@@ -5,8 +5,7 @@ export const config = { runtime: 'edge', };
 // Function to generate a chunk of random data as Uint8Array
 function generateRandomChunk(size) {
   // Create a buffer of the specified size.
-  const buffer = new Uint8Array(size);
-  crypto.getRandomValues(buffer);
+  const 
   return buffer;
 }
 
@@ -42,7 +41,7 @@ export async function GET(request) {
       const currentChunkSize = Math.min(chunkSize, bytesRemaining);
       
       try {
-        const chunk = generateRandomChunk(currentChunkSize);
+        const chunk  = crypto.getRandomValues(new Uint8Array(currentChunkSize));
         controller.enqueue(chunk);
         bytesSent += currentChunkSize;
       } catch (error) {
