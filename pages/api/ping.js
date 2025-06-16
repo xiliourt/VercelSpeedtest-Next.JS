@@ -1,7 +1,7 @@
 import '@vercel/edge'
 import '@vercel/edge-config'
 export const runtime = 'edge'; 
-export const config = { runtime: 'edge', };
+
 export async function GET(req) {
   const headers = {
     'Cache-Control': 's-maxage=3600',
