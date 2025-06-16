@@ -1,7 +1,17 @@
+
 // pages/api/ping.js
 export const runtime = 'edge'; 
+export const config = { runtime: 'edge', };
 
-export async function GET(request) {
+// Function to generate a chunk of random data as Uint8Array
+function generateRandomChunk(size) {
+  // Create a buffer of the specified size.
+  const buffer = new Uint8Array(size);
+  crypto.getRandomValues(buffer);
+  return buffer;
+}
+
+export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
   // We need to parse query parameters from the URL.
   const url = new URL(req.url);
@@ -33,7 +43,7 @@ export async function GET(request) {
       const currentChunkSize = Math.min(chunkSize, bytesRemaining);
       
       try {
-        const chunk  = crypto.getRandomValues(new Uint8Array(currentChunkSize));
+        const chunk = generateRandomChunk(currentChunkSize);
         controller.enqueue(chunk);
         bytesSent += currentChunkSize;
       } catch (error) {
