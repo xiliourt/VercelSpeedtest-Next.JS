@@ -44,10 +44,10 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source-files: 'styles/globals.css postcss.config.js'
+        source-files: 'styles/globals.css'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: ''
+        destination-directory: 'styles/'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
         step: 'style'
