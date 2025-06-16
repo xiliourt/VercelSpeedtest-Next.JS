@@ -1,18 +1,11 @@
-import '@vercel/edge'
-import '@vercel/edge-config'
-export const runtime = 'edge'; 
+import { NextResponse } from 'next/server';
+import { get } from '@vercel/edge-config';
 
-export default async function GET(req) {
-  const headers = {
-    'Cache-Control': 's-maxage=3600',
-    'Content-Type': 'text/plain',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET',
-    'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
-  };
-  
-  return new Response('OK', {
-    status: 200,
-    headers: headers,
-  });
+export const config = { matcher: '/ping' };
+
+export async function middleware() {
+  const ping = await get('ping');
+  // NextResponse.json requires at least Next v13.1 or
+  // enabling experimental.allowMiddlewareResponseBody in next.config.js
+  return NextResponse.json(ping);
 }
