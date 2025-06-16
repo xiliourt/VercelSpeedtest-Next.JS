@@ -1,7 +1,5 @@
 // pages/api/ping.js
 export const runtime = 'edge'; 
-export const config = { runtime: 'edge', };
-
 
 export async function GET(request) {
   // In the Edge Runtime, req is a standard Request object.
