@@ -31,6 +31,7 @@ export default async function handler(req) {
         'Surrogate-Control': 'no-store',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'POST'
       };
 
       return new Response(JSON.stringify({ message: 'Upload received' }), {
