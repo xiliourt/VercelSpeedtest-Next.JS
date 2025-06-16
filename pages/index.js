@@ -258,15 +258,15 @@ export default function App() {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: finalDownload } : r));
                     
                     if (parseFloat(finalDownload) > SUPER_CONNECTION_THRESHOLD_MBPS) {
-                        setStatusMessage(`Downloading ${SUPER_LARGE_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
+                        setStatusMessage(`Downloading ${SUPER_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                         const finalDownloadSuper = await measureDownload(server.downloadUrl, SUPER_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                         setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalDownloadSuper), parseFloat(finalDownload))} : r));
                     } else if (parseFloat(finalDownload) > FAST_CONNECTION_THRESHOLD_MBPS) {
                         setStatusMessage(`Downloading ${LARGE_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                         const finalDownloadLarge = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                         if (parseFloat(finalDownloadLarge) > SUPER_CONNECTION_THRESHOLD_MBPS) {
-                            setStatusMessage(`Downloading ${SUPER_LARGE_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
-                            const finalDownloadSuper = await measureDownload(server.downloadUrl, SUPER_LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                            setStatusMessage(`Downloading ${SUPER_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
+                            const finalDownloadSuper = await measureDownload(server.downloadUrl, SUPER_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                             setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalDoqnloadSuper), parseFloat(finalDownloadLarge), parseFloat(finalDownload))} : r));
                         } else {
                             setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalDownloadLarge), parseFloat(finalDownload))} : r));
