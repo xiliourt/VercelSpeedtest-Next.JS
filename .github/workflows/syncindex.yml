@@ -21,7 +21,7 @@ jobs:
         source-files: 'pages/index.js'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: '/functions'
+        destination-directory: '/pages'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
         step: 'index'
