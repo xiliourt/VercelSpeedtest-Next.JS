@@ -26,19 +26,6 @@ jobs:
         commit-email: 'xiliout@xilout'
         step: 'index'
       
-    - name: Push API
-      uses: xiliourt/push-files-to-another-repository@latest
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source-files: 'pages/api/*'
-        destination-username: 'xiliourt'
-        destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: 'functions/api'
-        destination-branch: 'main'
-        commit-email: 'xiliout@xilout'
-        step: 'api'
-      
     - name: Sync Style
       uses: xiliourt/push-files-to-another-repository@latest
       env:
