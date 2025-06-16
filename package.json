@@ -7,6 +7,7 @@
     "start": "next start",
     "lint": "next lint",
     "startAzure": "./node_modules/next/dist/bin/next start"
+    "CFBuild": "next build && esbuild _worker.js --bundle --outfile=out/_worker.js --format=esm"
   },
   "dependencies": {
     "next": "14.2.3",
