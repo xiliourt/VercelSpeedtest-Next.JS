@@ -68,7 +68,7 @@ const SUPER_CONNECTION_THRESHOLD_MBPS = 200;
 const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10;
 
 // --- Main App Component ---
-export default function HomePage() {
+export default function App() {
     const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
     const [statusMessage, setStatusMessage] = useState('Select servers and click "Start Tests" to begin.');
@@ -101,7 +101,7 @@ export default function HomePage() {
             return newSelected;
         });
     };
-
+    
     // --- Core Measurement Functions (unchanged) ---
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
@@ -141,18 +141,19 @@ export default function HomePage() {
             
             const reader = response.body.getReader();
             let receivedLength = 0;
-
+            
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
                 receivedLength += value.length;
                 onProgress((receivedLength / downloadSize) * 100);
             }
+            
             onProgress(100);
             const endTime = performance.now();
             const durationSeconds = (endTime - startTime) / 1000;
             if (durationSeconds <= 0 || receivedLength === 0) throw new Error('Download failed (zero duration or size)');
-
+            
             const speedBps = (receivedLength * 8) / durationSeconds;
             return (speedBps / (1000 * 1000)).toFixed(2);
         } catch (error) {
@@ -168,10 +169,11 @@ export default function HomePage() {
             const startTime = performance.now();
             xhr.open('POST', `${uploadUrl}`, true);
             xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+            
             xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable) onProgress((event.loaded / event.total) * 100);
             };
-
+            
             xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     const durationSeconds = (performance.now() - startTime) / 1000;
@@ -184,8 +186,10 @@ export default function HomePage() {
                     reject(new Error(`Server responded with status: ${xhr.status}`));
                 }
             };
+            
             xhr.onerror = () => { onProgress(0); reject(new Error(`Upload failed due to a network error.`)); };
             xhr.onabort = () => { onProgress(0); reject(new Error('Upload test was aborted.')); };
+            
             const payload = new Blob([new Uint8Array(uploadsize)], { type: 'application/octet-stream' });
             xhr.send(payload);
         });
@@ -194,10 +198,10 @@ export default function HomePage() {
     // --- **UPDATED** Main Test Orchestration ---
     const startAllTests = async () => {
         if (isTesting) return;
-
+        
         // **UPDATED**: Filter servers based on selection
         const serversToTest = SERVERS.filter(s => selectedServers.has(s.name));
-
+        
         if (serversToTest.length === 0) {
             setStatusMessage("Please select at least one server to test.");
             return;
@@ -220,7 +224,7 @@ export default function HomePage() {
             const originalIndex = SERVERS.findIndex(s => s.name === server.name);
 
             setTestResults(prev => prev.map((r, index) => index === originalIndex ? { ...r, status: 'testing' } : r));
-
+            
             let finalDownload = 'ERR', finalUpload = 'ERR';
 
             try {
@@ -234,7 +238,7 @@ export default function HomePage() {
                     console.error(`Ping test failed for ${server.name}:`, error);
                     continue; // Skip to next server if ping fails
                 }
-
+                
                 await new Promise(res => setTimeout(res, 200));
 
                 // Download Test
@@ -246,13 +250,14 @@ export default function HomePage() {
                         try LARGE_DOWNLOAD_SIZE_BYTES
                         if above SUPER_CONNECTION_THRESHOLD_MBPS
                             try SUPER_LARGE_DOWNLOAD_SIZE_BYTES
+                   
                    Update with math.max() after each test
                 */
                 setStatusMessage(`Downloading ${INITIAL_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                 try {
                     finalDownload = await measureDownload(server.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: finalDownload } : r));
-
+                    
                     if (parseFloat(finalDownload) > SUPER_CONNECTION_THRESHOLD_MBPS) {
                         setStatusMessage(`Downloading ${SUPER_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                         const finalDownloadSuper = await measureDownload(server.downloadUrl, SUPER_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
@@ -272,7 +277,7 @@ export default function HomePage() {
                     console.error(`Download test failed for ${server.name}:`, error);
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: 'ERR', status: 'error' } : r));
                 }
-
+                
                 await new Promise(res => setTimeout(res, 200));
 
                 // Upload Test
@@ -281,7 +286,7 @@ export default function HomePage() {
                 try {
                     finalUpload = await measureUpload(server.uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUpload } : r));
-
+                    
                     if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && server.maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
                          setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                          const finalUploadLarge = await measureUpload(server.uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
@@ -320,7 +325,7 @@ export default function HomePage() {
         const isTestingThis = result.status === 'testing';
         const isComplete = result.status === 'complete';
         const isError = result.status === 'error';
-
+        
         const rowBg = isTestingThis ? 'bg-sky-900/50' : 'bg-slate-800/60';
 
         const StatusIcon = () => {
@@ -356,6 +361,7 @@ export default function HomePage() {
                             const value = result[statType];
                             const unit = statType === 'ping' ? 'ms' : 'Mbps';
                             const label = statType.charAt(0).toUpperCase() + statType.slice(1);
+                            
                             return (
                                 <div key={statType} className="text-center bg-slate-900/50 md:bg-transparent p-2 rounded-lg md:p-0 md:w-1/3">
                                     <span className="text-xs font-bold tracking-wider text-slate-400 md:hidden">{label}</span>
@@ -429,11 +435,13 @@ export default function HomePage() {
                             <div className="bg-gradient-to-r from-green-500 to-emerald-400 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallProgress}%` }}></div>
                         </div>
                     </div>
+                    
                     {/* Start Button */}
                     <button
                         onClick={startAllTests}
                         disabled={isTesting || selectedServers.size === 0}
-                        className="w-full mt-4 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-sky-400/50 flex items-center justify-center transform active:scale-98 shadow-lg hover:shadow-sky-500/20">
+                        className="w-full mt-4 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-sky-400/50 flex items-center justify-center transform active:scale-98 shadow-lg hover:shadow-sky-500/20"
+                    >
                         {isTesting ? (
                             <>
                                 <SpinnerIcon />
