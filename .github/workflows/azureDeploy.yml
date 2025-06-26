@@ -35,8 +35,9 @@ jobs:
           npm install
           npm run build
           mkdir ./standalone
-          cp .next/standalone ./standalone
-          cp /.next/static ./standalone/.next/static
+          cp -r .next/standalone/* ./standalone/
+          cp -r /.next/static/* ./standalone/.next/static
+          
       - name: Zip artifact for deployment
         working-directory: ./standalone
         run: | 
