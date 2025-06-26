@@ -34,7 +34,7 @@ jobs:
           npm i --package-lock-only
           npm install
           npm run build
-          mkdir ./standalone
+          mkdir -p ./standalone/static
           ls .next
           cp -r ./.next/static/* ./standalone/static/
           cp -r ./.next/standalone/* ./standalone/
