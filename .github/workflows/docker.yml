@@ -6,17 +6,15 @@ on:
     paths-ignore:
       - 'README.md'
       - '.github/**'
-      - '.vercalignore'
-      - '.dockerignore'
-      -  'host.json'
+      - './.vercalignore'
+      - './.dockerignore'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - 'README.md'
       - '.github/**'
-      - '.vercalignore'
-      - '.dockerignore'
-      -  'host.json'
+      - './.vercalignore'
+      - './.dockerignore'
 
 jobs:
   build:
