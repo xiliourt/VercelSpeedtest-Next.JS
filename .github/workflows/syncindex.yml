@@ -7,6 +7,10 @@ on:
       - 'pages/**'
       - 'styles/*'
       - 'postcss.config.js'
+      - 'next.config.js'
+      - 'package.json'
+      - 'postcss.config.js'
+      - 'tailwind.config.js'
 jobs:
    sync:
     name: Sync Cloudflare Repo
