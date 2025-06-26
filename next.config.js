@@ -3,6 +3,7 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // This applies the headers to all routes in your application.
         source: "/:api*",
         headers: [
           {
@@ -16,7 +17,7 @@ const nextConfig = {
           {
             key: "Access-Control-Allow-Headers",
             value: "X-Requested-With, Content-Type, Authorization",
-          }, {output: 'standalone'}
+          },
         ],
       },
     ];
