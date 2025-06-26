@@ -4,9 +4,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node ./next/standalone/server.js",
     "lint": "next lint",
-    "startAzure": "./node_modules/next/dist/bin/next start",
+    "startAzure": "node ./next/standalone/server.js",
     "CFBuild": "next build && esbuild _worker.js --bundle --outfile=out/_worker.js --format=esm"
   },
   "dependencies": {
