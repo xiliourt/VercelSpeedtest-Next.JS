@@ -8,6 +8,9 @@ on:
       - '.github/**'
       - './.vercalignore'
       - './.dockerignore'
+      - 'host.json'
+      - 'netlify.toml'
+      - 'Dockerfile'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
@@ -15,6 +18,9 @@ on:
       - '.github/**'
       - './.vercalignore'
       - './.dockerignore'
+      - 'host.json'
+      - 'netlify.toml'
+      - 'Dockerfile'
 
 jobs:
   build:
