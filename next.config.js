@@ -3,7 +3,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // This applies the headers to all routes in your application.
+        output: 'standalone',
         source: "/:api*",
         headers: [
           {
