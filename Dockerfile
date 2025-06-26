@@ -1,7 +1,18 @@
-FROM node:current-alpine3.22
+FROM node:18-alpine AS base
 WORKDIR /app
-COPY package*.json /app
-RUN --mount=type=cache,target=/root/.npm npm install
+
+FROM base AS builder
 COPY . .
+RUN npm install
 RUN npm run build
-CMD npm start
+
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]
+
