@@ -3,6 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/*test*/
 /* Apply a modern font stack and base styling to the html and body */
 html {
   scroll-behavior: smooth; /* For smooth scrolling on anchor links */
