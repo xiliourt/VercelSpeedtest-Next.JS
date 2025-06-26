@@ -3,7 +3,6 @@ const nextConfig = {
   async headers() {
     return [
       {
-        output: 'standalone',
         source: "/:api*",
         headers: [
           {
@@ -17,7 +16,7 @@ const nextConfig = {
           {
             key: "Access-Control-Allow-Headers",
             value: "X-Requested-With, Content-Type, Authorization",
-          },
+          }, {output: 'standalone'}
         ],
       },
     ];
