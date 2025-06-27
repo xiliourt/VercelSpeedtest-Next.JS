@@ -4,12 +4,12 @@ import { Server } from 'socket.io';
 
 export default function handler(req, res) {
 	const headers = {
-		    'Cache-Control': 's-maxage=3600',
-		    'Content-Type': 'text/plain',
-		    'Access-Control-Allow-Origin': '*',
-		    'Access-Control-Allow-Methods': 'GET',
-			'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
-		};
+		'Cache-Control': 's-maxage=3600',
+		'Content-Type': 'text/plain',
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Methods': 'GET',
+		'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
+	};
 
 	// If it's not a websocket connection (it's just waking up the server)
 	if (!res.socket) { return new Response('OK', {status: 200, headers: headers});) }
