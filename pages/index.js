@@ -120,16 +120,15 @@ export default function App() {
         } finally {
             clearTimeout(timeoutId);
         }
-    }
     
-    const validPings = pings.filter(p => p !== null);
-    if (validPings.length > 0) {
-        const avgPing = validPings.reduce((a, b) => a + b, 0) / validPings.length;
-        return Math.round(avgPing);
-    } else {
-        throw new Error('Ping test failed for all attempts.');
+        const validPings = pings.filter(p => p !== null);
+        if (validPings.length > 0) {
+            const avgPing = validPings.reduce((a, b) => a + b, 0) / validPings.length;
+            return Math.round(avgPing);
+        } else {
+            throw new Error('Ping test failed for all attempts.');
+        }
     }
-}
     // --- Core Measurement Functions (unchanged) ---
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
