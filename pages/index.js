@@ -56,7 +56,7 @@ const SERVERS = [
 ];
 
 // --- TEST CONFIGURATION ---
-const PING_COUNT = 4;
+const PING_COUNT = 10;
 const PING_TIMEOUT_MS = 2000;
 const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
@@ -106,6 +106,8 @@ export default function App() {
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
         const pingProgressIncrement = 100 / PING_COUNT;
+        // Warm up the server
+        await fetch(`${pingUrl}`, { method: 'GET', cache: 'no-store' });
         for (let i = 0; i < PING_COUNT; i++) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), PING_TIMEOUT_MS);
