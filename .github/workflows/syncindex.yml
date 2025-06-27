@@ -39,7 +39,7 @@ jobs:
         source-files: 'styles/globals.css'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: 'styles/'
+        destination-directory: '/styles'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
         step: 'style'
@@ -59,7 +59,7 @@ jobs:
         destination-directory: './'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-        step: 'style'
+        step: 'Config'
 
     - name: Sync API
       uses: xiliourt/push-files-to-another-repository@latest
@@ -72,4 +72,4 @@ jobs:
         destination-directory: '/functions/api'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-        step: 'style'
+        step: 'API'
