@@ -53,7 +53,7 @@ const SERVERS = [
     { name: 'Sydney, AU (via CF)', pingUrl: 'https://jsscf.xiliourt.ovh/api/ping', downloadUrl: 'https://jsscf.xiliourt.ovh/api/download', uploadUrl: 'https://jsscf.xiliourt.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Stockholm (Hosthatch)', pingUrl: 'https://js.sto.xiliourt.ovh/api/ping', downloadUrl: 'https://js.sto.xiliourt.ovh/api/download', uploadUrl: 'https://js.sto.xiliourt.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Stockholm (via CF)', pingUrl: 'https://jsstocf.xiliourt.ovh/api/ping', downloadUrl: 'https://jsstocf.xiliourt.ovh/api/download', uploadUrl: 'https://jsstocf.xiliourt.ovh/api/upload', maxUpload: '27262976' }, // 26MB
-    { name: 'Germany (Hostbrr)', pingUrl: 'https://hostbrr.xiliourt.ovh/api/ping/', downloadUrl: 'https://hostbrr.xiliourt.ovh/api/download/', uploadUrl: 'https://hostbrr.xiliourt.ovh/api/upload/', maxUpload: '1' } // Disable upload
+    { name: 'Germany (Hostbrr)', pingUrl: 'https://hostbrr.xiliourt.ovh/api/ping/', downloadUrl: 'https://hostbrr.xiliourt.ovh/api/download/', uploadUrl: 'https://hostbrr.xiliourt.ovh/api/upload/', maxUpload: '0' } // Disable upload
 ];
 
 // --- TEST CONFIGURATION ---
@@ -285,6 +285,12 @@ export default function App() {
 
                 // Upload Test
                 const initialUploadSize = Math.min(INITIAL_UPLOAD_SIZE_BYTES, server.maxUpload);
+
+                // Set output to 'Disabled' if max upload is 0
+                if (initialUploadSize == 0) {
+                    setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'Disabled', status: 'error' } : r));
+                    return r;
+                }
                 setStatusMessage(`Uploading ${initialUploadSize / 1024 / 1024}MB to ${server.name}...`);
                 try {
                     finalUpload = await measureUpload(server.uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
@@ -301,6 +307,8 @@ export default function App() {
                     console.error(`Upload test failed for ${server.name}:`, error);
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'ERR', status: 'error' } : r));
                 }
+
+                // Output 'disabled' if max upload for the server is 0
 
                 // Mark as complete if no errors occurred in the process
                 setTestResults(prev => prev.map((r, idx) => {
