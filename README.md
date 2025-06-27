@@ -1,5 +1,7 @@
 # Deploy status
-[![Docker](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)](https://js.s.xiliourt.ovh/) || 
+[![Docker](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)](https://js.s.xiliourt.ovh/)
+
+
 [![Azure Status](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/azureDeploy.yml/badge.svg)](https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net) || 
 [![Vercel](https://deploy-badge.vercel.app/vercel/speedtestjs)](https://speedtestjs.vercel.app/) || 
 [![Render Status](https://deploy-badge.vercel.app/?url=https%3A%2F%2Frenderjsspeedtest.onrender.com%2F&name=Render)](https://renderjsspeedtest.onrender.com)|| 
