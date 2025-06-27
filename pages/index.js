@@ -105,7 +105,7 @@ export default function App() {
                 for (let i = 1; i <= 5; i++) {
                     const latency = await new Promise(resolve => {
                         const startTime = performance.now();
-                        socket.emit('ping', message); 
+                        socket.emit('ping'); 
                         socket.once('pong', () => resolve(performance.now() - startTime));
                     });
                     onProgress((i + 1) * pingProgressIncrement);
