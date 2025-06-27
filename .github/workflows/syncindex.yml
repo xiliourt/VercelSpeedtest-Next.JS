@@ -44,16 +44,12 @@ jobs:
         commit-email: 'xiliout@xilout'
         step: 'style'
 
-    - name: Sync Config Files
+    - name: Sync next.config.js
       uses: xiliourt/push-files-to-another-repository@latest
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source-files: |
-              './next.config.js'
-              './package.json'
-              './postcss.config.js'
-              './tailwind.config.js'
+        source-files: 'next.config.js'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
         destination-directory: './'
@@ -61,6 +57,45 @@ jobs:
         commit-email: 'xiliout@xilout'
         step: 'Config'
 
+    - name: Sync package.json
+      uses: xiliourt/push-files-to-another-repository@latest
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source-files: 'package.json'
+        destination-username: 'xiliourt'
+        destination-repository: 'CFPages-Speedtest-NextJS'
+        destination-directory: './'
+        destination-branch: 'main'
+        commit-email: 'xiliout@xilout'
+        step: 'Config'
+
+    - name: Sync postcss.config.js
+      uses: xiliourt/push-files-to-another-repository@latest
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source-files: 'postcss.config.js'
+        destination-username: 'xiliourt'
+        destination-repository: 'CFPages-Speedtest-NextJS'
+        destination-directory: './'
+        destination-branch: 'main'
+        commit-email: 'xiliout@xilout'
+        step: 'Config'
+
+    - name: Sync tailwind.config.js
+      uses: xiliourt/push-files-to-another-repository@latest
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source-files: 'tailwind.config.js'
+        destination-username: 'xiliourt'
+        destination-repository: 'CFPages-Speedtest-NextJS'
+        destination-directory: './'
+        destination-branch: 'main'
+        commit-email: 'xiliout@xilout'
+        step: 'Config'
+        
     - name: Sync API
       uses: xiliourt/push-files-to-another-repository@latest
       env:
