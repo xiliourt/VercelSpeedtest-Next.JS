@@ -63,9 +63,3 @@ jobs:
           script: |
             docker pull blurred123131/speedjs:latest
             cd plex && docker compose up -d
-
-      - name: Deploy to Render
-        env:
-          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-        run: |
-          curl "$deploy_url"
