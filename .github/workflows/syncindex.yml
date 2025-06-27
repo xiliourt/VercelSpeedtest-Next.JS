@@ -49,52 +49,13 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source-files: 'next.config.js'
+        source-files: '*.js*'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
         destination-directory: './'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-        step: 'nextconfig'
-
-    - name: Sync package.json
-      uses: xiliourt/push-files-to-another-repository@latest
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source-files: 'package.json'
-        destination-username: 'xiliourt'
-        destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: './'
-        destination-branch: 'main'
-        commit-email: 'xiliout@xilout'
-        step: 'package'
-
-    - name: Sync postcss.config.js
-      uses: xiliourt/push-files-to-another-repository@latest
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source-files: 'postcss.config.js'
-        destination-username: 'xiliourt'
-        destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: './'
-        destination-branch: 'main'
-        commit-email: 'xiliout@xilout'
-        step: 'postcss'
-
-    - name: Sync tailwind.config.js
-      uses: xiliourt/push-files-to-another-repository@latest
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source-files: 'tailwind.config.js'
-        destination-username: 'xiliourt'
-        destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: './'
-        destination-branch: 'main'
-        commit-email: 'xiliout@xilout'
-        step: 'tailwind'
+        step: 'config'
         
     - name: Sync API
       uses: xiliourt/push-files-to-another-repository@latest
