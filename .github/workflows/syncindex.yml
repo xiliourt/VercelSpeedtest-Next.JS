@@ -44,7 +44,7 @@ jobs:
         commit-email: 'xiliout@xilout'
         step: 'style'
 
-    - name: Sync next.config.js
+    - name: Sync Config Files
       uses: xiliourt/push-files-to-another-repository@latest
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
