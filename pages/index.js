@@ -111,14 +111,13 @@ export default function App() {
                     onProgress((i + 1) * pingProgressIncrement);
                     pings.push(latency);
                 }   
-                socket.disconnect();
             });
         } catch (error) {
             if (error.name === 'AbortError') console.error('Ping request timed out.');
             else console.error('Ping request failed:', error);
                 pings.push(null);
         } finally {
-            clearTimeout(timeoutId);
+            socket.disconnect();
         }
     
         const validPings = pings.filter(p => p !== null);
