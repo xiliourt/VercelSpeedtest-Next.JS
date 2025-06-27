@@ -1,4 +1,4 @@
-name: Docker (SYD/STO/Azure VM) Status
+name: Docker Status
 
 on:
   push:
