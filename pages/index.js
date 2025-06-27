@@ -102,7 +102,7 @@ export default function App() {
             const pingProgressIncrement = 100 / PING_COUNT;
             await fetch(`${pingUrl}`, { method: 'GET' }) // Ensure server is awake
             const socket = await new Promise((resolve, reject) => {
-                const s = await io(`${url.hostname}`, {'path': `${url.pathname}`, addTrailingSlash: false});
+                const s = io(`${url.hostname}`, {'path': `${url.pathname}`, addTrailingSlash: false});
                 s.on('connect', () => resolve(s));
                 s.on('connect_error', (err) => reject(err));
             });
