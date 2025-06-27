@@ -109,7 +109,7 @@ export default function App() {
                         socket.once('pong', () => resolve(performance.now() - startTime));
                     });
                     onProgress((i + 1) * pingProgressIncrement);
-                    pings.push(performance.now();- startTime);    
+                    pings.push(performance.now()- startTime);    
                 }   
                 socket.disconnect();
             });
