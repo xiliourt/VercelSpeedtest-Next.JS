@@ -101,18 +101,20 @@ export default function App() {
             let pings = [];
             const pingProgressIncrement = 100 / PING_COUNT;
             await fetch(`${pingUrl}`, { method: 'GET' }) // Ensure server is awake
-            const socket = await io(`${url.hostname}`, {'path': `${url.pathname}`, addTrailingSlash: false});
-            socket.on('connect', async () => {
-                for (let i = 1; i <= 5; i++) {
-                    const latency = await new Promise(resolve => {
-                        const startTime = performance.now();
-                        socket.emit('ping', message); 
-                        socket.once('pong', () => resolve(peprformance.now() - startTime));
-                    });
-                    onProgress((i + 1) * pingProgressIncrement);
-                    pings.push(latency);
-                }   
+            const socket = await new Promise((resolve, reject) => {
+                const s = await io(`${url.hostname}`, {'path': `${url.pathname}`, addTrailingSlash: false});
+                s.on('connect', () => resolve(s));
+                s.on('connect_error', (err) => reject(err));
             });
+            for (let i = 1; i <= 5; i++) {
+                const latency = await new Promise(resolve => {
+                    const startTime = performance.now();
+                    socket.emit('ping', message); 
+                    socket.once('pong', () => resolve(peprformance.now() - startTime));
+                });
+                onProgress((i + 1) * pingProgressIncrement);
+                pings.push(latency);
+            }   
         } catch (error) {
             if (error.name === 'AbortError') console.error('Ping request timed out.');
             else console.error('Ping request failed:', error);
