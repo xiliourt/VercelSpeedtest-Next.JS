@@ -1,4 +1,4 @@
-name: Wtf
+name: Docker (SYD/STO) Status
 
 on:
   push:
