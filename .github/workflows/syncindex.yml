@@ -55,7 +55,7 @@ jobs:
         destination-directory: './'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-        step: 'Config'
+        step: 'nextconfig'
 
     - name: Sync package.json
       uses: xiliourt/push-files-to-another-repository@latest
@@ -68,7 +68,7 @@ jobs:
         destination-directory: './'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-        step: 'Config'
+        step: 'package'
 
     - name: Sync postcss.config.js
       uses: xiliourt/push-files-to-another-repository@latest
@@ -81,7 +81,7 @@ jobs:
         destination-directory: './'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-        step: 'Config'
+        step: 'postcss'
 
     - name: Sync tailwind.config.js
       uses: xiliourt/push-files-to-another-repository@latest
@@ -94,7 +94,7 @@ jobs:
         destination-directory: './'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
-        step: 'Config'
+        step: 'tailwind'
         
     - name: Sync API
       uses: xiliourt/push-files-to-another-repository@latest
