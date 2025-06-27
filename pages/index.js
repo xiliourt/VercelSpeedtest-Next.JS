@@ -97,10 +97,11 @@ export default function App() {
     // --- Core Measurement Functions (unchanged) ---
     const measurePingWs = async (pingUrl, onProgress) => {
         try {
+            let url = new URL(pingUrl)
             let pings = [];
             const pingProgressIncrement = 100 / PING_COUNT;
             await fetch(`${pingUrl}`, { method: 'GET' }) // Ensure server is awake
-            const socket = io(pingUrl);
+            const socket = io(url.hostname, {'path': `${url.pathname}`;});
             socket.on('connect', async () => {
                 for (let i = 1; i <= 5; i++) {
                     const latency = await new Promise(resolve => {
