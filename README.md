@@ -5,9 +5,8 @@
 [![Cloudflare](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/syncindex.yml/badge.svg)](https://speedtestjs.pages.dev)  
 
 
-Clone and deploy to Vercel for an edge speedtest! Change URLs in pages/index.js
-
-Gets well over 1Gbps speeds to my servers
+# Try it yourself
+Clone and deploy to Vercel for an edge speedtest! Change URLs or add your server in pages/index.js
 
 For a direct download link:
 ```
