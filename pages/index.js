@@ -377,8 +377,8 @@ export default function App() {
                                 <div key={statType} className="text-center bg-slate-900/50 md:bg-transparent p-2 rounded-lg md:p-0 md:w-1/3">
                                     <span className="text-xs font-bold tracking-wider text-slate-400 md:hidden">{label}</span>
                                     <div className="mt-1 md:mt-0">
-                                        <span className={`font-mono text-lg md:text-xl font-bold ${value === 'ERR' ? 'text-red-400' : 'text-slate-100'}`}>{value}</span>
-                                        <span className="text-sm text-slate-400 ml-1">{value !== '--' && value !== 'ERR' ? unit : ''}</span>
+                                        <span className={`font-mono text-lg md:text-xl font-bold ${value === 'ERR' && value === 'Disabled' ?  'text-red-400' : 'text-slate-100'}`}>{value}</span>
+                                        <span className="text-sm text-slate-400 ml-1">{value !== '--' && value !== 'ERR' && value !== 'Disabled' ? unit : ''}</span>
                                     </div>
                                 </div>
                             );
