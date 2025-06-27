@@ -65,7 +65,7 @@ jobs:
         source-files: 'pages/api'
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
-        destination-directory: '/functions/api'
+        destination-directory: '/functions/'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
         step: 'API'
