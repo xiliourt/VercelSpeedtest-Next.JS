@@ -114,8 +114,8 @@ export default function App() {
                     });
                     onProgress((i + 1) * pingProgressIncrement);
                     pings.push(latency);
-                });
-            }
+                }
+            });
         } catch (error) {
             if (error.name === 'AbortError') console.error('Ping request timed out.');
             else console.error('Ping request failed:', error);
