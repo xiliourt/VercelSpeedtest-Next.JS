@@ -46,7 +46,6 @@ jobs:
           npm install
           npm run build
           mkdir -p ./standalone/.next/static
-          ls .next
           cp -r ./.next/static/* ./standalone/.next/static/
           cp -r ./.next/standalone/* ./standalone/
           cp -r ./public ./standalone
