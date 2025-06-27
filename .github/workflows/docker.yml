@@ -44,7 +44,7 @@ jobs:
           push: true
           tags: blurred123131/speedjs:latest
 
-      - name: Deploy via SSH
+      - name: Deploy to Syd
         uses: appleboy/ssh-action@v1
         with:
           host: '160.22.78.169'
@@ -54,7 +54,7 @@ jobs:
             docker pull blurred123131/speedjs:latest
             docker compose up -d
 
-      - name: Deploy via SSH
+      - name: Deploy to STO
         uses: appleboy/ssh-action@v1
         with:
           host: '176.126.84.41'
