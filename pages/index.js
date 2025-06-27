@@ -44,8 +44,16 @@ const CheckboxUncheckedIcon = () => (
 
 // --- SERVER CONFIGURATION ---
 const SERVERS = [
-   { name: 'Vercel', pingUrl: 'https://speedtestjs-git-dev-xiliourts-projects.vercel.app/api/pingws', downloadUrl: 'https://speedtestjs-git-dev-xiliourts-projects.vercel.app/api/download', uploadUrl: 'https://speedtestjs-git-dev-xiliourts-projects.vercel.app/api/upload', maxUpload: '4194304'},
-]
+    { name: 'Azure', pingUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/ping', downloadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/download', uploadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/upload', maxUpload: '107374182400' },
+    { name: 'Vercel', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload', maxUpload: '4194304'},
+    { name: 'Render', pingUrl: 'https://js.render.dyl.ovh/api/ping', downloadUrl: 'https://js.render.dyl.ovh/api/download', uploadUrl: 'https://js.render.dyl.ovh/api/upload', maxUpload: '107374182400'},
+    { name: 'Netlify', pingUrl: 'https://js.netlify.dyl.ovh/api/ping', downloadUrl: 'https://js.netlify.dyl.ovh/api/download', uploadUrl: 'https://js.netlify.dyl.ovh/api/upload', maxUpload: '4194304'},
+    { name: 'Cloudflare', pingUrl: 'https://js.cf.dyl.ovh/api/ping', downloadUrl: 'https://js.cf.dyl.ovh/api/download', uploadUrl: 'https://js.cf.dyl.ovh/api/upload', maxUpload: '107374182400' },
+    { name: 'Sydney, AU (Onidel)', pingUrl: 'https://js.s.dyl.ovh/api/ping', downloadUrl: 'https://js.s.dyl.ovh/api/download', uploadUrl: 'https://js.s.dyl.ovh/api/upload', maxUpload: '107374182400' },
+    { name: 'Sydney, AU (via CF)', pingUrl: 'https://jsscf.dyl.ovh/api/ping', downloadUrl: 'https://jsscf.dyl.ovh/api/download', uploadUrl: 'https://jsscf.dyl.ovh/api/upload', maxUpload: '107374182400' },
+    { name: 'Stockholm (Hosthatch)', pingUrl: 'https://js.sto.dyl.ovh/api/ping', downloadUrl: 'https://js.sto.dyl.ovh/api/download', uploadUrl: 'https://js.sto.dyl.ovh/api/upload', maxUpload: '107374182400' },
+    { name: 'Stockholm (via CF)', pingUrl: 'https://jsstocf.dyl.ovh/api/ping', downloadUrl: 'https://jsstocf.dyl.ovh/api/download', uploadUrl: 'https://jsstocf.dyl.ovh/api/upload', maxUpload: '107374182400' }
+];
 
 // --- TEST CONFIGURATION ---
 const PING_COUNT = 4;
@@ -93,43 +101,7 @@ export default function App() {
             return newSelected;
         });
     };
-
-    // --- Core Measurement Functions (unchanged) ---
-    const measurePingWs = async (pingUrl, onProgress) => {
-        try {
-            let pings = [];
-            const pingProgressIncrement = 100 / PING_COUNT;
-            await fetch(`${pingUrl}`, { method: 'GET' }) // Ensure server is awake
-            const socket = io(`${pingUrl}`);
-            socket.on('connect', async () => {
-                for (let i = 1; i <= 5; i++) {
-                    const latency = await new Promise(resolve => {
-                        const startTime = performance.now();
-                        socket.emit('ping', message); 
-                        socket.once('pong', () => resolve(performance.now() - startTime));
-                    });
-                    onProgress((i + 1) * pingProgressIncrement);
-                    pings.push(performance.now();- startTime);    
-                }   
-                socket.disconnect();
-            });
-        } catch (error) {
-            if (error.name === 'AbortError') console.error('Ping request timed out.');
-            else console.error('Ping request failed:', error);
-                pings.push(null);
-        } finally {
-            clearTimeout(timeoutId);
-        }
-    }
     
-    const validPings = pings.filter(p => p !== null);
-    if (validPings.length > 0) {
-        const avgPing = validPings.reduce((a, b) => a + b, 0) / validPings.length;
-        return Math.round(avgPing);
-    } else {
-        throw new Error('Ping test failed for all attempts.');
-    }
-}
     // --- Core Measurement Functions (unchanged) ---
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
@@ -259,7 +231,7 @@ export default function App() {
                 // Ping
                 setStatusMessage(`Pinging ${server.name}...`);
                 try {
-                    const finalPing = await measurePingWs(server.pingUrl, (p) => setCurrentTestProgress(p));
+                    const finalPing = await measurePing(server.pingUrl, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, ping: finalPing } : r));
                 } catch (error) {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, ping: 'ERR', status: 'error' } : r));
@@ -268,18 +240,19 @@ export default function App() {
                 }
                 
                 await new Promise(res => setTimeout(res, 200));
-                
-                /** --- Download Test ---
-                    measureDownload INITIAL_DOWNLOAD_SIZE_BYTES
-                    If speed > SUPER_CONNECTION_THRESHOLD_MBPS
-                        measureDownload SUPER_DOWNLOAD_SIZE_BYTES 
+
+                // Download Test
+                /*
+                    Start with INITIAL_DOWNLOAD_SIZE_BYTES
+                    If above SUPER_CONNECTION_THRESHOLD_MBPS
+                        try SUPER_DOWNLOAD_SIZE_BYTES 
                     Else if above FAST_CONNECTION_THRESHOLD_MBPS
-                        measureDownload LARGE_DOWNLOAD_SIZE_BYTES
-                        if speed > SUPER_CONNECTION_THRESHOLD_MBPS
-                            measureDownload SUPER_LARGE_DOWNLOAD_SIZE_BYTES
+                        try LARGE_DOWNLOAD_SIZE_BYTES
+                        if above SUPER_CONNECTION_THRESHOLD_MBPS
+                            try SUPER_LARGE_DOWNLOAD_SIZE_BYTES
                    
                    Update with math.max() after each test
-                **/
+                */
                 setStatusMessage(`Downloading ${INITIAL_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                 try {
                     finalDownload = await measureDownload(server.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
