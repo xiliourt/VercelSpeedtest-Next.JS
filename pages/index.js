@@ -44,16 +44,16 @@ const CheckboxUncheckedIcon = () => (
 
 // --- SERVER CONFIGURATION ---
 const SERVERS = [
-    { name: 'Azure', pingUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/ping', downloadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/download', uploadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/upload', maxUpload: '27262976' }, // 26MB
-    { name: 'Vercel', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload', maxUpload: '4194304'}, //4MB
+    { name: 'Azure (Global CDN)', pingUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/ping', downloadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/download', uploadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/upload', maxUpload: '27262976' }, // 26MB
+    { name: 'Vercel (Edge CDN)', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload', maxUpload: '4194304'}, //4MB
     { name: 'Render', pingUrl: 'https://renderjsspeedtest.onrender.com/api/ping', downloadUrl: 'https://renderjsspeedtest.onrender.com/api/download', uploadUrl: 'https://renderjsspeedtest.onrender.com/api/upload', maxUpload: '27262976'}, // 26MB
-    { name: 'Netlify', pingUrl: 'https://speedtestnextjs.netlify.app/api/ping', downloadUrl: 'https://speedtestnextjs.netlify.app/api/download', uploadUrl: 'https://speedtestnextjs.netlify.app/api/upload', maxUpload: '4194304'}, // 4MB
-    { name: 'Cloudflare', pingUrl: 'https://speedtestjs.pages.dev/api/ping', downloadUrl: 'https://speedtestjs.pages.dev/api/download', uploadUrl: 'https://speedtestjs.pages.dev/api/upload', maxUpload: '27262976' }, // 26MB
+    { name: 'Netlify (CDN)', pingUrl: 'https://speedtestnextjs.netlify.app/api/ping', downloadUrl: 'https://speedtestnextjs.netlify.app/api/download', uploadUrl: 'https://speedtestnextjs.netlify.app/api/upload', maxUpload: '4194304'}, // 4MB
+    { name: 'Cloudflare (Global CDN)', pingUrl: 'https://speedtestjs.pages.dev/api/ping', downloadUrl: 'https://speedtestjs.pages.dev/api/download', uploadUrl: 'https://speedtestjs.pages.dev/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Sydney, AU (Onidel)', pingUrl: 'https://js.s.xiliourt.ovh/api/ping', downloadUrl: 'https://js.s.dyl.ovh/api/download', uploadUrl: 'https://js.s.dyl.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Sydney, AU (via CF)', pingUrl: 'https://jsscf.xiliourt.ovh/api/ping', downloadUrl: 'https://jsscf.dyl.ovh/api/download', uploadUrl: 'https://jsscf.dyl.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Stockholm (Hosthatch)', pingUrl: 'https://js.sto.xiliourt.ovh/api/ping', downloadUrl: 'https://js.sto.dyl.ovh/api/download', uploadUrl: 'https://js.sto.dyl.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Stockholm (via CF)', pingUrl: 'https://jsstocf.xiliourt.ovh/api/ping', downloadUrl: 'https://jsstocf.dyl.ovh/api/download', uploadUrl: 'https://jsstocf.dyl.ovh/api/upload', maxUpload: '27262976' }, // 26MB
-    { name: 'Stockholm (via CF)', pingUrl: 'https://hostbrr.xiliourt.ovh/api/ping', downloadUrl: 'https://hostbrr.xiliourt.ovh/api/download', uploadUrl: 'https://hostbrr.xiliourt.ovh/api/upload', maxUpload: '27262976' } // 26MB
+    { name: 'Germany (Hostbrr)', pingUrl: 'https://hostbrr.xiliourt.ovh/api/ping', downloadUrl: 'https://hostbrr.xiliourt.ovh/api/download', uploadUrl: 'https://hostbrr.xiliourt.ovh/api/upload', maxUpload: '27262976' } // 26MB
 ];
 
 // --- TEST CONFIGURATION ---
