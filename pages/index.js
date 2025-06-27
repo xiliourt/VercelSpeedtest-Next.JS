@@ -105,7 +105,7 @@ export default function App() {
                 const s = io(`${url.hostname}`, {'path': `${url.pathname}`, addTrailingSlash: false});
                 s.on('connect', () => resolve(s));
                 s.on('connect_error', (err) => reject(err));
-            }).then async (socket) => {
+            }).then(async (socket) => {
                 for (let i = 1; i <= 5; i++) {
                     const latency = await new Promise(resolve => {
                         const startTime = performance.now();
