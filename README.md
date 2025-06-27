@@ -2,7 +2,19 @@
 [![Docker](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)](https://js.s.xiliourt.ovh/)
 
 
-[![Azure](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net&name=Azure)](https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net)  [![Vercel](https://deploy-badge.vercel.app/vercel/speedtestjs)](https://speedtestjs.vercel.app/) [![Render Status](https://deploy-badge.vercel.app/?url=https%3A%2F%2Frenderjsspeedtest.onrender.com%2F&name=Render)](https://renderjsspeedtest.onrender.com)  [![Netlify Status](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedtestnextjs.netlify.app%2F&logo=netlify&name=netlify)](https://speedtestnextjs.netlify.app)  [![Cloudflare](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedtestjs.pages.dev%2Fapi%2Fping&name=Cloudflare)](https://speedtestjs.pages.dev/)  [![Syd](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fjs.s.xiliourt.ovh%2F&name=Syd+%28Onidel%29)](https://js.s.xiliourt.ovh/) [![STO (Self Hosted)](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fjs.sto.xiliourt.ovh&name=STO+%28Hosthatch%29)](https://js.sto.xiliourt.ovh/)
+[![Azure](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net&name=Azure)](https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net)  
+
+[![Vercel](https://deploy-badge.vercel.app/vercel/speedtestjs)](https://speedtestjs.vercel.app/) 
+
+[![Render Status](https://deploy-badge.vercel.app/?url=https%3A%2F%2Frenderjsspeedtest.onrender.com%2F&name=Render)](https://renderjsspeedtest.onrender.com)  
+
+[![Netlify Status](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedtestnextjs.netlify.app%2F&logo=netlify&name=netlify)](https://speedtestnextjs.netlify.app)  
+
+[![Cloudflare](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedtestjs.pages.dev%2Fapi%2Fping&name=Cloudflare)](https://speedtestjs.pages.dev/)  
+
+[![Syd](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fjs.s.xiliourt.ovh%2F&name=Syd+%28Onidel%29)](https://js.s.xiliourt.ovh/) 
+
+[![STO (Self Hosted)](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fjs.sto.xiliourt.ovh&name=STO+%28Hosthatch%29)](https://js.sto.xiliourt.ovh/)
 
 
 
