@@ -1,6 +1,8 @@
+import '@vercel/edge'
+export const runtime = 'edge'; 
 import { Server } from 'socket.io';
 
-const SocketHandler = (req, res) => {
+export default function handler(req, res) {
 	if (!res.socket.server.io) {
 	const io = new Server(res.socket.server);
 	res.socket.server.io = io;
@@ -11,7 +13,5 @@ const SocketHandler = (req, res) => {
 		socket.on('disconnect', () => {res.end()});
 	});
 }
-
-export default SocketHandler;
   
   
