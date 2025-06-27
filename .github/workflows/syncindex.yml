@@ -6,11 +6,12 @@ on:
     paths:
       - 'pages/**'
       - 'styles/*'
-      - 'postcss.config.js'
       - 'next.config.js'
       - 'package.json'
       - 'postcss.config.js'
       - 'tailwind.config.js'
+  workflow_dispatch:
+
 jobs:
    sync:
     name: Sync Cloudflare Repo
@@ -39,6 +40,36 @@ jobs:
         destination-username: 'xiliourt'
         destination-repository: 'CFPages-Speedtest-NextJS'
         destination-directory: 'styles/'
+        destination-branch: 'main'
+        commit-email: 'xiliout@xilout'
+        step: 'style'
+
+    - name: Sync Config Files
+      uses: xiliourt/push-files-to-another-repository@latest
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source-files: |
+              'next.config.js'
+              'package.json'
+              'postcss.config.js'
+              'tailwind.config.js'
+        destination-username: 'xiliourt'
+        destination-repository: 'CFPages-Speedtest-NextJS'
+        destination-directory: './'
+        destination-branch: 'main'
+        commit-email: 'xiliout@xilout'
+        step: 'style'
+
+    - name: Sync API
+      uses: xiliourt/push-files-to-another-repository@latest
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source-files: pages/api
+        destination-username: 'xiliourt'
+        destination-repository: 'CFPages-Speedtest-NextJS'
+        destination-directory: '/functions/api'
         destination-branch: 'main'
         commit-email: 'xiliout@xilout'
         step: 'style'
