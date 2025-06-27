@@ -53,7 +53,7 @@ const SERVERS = [
     { name: 'Sydney, AU (via CF)', pingUrl: 'https://jsscf.xiliourt.ovh/api/ping', downloadUrl: 'https://jsscf.dyl.ovh/api/download', uploadUrl: 'https://jsscf.dyl.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Stockholm (Hosthatch)', pingUrl: 'https://js.sto.xiliourt.ovh/api/ping', downloadUrl: 'https://js.sto.dyl.ovh/api/download', uploadUrl: 'https://js.sto.dyl.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Stockholm (via CF)', pingUrl: 'https://jsstocf.xiliourt.ovh/api/ping', downloadUrl: 'https://jsstocf.dyl.ovh/api/download', uploadUrl: 'https://jsstocf.dyl.ovh/api/upload', maxUpload: '27262976' }, // 26MB
-    { name: 'Germany (Hostbrr)', pingUrl: 'https://hostbrr.xiliourt.ovh/api/ping', downloadUrl: 'https://hostbrr.xiliourt.ovh/api/download', uploadUrl: 'https://hostbrr.xiliourt.ovh/api/upload', maxUpload: '27262976' } // 26MB
+    { name: 'Germany (Hostbrr)', pingUrl: 'https://hostbrr.xiliourt.ovh/api/ping/', downloadUrl: 'https://hostbrr.xiliourt.ovh/api/download/', uploadUrl: 'https://hostbrr.xiliourt.ovh/api/upload/', maxUpload: '27262976' } // 26MB
 ];
 
 // --- TEST CONFIGURATION ---
