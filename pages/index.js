@@ -106,10 +106,10 @@ export default function App() {
                     const latency = await new Promise(resolve => {
                         const startTime = performance.now();
                         socket.emit('ping', message); 
-                        socket.once('pong', () => resolve(performance.now() - startTime));
+                        socket.once('pong', () => resolve(peprformance.now() - startTime));
                     });
                     onProgress((i + 1) * pingProgressIncrement);
-                    pings.push(performance.now()- startTime);    
+                    pings.push(latency);
                 }   
                 socket.disconnect();
             });
