@@ -1,5 +1,5 @@
 # Deploy status
-[![Docker](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)](https://js.s.xiliourt.ovh/)
+![Docker](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)
 
 ### Free Deployments
 [![Azure](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net&name=Azure)](https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net)  [![Vercel](https://deploy-badge.vercel.app/vercel/speedtestjs)](https://speedtestjs.vercel.app/)  [![Render Status](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedtestnextjs.netlify.app%2F&logo=render&name=Render)](https://renderjsspeedtest.onrender.com/)  [![Netlify Status](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedtestnextjs.netlify.app%2F&logo=netlify&name=Netlify)](https://speedtestnextjs.netlify.app)  [![Cloudflare](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fspeedtestnextjs.netlify.app%2F&logo=cloudflare&name=Cloudflare)](https://speedtestjs.pages.dev/)  
