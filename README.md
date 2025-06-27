@@ -1,5 +1,9 @@
 # Deploy status
-[![Netlify Status](https://api.netlify.com/api/v1/badges/cf85bd1f-e92a-4257-a689-979ffa3cf385/deploy-status)](https://app.netlify.com/projects/speedtestnextjs/deploys)
+[![Azure Status](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/azureDeploy.yml/badge.svg)](speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/cf85bd1f-e92a-4257-a689-979ffa3cf385/deploy-status)](https://speedtestnextjs.netlify.app/)
+[![Cloudflare](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/syncindex.yml/badge.svg)](speedtestjs.pages.dev)
+[![Syd Status](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)](https://js.s.xiliourt.ovh/)
+[![STO Status](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)](https://js.sto.xiliourt.ovh/)
 
 Clone and deploy to Vercel for an edge speedtest! Change URLs in pages/index.js
 
