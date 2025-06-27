@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+export const metadata = { icons: { icon: '/icon.png' } }
 
 const PlayIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
