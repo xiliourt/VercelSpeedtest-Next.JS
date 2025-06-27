@@ -117,9 +117,8 @@ export default function App() {
             if (error.name === 'AbortError') console.error('Ping request timed out.');
             else console.error('Ping request failed:', error);
                 pings.push(null);
-        } finally {
-            clearTimeout(timeoutId);
-        }
+        } finally { socket.disconnect(); } 
+    }
     
         const validPings = pings.filter(p => p !== null);
         if (validPings.length > 0) {
