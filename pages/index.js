@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client'
 
 const PlayIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -105,7 +105,7 @@ export default function App() {
                 for (let i = 1; i <= 5; i++) {
                     const latency = await new Promise(resolve => {
                         const startTime = performance.now();
-                        socket.emit('ping'); 
+                        socket.emit('ping', message); 
                         socket.once('pong', () => resolve(performance.now() - startTime));
                     });
                     onProgress((i + 1) * pingProgressIncrement);
@@ -117,8 +117,9 @@ export default function App() {
             if (error.name === 'AbortError') console.error('Ping request timed out.');
             else console.error('Ping request failed:', error);
                 pings.push(null);
-        } finally { socket.disconnect(); } 
-    }
+        } finally {
+            clearTimeout(timeoutId);
+        }
     
         const validPings = pings.filter(p => p !== null);
         if (validPings.length > 0) {
