@@ -101,7 +101,7 @@ export default function App() {
             let pings = [];
             const pingProgressIncrement = 100 / PING_COUNT;
             await fetch(`${pingUrl}`, { method: 'GET' }) // Ensure server is awake
-            const socket = io(`${url.hostname}`, {'path': `${url.pathname}`});
+            const socket = io(`${url.hostname}`, {'path': `${url.pathname}`, addTrailingSlash: false});
             socket.on('connect', async () => {
                 for (let i = 1; i <= 5; i++) {
                     const latency = await new Promise(resolve => {
