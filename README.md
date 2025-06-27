@@ -5,9 +5,7 @@
 
 [![Cloudflare](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/syncindex.yml/badge.svg)](speedtestjs.pages.dev)
 
-[![Syd Status](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)](https://js.s.xiliourt.ovh/)
-
-[![STO Status](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)](https://js.sto.xiliourt.ovh/)
+[![Syd / STO Status](https://github.com/xiliourt/VercelSpeedtest-Next.JS/actions/workflows/docker.yml/badge.svg)](https://js.s.xiliourt.ovh/)
 
 
 Clone and deploy to Vercel for an edge speedtest! Change URLs in pages/index.js
