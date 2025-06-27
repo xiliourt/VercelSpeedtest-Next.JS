@@ -49,6 +49,7 @@ jobs:
           ls .next
           cp -r ./.next/static/* ./standalone/.next/static/
           cp -r ./.next/standalone/* ./standalone/
+          cp -r ./public ./standalone
           
       - name: Zip artifact for deployment
         working-directory: ./standalone
