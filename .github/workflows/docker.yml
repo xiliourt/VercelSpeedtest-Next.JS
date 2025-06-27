@@ -64,3 +64,13 @@ jobs:
           script: |
             docker pull blurred123131/speedjs:latest
             cd plex && docker compose up -d
+
+      - name: Deploy to Azure
+        uses: appleboy/ssh-action@v1
+        with:
+          host: '68.218.3.24'
+          username: 'azureuser'
+          key: ${{ secrets.AZURE_KEY }}
+          script: |
+            sudo docker pull blurred123131/speedjs:latest
+            sudo docker compose up -d
