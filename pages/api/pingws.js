@@ -3,7 +3,8 @@ export const runtime = 'edge';
 import { Server } from 'socket.io';
 
 export default function handler(req, res) {
-		if (!res.socket.server.io) {
+		if (!res.socket) { return ("pong") }
+		else if (!res.socket.server.io) {
 		const io = new Server(res.socket.server);
 		res.socket.server.io = io;
 			io.on('connection', (socket) => {
