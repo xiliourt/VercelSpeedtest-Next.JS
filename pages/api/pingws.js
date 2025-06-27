@@ -12,7 +12,7 @@ export default function handler(req, res) {
 	};
 
 	// If it's not a websocket connection (it's just waking up the server)
-	if (!res.socket) { return new Response('OK', {status: 200, headers: headers});) }
+	if (!res.socket) { return new Response('OK', {status: 200, headers: headers}); }
 	else if (!res.socket.server.io) {
 		const io = new Server(res.socket.server);
 		res.socket.server.io = io;
