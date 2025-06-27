@@ -1,4 +1,4 @@
-Clone and deploy to Vercel for an edge speedtest! 
+Clone and deploy to Vercel for an edge speedtest! Change URLs in pages/index.js
 
 Gets well over 1Gbps speeds to my servers
 
