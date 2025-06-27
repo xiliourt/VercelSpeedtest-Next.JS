@@ -1,4 +1,4 @@
-name: Sync Cloudflare Repo
+name: Cloudflare Sync Status
 
 on:
   push:
