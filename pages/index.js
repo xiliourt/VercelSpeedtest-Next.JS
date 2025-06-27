@@ -288,7 +288,7 @@ export default function App() {
 
                 // Set output to 'Disabled' if max upload is 0
                 if (initialUploadSize == 0) {
-                    setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'Disabled', status: 'error' } : r));
+                    setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'Disabled', status: 'complete' } : r));
                     return r;
                 }
                 setStatusMessage(`Uploading ${initialUploadSize / 1024 / 1024}MB to ${server.name}...`);
