@@ -53,8 +53,6 @@ const SERVERS = [
     { name: 'Cloudflare (Global CDN)', pingUrl: 'https://speedtestjs.pages.dev/api/ping', downloadUrl: 'https://speedtestjs.pages.dev/api/download', uploadUrl: 'https://speedtestjs.pages.dev/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Sydney, AU (Onidel)', pingUrl: 'https://js.s.xiliourt.ovh/api/ping', downloadUrl: 'https://js.s.xiliourt.ovh/api/download', uploadUrl: 'https://js.s.xiliourt.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Sydney, AU (via CF)', pingUrl: 'https://jsscf.xiliourt.ovh/api/ping', downloadUrl: 'https://jsscf.xiliourt.ovh/api/download', uploadUrl: 'https://jsscf.xiliourt.ovh/api/upload', maxUpload: '27262976' }, // 26MB
-    { name: 'Stockholm (Hosthatch)', pingUrl: 'https://js.sto.xiliourt.ovh/api/ping', downloadUrl: 'https://js.sto.xiliourt.ovh/api/download', uploadUrl: 'https://js.sto.xiliourt.ovh/api/upload', maxUpload: '27262976' }, // 26MB
-    { name: 'Stockholm (via CF)', pingUrl: 'https://jsstocf.xiliourt.ovh/api/ping', downloadUrl: 'https://jsstocf.xiliourt.ovh/api/download', uploadUrl: 'https://jsstocf.xiliourt.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Germany (Hostbrr)', pingUrl: 'https://hostbrr.xiliourt.ovh/api/ping/', downloadUrl: 'https://hostbrr.xiliourt.ovh/api/download/', uploadUrl: 'https://hostbrr.xiliourt.ovh/api/upload/', maxUpload: '0' } // Disable upload
 ];
 
