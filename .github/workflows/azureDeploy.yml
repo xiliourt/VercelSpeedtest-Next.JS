@@ -89,7 +89,7 @@ jobs:
       - name: Unzip artifact for deployment
         run: |
           unzip release.zip
-          mv -r standalone/* .
+          mv standalone/* .
           rm -rf standalone
           
       - name: Login to Azure
