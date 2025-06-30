@@ -45,16 +45,6 @@ jobs:
           push: true
           tags: blurred123131/speedjs:latest
 
-      - name: Deploy to Syd
-        uses: appleboy/ssh-action@v1
-        with:
-          host: '160.22.78.169'
-          username: 'root'
-          password: ${{ secrets.DEPLOY_PASSWORD }}
-          script: |
-            docker pull blurred123131/speedjs:latest
-            docker restart speed
-
       - name: Deploy to Azure
         uses: appleboy/ssh-action@v1
         with:
