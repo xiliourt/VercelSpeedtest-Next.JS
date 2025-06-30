@@ -53,7 +53,7 @@ jobs:
           password: ${{ secrets.DEPLOY_PASSWORD }}
           script: |
             docker pull blurred123131/speedjs:latest
-            docker run --detached blurred123131/speedjs:latest 
+            docker run -d blurred123131/speedjs:latest 
 
       - name: Deploy to STO
         uses: appleboy/ssh-action@v1
@@ -63,7 +63,7 @@ jobs:
           password: ${{ secrets.DEPLOY_PASSWORD2 }}
           script: |
             docker pull blurred123131/speedjs:latest
-            ocker run --detached blurred123131/speedjs:latest 
+            ocker run -d blurred123131/speedjs:latest 
 
       - name: Deploy to Azure
         uses: appleboy/ssh-action@v1
