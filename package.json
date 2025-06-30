@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "startAzure": "node ./server.js",
+    "startAzure": "node ./standalone/server.js",
     "CFBuild": "next build && esbuild _worker.js --bundle --outfile=out/_worker.js --format=esm"
   },
   "dependencies": {
