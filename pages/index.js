@@ -45,7 +45,7 @@ const CheckboxUncheckedIcon = () => (
 
 // --- SERVER CONFIGURATION ---
 const SERVERS = [
-    { name: 'Azure (Free Next.JS AU South East)', pingUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/ping', downloadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/download', uploadUrl: 'https://speedjstest-egazh8d6gkdfefar.australiasoutheast-01.azurewebsites.net/api/upload', maxUpload: '27262976' }, // 26MB
+    { name: 'Azure (Free Next.JS AU South East)', pingUrl: 'https://speedjstestdocker-axe7bpawbeewbvaj.australiasoutheast-01.azurewebsites.net/api/ping', downloadUrl: 'https://speedjstestdocker-axe7bpawbeewbvaj.australiasoutheast-01.azurewebsites.net/api/download', uploadUrl: 'https://speedjstestdocker-axe7bpawbeewbvaj.australiasoutheast-01.azurewebsites.net/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Azure (Free VM AU East)', pingUrl: 'https://js.azure.xiliourt.ovh/api/ping', downloadUrl: 'https://js.azure.xiliourt.ovh/api/download', uploadUrl: 'https://js.azure.xiliourt.ovh/api/upload', maxUpload: '27262976' }, // 26MB
     { name: 'Vercel (Edge CDN)', pingUrl: 'https://speedtestjs.vercel.app/api/ping', downloadUrl: 'https://speedtestjs.vercel.app/api/download', uploadUrl: 'https://speedtestjs.vercel.app/api/upload', maxUpload: '4194304'}, //4MB
     { name: 'Render', pingUrl: 'https://renderjsspeedtest.onrender.com/api/ping', downloadUrl: 'https://renderjsspeedtest.onrender.com/api/download', uploadUrl: 'https://renderjsspeedtest.onrender.com/api/upload', maxUpload: '27262976'}, // 26MB
