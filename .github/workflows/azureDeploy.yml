@@ -51,9 +51,8 @@ jobs:
           cp -r ./public ./standalone
           
       - name: Zip artifact for deployment
-        run: | 
-            zip release.zip ./standalone -j -r
-            zip release.zip ./standalone/.next -j -r
+        run: |
+            zip release.zip ./standalone
 
       - name: Upload Release
         uses: ncipollo/release-action@v1.12.0
@@ -80,11 +79,14 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
+      - name: Clear directory
+        run: rm -rf *
+          
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: node-app
-
+          
       - name: Unzip artifact for deployment
         run: unzip release.zip
       
@@ -101,5 +103,5 @@ jobs:
         with:
           app-name: 'speedjstest'
           slot-name: 'Production'
-          package: .
+          package: ./standalone
           
