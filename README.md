@@ -6,7 +6,6 @@
 
 ### Self hosted
 [![Syd](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fjs.s.xiliourt.ovh%2F&name=Syd+%28Onidel%29)](https://js.s.xiliourt.ovh/) 
-[![STO (Self Hosted)](https://deploy-badge.vercel.app/?url=https%3A%2F%2Fjs.sto.xiliourt.ovh&name=STO+%28Hosthatch%29)](https://js.sto.xiliourt.ovh/)
 
 
 
