@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import html2canvas from 'html2canvas';
 
 export const metadata = { icons: { icon: '/icon.png' } }
 
@@ -27,7 +28,6 @@ const ExclamationTriangleIcon = () => (
     </svg>
 );
 
-// --- **NEW** Icons for selection ---
 const CheckboxCheckedIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-sky-400">
         <path fillRule="evenodd" d="M8.25 12a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V13.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
@@ -39,6 +39,13 @@ const CheckboxCheckedIcon = () => (
 const CheckboxUncheckedIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-slate-500 hover:text-slate-400">
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+);
+
+// --- **NEW** Icon for the download button ---
+const DownloadIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+        <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
     </svg>
 );
 
@@ -72,23 +79,23 @@ export default function App() {
     const [statusMessage, setStatusMessage] = useState('Select servers and click "Start Tests" to begin.');
     const [currentTestProgress, setCurrentTestProgress] = useState(0);
     const [overallProgress, setOverallProgress] = useState(0);
-    // **NEW**: State to manage which servers are selected for testing.
     const [selectedServers, setSelectedServers] = useState(() => new Set(SERVERS.map(s => s.name)));
+    
+    // --- **NEW**: Ref for the element to screenshot ---
+    const resultsPanelRef = useRef(null);
 
-    // Initialize results on component mount
     useEffect(() => {
         setTestResults(SERVERS.map(s => ({
             name: s.name,
             ping: '--',
             download: '--',
             upload: '--',
-            status: 'pending' // pending, testing, complete, error
+            status: 'pending'
         })));
     }, []);
 
-    // **NEW**: Handler to toggle a server's selected state
     const handleToggleServer = (serverName) => {
-        if (isTesting) return; // Prevent changes during a test run
+        if (isTesting) return;
         setSelectedServers(prevSelected => {
             const newSelected = new Set(prevSelected);
             if (newSelected.has(serverName)) {
@@ -99,12 +106,38 @@ export default function App() {
             return newSelected;
         });
     };
+
+    // --- **NEW**: Screenshot download handler ---
+    const handleDownloadScreenshot = async () => {
+        if (!resultsPanelRef.current) {
+            console.error("Results panel ref not found!");
+            return;
+        }
+
+        try {
+            const canvas = await html2canvas(resultsPanelRef.current, {
+                backgroundColor: '#1e293b', // Match the panel's background
+                useCORS: true, // Important for external resources if any
+                scale: 2 // Increase resolution for better quality
+            });
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `speedtest-results-${new Date().toISOString().slice(0, 10)}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Oops, something went wrong!", error);
+            // Optionally, update status message to inform user of the error
+            setStatusMessage("Could not capture screenshot.");
+        }
+    };
     
     // --- Core Measurement Functions (unchanged) ---
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
         const pingProgressIncrement = 100 / PING_COUNT;
-        // Warm up the server
         await fetch(`${pingUrl}`, { method: 'GET', cache: 'no-store' });
         for (let i = 0; i < PING_COUNT; i++) {
             const controller = new AbortController();
@@ -195,11 +228,9 @@ export default function App() {
         });
     };
 
-    // --- **UPDATED** Main Test Orchestration ---
     const startAllTests = async () => {
         if (isTesting) return;
         
-        // **UPDATED**: Filter servers based on selection
         const serversToTest = SERVERS.filter(s => selectedServers.has(s.name));
         
         if (serversToTest.length === 0) {
@@ -208,7 +239,6 @@ export default function App() {
         }
 
         setIsTesting(true);
-        // **UPDATED**: Reset results only for the selected servers
         setTestResults(prevResults => prevResults.map(res => {
             if (selectedServers.has(res.name)) {
                 return { ...res, ping: '--', download: '--', upload: '--', status: 'pending' };
@@ -217,10 +247,8 @@ export default function App() {
         }));
         setOverallProgress(0);
 
-        // **UPDATED**: Loop through only the selected servers
         for (let i = 0; i < serversToTest.length; i++) {
             const server = serversToTest[i];
-            // **UPDATED**: Find the original index to update the correct row in the UI
             const originalIndex = SERVERS.findIndex(s => s.name === server.name);
 
             setTestResults(prev => prev.map((r, index) => index === originalIndex ? { ...r, status: 'testing' } : r));
@@ -236,23 +264,12 @@ export default function App() {
                 } catch (error) {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, ping: 'ERR', status: 'error' } : r));
                     console.error(`Ping test failed for ${server.name}:`, error);
-                    continue; // Skip to next server if ping fails
+                    continue;
                 }
                 
                 await new Promise(res => setTimeout(res, 200));
 
                 // Download Test
-                /*
-                    Start with INITIAL_DOWNLOAD_SIZE_BYTES
-                    If above SUPER_CONNECTION_THRESHOLD_MBPS
-                        try SUPER_DOWNLOAD_SIZE_BYTES 
-                    Else if above FAST_CONNECTION_THRESHOLD_MBPS
-                        try LARGE_DOWNLOAD_SIZE_BYTES
-                        if above SUPER_CONNECTION_THRESHOLD_MBPS
-                            try SUPER_LARGE_DOWNLOAD_SIZE_BYTES
-                   
-                   Update with math.max() after each test
-                */
                 setStatusMessage(`Downloading ${INITIAL_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                 try {
                     finalDownload = await measureDownload(server.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
@@ -283,7 +300,6 @@ export default function App() {
                 // Upload Test
                 const initialUploadSize = Math.min(INITIAL_UPLOAD_SIZE_BYTES, server.maxUpload);
 
-                // Set output to 'Disabled' if max upload is 0
                 if (initialUploadSize == 0) {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'Disabled', status: 'complete' } : r));
                     return r;
@@ -297,7 +313,7 @@ export default function App() {
                          setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                          const finalUploadLarge = await measureUpload(server.uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                          if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
-                             setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUploadLarge } : r));
+                              setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUploadLarge } : r));
                          }
                     }
                 } catch (error) {
@@ -305,9 +321,6 @@ export default function App() {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'ERR', status: 'error' } : r));
                 }
 
-                // Output 'disabled' if max upload for the server is 0
-
-                // Mark as complete if no errors occurred in the process
                 setTestResults(prev => prev.map((r, idx) => {
                     if (idx === originalIndex && r.status !== 'error') {
                         return { ...r, status: 'complete' };
@@ -319,7 +332,6 @@ export default function App() {
                 console.error(`Test failed for ${server.name}:`, error);
                 setTestResults(prev => prev.map((r, index) => index === originalIndex ? { ...r, status: 'error' } : r));
             } finally {
-                // **UPDATED**: Calculate progress based on the number of selected servers
                 setOverallProgress(((i + 1) / serversToTest.length) * 100);
                 setCurrentTestProgress(0);
             }
@@ -328,7 +340,6 @@ export default function App() {
         setStatusMessage('All selected tests complete!');
     };
 
-    // --- **UPDATED** Result Row Sub-component ---
     const ResultRow = ({ result, isSelected, onToggle, isTestingGlobal }) => {
         const isTestingThis = result.status === 'testing';
         const isComplete = result.status === 'complete';
@@ -340,7 +351,6 @@ export default function App() {
             if (isTestingThis) return <SpinnerIcon />;
             if (isComplete) return <CheckCircleIcon />;
             if (isError) return <ExclamationTriangleIcon />;
-            // When not testing, show selection state
             if (isSelected) return <CheckboxCheckedIcon />;
             return <CheckboxUncheckedIcon />;
         };
@@ -351,7 +361,6 @@ export default function App() {
                     {/* Server Name & Status */}
                     <div className="flex items-center justify-between md:w-1/3 lg:w-2/5 md:pr-4">
                         <div className="flex items-center gap-4">
-                            {/* **UPDATED**: This is now a button for selection */}
                             <button
                                 onClick={() => onToggle(result.name)}
                                 disabled={isTestingGlobal}
@@ -397,8 +406,8 @@ export default function App() {
                     <p className="text-slate-400 mt-1 text-base md:text-lg">Test your connection to available free Next.js hosts.</p>
                 </header>
 
-                {/* Main Results Panel */}
-                <div className="bg-slate-800/60 p-3 md:p-4 rounded-2xl shadow-2xl w-full border border-slate-700/80 backdrop-blur-xl">
+                {/* Main Results Panel - **ADDED ref HERE** */}
+                <div ref={resultsPanelRef} className="bg-slate-800/60 p-3 md:p-4 rounded-2xl shadow-2xl w-full border border-slate-700/80 backdrop-blur-xl">
                     {/* -- Results Header -- */}
                     <div className="flex px-4 pb-3 border-b border-slate-700">
                         <h3 className="font-bold text-slate-300 text-sm w-1/3 lg:w-2/5">Server</h3>
@@ -428,9 +437,9 @@ export default function App() {
                     {/* Current Test Progress */}
                     <div className={`transition-opacity duration-300 h-10 ${isTesting ? 'opacity-100' : 'opacity-0'}`}>
                          <p className="text-center text-sky-300/80 text-sm h-5">{statusMessage}</p>
-                         <div className="w-full bg-slate-700/50 rounded-full h-1.5 mt-1 overflow-hidden">
-                              <div className="bg-gradient-to-r from-sky-500 to-cyan-400 h-1.5 rounded-full transition-all duration-300 ease-linear" style={{ width: `${currentTestProgress}%` }}></div>
-                         </div>
+                          <div className="w-full bg-slate-700/50 rounded-full h-1.5 mt-1 overflow-hidden">
+                               <div className="bg-gradient-to-r from-sky-500 to-cyan-400 h-1.5 rounded-full transition-all duration-300 ease-linear" style={{ width: `${currentTestProgress}%` }}></div>
+                          </div>
                     </div>
 
                     {/* Overall Progress */}
@@ -444,26 +453,38 @@ export default function App() {
                         </div>
                     </div>
                     
-                    {/* Start Button */}
-                    <button
-                        onClick={startAllTests}
-                        disabled={isTesting || selectedServers.size === 0}
-                        className="w-full mt-4 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-sky-400/50 flex items-center justify-center transform active:scale-98 shadow-lg hover:shadow-sky-500/20"
-                    >
-                        {isTesting ? (
-                            <>
-                                <SpinnerIcon />
-                                <span className="ml-3 text-lg">Testing in Progress...</span>
-                            </>
-                        ) : (
-                            <>
-                                <PlayIcon />
-                                <span className="ml-2 text-lg">Start Tests ({selectedServers.size})</span>
-                            </>
-                        )}
-                    </button>
+                    {/* **UPDATED**: Action Buttons Container */}
+                    <div className="flex flex-col sm:flex-row items-center gap-3 mt-4">
+                        {/* Start Button */}
+                        <button
+                            onClick={startAllTests}
+                            disabled={isTesting || selectedServers.size === 0}
+                            className="w-full bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-sky-400/50 flex items-center justify-center transform active:scale-98 shadow-lg hover:shadow-sky-500/20"
+                        >
+                            {isTesting ? (
+                                <>
+                                    <SpinnerIcon />
+                                    <span className="ml-3 text-lg">Testing...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <PlayIcon />
+                                    <span className="ml-2 text-lg">Start Tests ({selectedServers.size})</span>
+                                </>
+                            )}
+                        </button>
+                        
+                        <button
+                            onClick={handleDownloadScreenshot}
+                            disabled={isTesting}
+                            className="w-full sm:w-auto bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-5 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-slate-500/50 flex items-center justify-center gap-2 transform active:scale-98 shadow-lg hover:shadow-slate-600/20"
+                            title="Download Results as Image"
+                        >
+                           <DownloadIcon />
+                           <span className="hidden sm:inline">Save Results</span>
+                        </button>
+                    </div>
                 </div>
-
             </div>
         </div>
     );
