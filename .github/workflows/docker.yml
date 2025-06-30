@@ -47,7 +47,7 @@ jobs:
           push: true
           tags: blurred123131/speedjs:latest
 
-      - name: Deploy to Azure
+      - name: Deploy to Azure VM
         uses: appleboy/ssh-action@v1
         with:
           host: '68.218.3.24'
@@ -56,16 +56,3 @@ jobs:
           script: |
             sudo docker pull blurred123131/speedjs:latest
             sudo docker compose up -d
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
-          
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'speedjstestdocker'
-          images: 'docker.io/blurred123131:latest'
