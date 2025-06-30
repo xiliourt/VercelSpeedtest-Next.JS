@@ -51,8 +51,7 @@ jobs:
           cp -r ./public ./standalone
           
       - name: Zip artifact for deployment
-        run: |
-            zip release.zip ./standalone
+        run: zip release.zip ./standalone -r
 
       - name: Upload Release
         uses: ncipollo/release-action@v1.12.0
