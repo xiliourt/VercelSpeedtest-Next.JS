@@ -54,3 +54,9 @@ jobs:
           script: |
             sudo docker pull blurred123131/speedjs:latest
             sudo docker compose up -d
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'speedjstestdocker'
+          images: 'docker.io/blurred123131:latest'
