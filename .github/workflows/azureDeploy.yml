@@ -88,8 +88,11 @@ jobs:
           name: node-app
           
       - name: Unzip artifact for deployment
-        run: unzip release.zip
-      
+        run: |
+          unzip release.zip
+          mv -r standalone/* .
+          rm -rf standalone
+          
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -103,5 +106,5 @@ jobs:
         with:
           app-name: 'speedjstest'
           slot-name: 'Production'
-          package: ./standalone
+          package: .
           
