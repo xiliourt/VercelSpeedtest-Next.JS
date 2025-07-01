@@ -62,7 +62,8 @@ export default async function handler(req) {
     cancel(reason) {
       console.log('Download stream cancelled by client.', reason);
       // Perform any cleanup here if necessary
-    }
+    },
+    {new ByteLengthQueuingStrategy({ highWaterMark: 4 * 1024 * 1024 })}
   });
 
   return new Response(stream, { headers });
