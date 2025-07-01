@@ -118,7 +118,7 @@ export default function App() {
             const canvas = await html2canvas(resultsPanelRef.current, {
                 backgroundColor: '#1e293b', // Match the panel's background
                 useCORS: true, // Important for external resources if any
-                scale: 2 // Increase resolution for better quality
+                scale: 1 // Increase resolution for better quality
             });
             const dataUrl = canvas.toDataURL('image/png');
             const link = document.createElement('a');
