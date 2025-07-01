@@ -1,11 +1,11 @@
 
 export const runtime = 'edge'; 
 export const config = { runtime: 'edge', };
-
+/*
 function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
 
-/*
+
   for (let i = 0; i < size; i++) {
     buffer[i] = i % 256;
   }
