@@ -62,7 +62,7 @@ export default async function handler(req) {
       console.log('Download stream cancelled by client.', reason);
       // Perform any cleanup here if necessary
     }
-  }, { highWaterMark: 64 } );
+  }, { highWaterMark: 256 } );
 
   return new Response(stream, { headers });
 }
