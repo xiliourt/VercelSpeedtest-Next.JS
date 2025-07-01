@@ -25,8 +25,9 @@ export default async function handler(req) {
     'Pragma': 'no-cache',
     'Expires': '0',
     'Surrogate-Control': 'no-store',
-    */
-    'Cache-Control': 's-maxage=30000, stale-while-revalidate=30000',
+    */ 
+    'Cache-Control': 'max-age=3600'
+    'CDN-Cache-Control': 'max-age=120',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET',
     'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization'
