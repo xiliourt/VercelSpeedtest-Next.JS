@@ -1,4 +1,3 @@
-// pages/api/upload.js
 export const runtime = 'edge'; 
 export const config = {
   runtime: 'edge',
