@@ -5,18 +5,10 @@ export const config = { runtime: 'edge', };
 
 // Function to generate a chunk of random data as Uint8Array
 function getRandomChunk(size) {
-  let seed = 12345;
   const buffer = new Uint8Array(size);
   for (let i = 0; i < size; i++) {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let temp = Math.imul(seed, seed ^ (seed >>> 15));
-    temp = (temp + Math.imul(temp, seed | 1)) | 0;
-    temp = temp ^ (temp + Math.imul(temp, seed | 1));
-    const randomFloat = ((temp ^ (temp >>> 15)) >>> 0) / 4294967296;
-    buffer[i] = Math.floor(randomFloat * 256);
+    buffer[i] = Math.floor(255);
   }
-
   return buffer;
 };
 
