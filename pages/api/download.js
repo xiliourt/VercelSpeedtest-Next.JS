@@ -6,6 +6,7 @@ function generateRandomChunk(size) {
   for (let i = 0; i < size; i++) {
     buffer[i] = i % 256;
   }
+ return buffer;
 }
 
 
