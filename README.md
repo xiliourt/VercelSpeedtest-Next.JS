@@ -7,6 +7,26 @@
 
 
 # Try it yourself
+## Change server addresses
+### Change the server addresses in pages/index.js (const SERVERS)
+
+## Docker
+Quick run and remove after (CTRL + C to exit)
+```
+sudo docker run --rm -i -p 3000:3000 ghcr.io/xiliourt/speedjs:latest -e HOST=
+```
+
+docker-compose.yml
+```Services:
+  speedjs:
+    image: ghcr.io/xiliourt/speedjs:latest
+    container_name: speedjs
+    ports: "3000":"3000"
+    restart: unless-stopped
+```
+
+It'll be available at (ip):3000 for both docker solutions.
+
 ## Via Vercel
 Clone and deploy to Vercel for an edge speedtest! Change URLs or add your server in pages/index.js
 
