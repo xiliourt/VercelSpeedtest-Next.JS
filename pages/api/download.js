@@ -40,7 +40,7 @@ export default async function handler(req) {
   };
 
   let bytesSent = 0;
-  const stream = new ReadableStream({
+  const stream = new ReadableStream({size: 4194304}, {
     async pull(controller) {
       if (bytesSent >= requestedSize) {
         controller.close();
