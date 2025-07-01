@@ -8,7 +8,7 @@
 
 # Try it yourself
 ## Change the server list in /components/servers.js
-Change it to your own (IP):3000 or vercel URL.
+Change it to your own (IP):3000, or vercel URL.
 
 ## Via Vercel
 Clone and deploy to Vercel for an edge speedtest! Change URLs or add your server in pages/index.js
