@@ -40,8 +40,7 @@ export default async function handler(req) {
   };
 
   let bytesSent = 0;
-  const byteSize = new ByteLengthQueuingStrategy({ highWaterMark: 4 * 1024 * 1024 })
-  const stream = new ReadableStream({size: 4194304}, {
+  const stream = new ReadableStream({
     async pull(controller) {
       if (bytesSent >= requestedSize) {
         controller.close();
@@ -63,8 +62,8 @@ export default async function handler(req) {
     cancel(reason) {
       console.log('Download stream cancelled by client.', reason);
       // Perform any cleanup here if necessary
-    },
-  }, new ByteLengthQueuingStrategy({ highWaterMark: chunkSize}));
+    }, new ByteLengthQueuingStrategy({ highWaterMark: chunkSize})),
+  })
 
   return new Response(stream, { headers });
 }
