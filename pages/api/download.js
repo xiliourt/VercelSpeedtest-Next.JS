@@ -24,7 +24,7 @@ export default async function handler(req) {
   // We need to parse query parameters from the URL.
   const url = new URL(req.url);
   const requestedSize = parseInt(url.searchParams.get('size')) || (10 * 1024 * 1024); // Default to 10MB
-  const chunkSize = 4 * * 1024 * 1024; // 64KB chunks
+  const chunkSize = 4 * 1024 * 1024; // 64KB chunks
 
   const headers = {
     'Content-Type': 'application/octet-stream',
