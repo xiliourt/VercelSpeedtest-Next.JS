@@ -5,20 +5,25 @@ export const config = { runtime: 'edge', };
 function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
 
-  // Vercel edge doesn't actually support crypto, resulting in origin traffic
+/*
   for (let i = 0; i < size; i++) {
     buffer[i] = i % 256;
   }
   return buffer;
+}*/
+  
+function generateRandomChunk(size) {
+  const buffer = new Uint8Array(size);
+  crypto.getRandomValues(buffer)
+  return buffer;
 }
-
 
 export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
   // We need to parse query parameters from the URL.
   const url = new URL(req.url);
   const requestedSize = parseInt(url.searchParams.get('size')) || (10 * 1024 * 1024); // Default to 10MB
-  const chunkSize = 64 * 1024; // 64KB chunks
+  const chunkSize = 4 * 1024 * 1024; // 64KB chunks
 
   const headers = {
     'Content-Type': 'application/octet-stream',
