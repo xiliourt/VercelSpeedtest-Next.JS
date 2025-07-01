@@ -6,6 +6,7 @@ export const config = { runtime: 'edge', };
 // Function to generate a chunk of random data as Uint8Array
 function getRandomChunk(size) {
   const buffer = new Uint8Array(size);
+  crypto.getRandomValues(buffer);
   return buffer;
 };
 
