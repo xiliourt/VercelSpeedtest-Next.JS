@@ -4,12 +4,21 @@ export const runtime = 'edge';
 export const config = { runtime: 'edge', };
 
 // Function to generate a chunk of random data as Uint8Array
-function generateRandomChunk(size) {
-  // Create a buffer of the specified size.
+function getRandomChunk(size) {
+  let seed = 12345;
   const buffer = new Uint8Array(size);
-  crypto.getRandomValues(buffer);
+  for (let i = 0; i < size; i++) {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let temp = Math.imul(seed, seed ^ (seed >>> 15));
+    temp = (temp + Math.imul(temp, seed | 1)) | 0;
+    temp = temp ^ (temp + Math.imul(temp, seed | 1));
+    const randomFloat = ((temp ^ (temp >>> 15)) >>> 0) / 4294967296;
+    buffer[i] = Math.floor(randomFloat * 256);
+  }
+
   return buffer;
-}
+};
 
 export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
