@@ -169,7 +169,7 @@ export default function App() {
     const measureDownload = async (downloadUrl, downloadSize, onProgress) => {
         const startTime = performance.now();
         try {
-            const response = await fetch(`${downloadUrl}?size=${downloadSize}&r=${Math.random()}&t=${Date.now()}`, { cache: 'no-store' });
+            const response = await fetch(`${downloadUrl}?size=${downloadSize}`);
             if (!response.ok || !response.body) throw new Error(`Server error: ${response.status} ${response.statusText}`);
             
             const reader = response.body.getReader();
