@@ -1,7 +1,8 @@
+
 export const runtime = 'edge'; 
 export const config = { runtime: 'edge', };
 
-/*function generateRandomChunk(size) {
+function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
 
   // Vercel edge doesn't actually support crypto, resulting in origin traffic
@@ -9,22 +10,15 @@ export const config = { runtime: 'edge', };
     buffer[i] = i % 256;
   }
   return buffer;
-}*/
-
-function generateRandomChunk(size) {
-  const buffer = new Uint8Array(size);
-
-  // Vercel edge doesn't actually support crypto, resulting in origin traffic
-  crypto.getRandomValues(buffer)
-  return buffer;
 }
+
 
 export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
   // We need to parse query parameters from the URL.
   const url = new URL(req.url);
   const requestedSize = parseInt(url.searchParams.get('size')) || (10 * 1024 * 1024); // Default to 10MB
-  const chunkSize = 4 * 1024 * 1024; // 64KB chunks
+  const chunkSize = 64 * 1024; // 64KB chunks
 
   const headers = {
     'Content-Type': 'application/octet-stream',
@@ -62,8 +56,8 @@ export default async function handler(req) {
     cancel(reason) {
       console.log('Download stream cancelled by client.', reason);
       // Perform any cleanup here if necessary
-    }, new ByteLengthQueuingStrategy({ highWaterMark: chunkSize})),
-  })
+    }
+  }, new ByteLengthQueuingStrategy({ highWaterMark: chunkSize }) );
 
   return new Response(stream, { headers });
 }
