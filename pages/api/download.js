@@ -4,11 +4,12 @@ export const runtime = 'edge';
 export const config = { runtime: 'edge', };
 
 // Function to generate a chunk of random data as Uint8Array
-function getRandomChunk(size) {
+function generateRandomChunk(size) {
+  // Create a buffer of the specified size.
   const buffer = new Uint8Array(size);
-  crypto.getRandomValues(buffer)
+  buffer.fill(0);
   return buffer;
-};
+}
 
 export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
