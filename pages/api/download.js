@@ -3,6 +3,8 @@ export const config = { runtime: 'edge', };
 
 function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
+
+  // Vercel edge doesn't actually support crypto, resulting in origin traffic
   for (let i = 0; i < size; i++) {
     buffer[i] = i % 256;
   }
