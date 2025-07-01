@@ -22,10 +22,12 @@ export default async function handler(req) {
     'Content-Type': 'application/octet-stream',
     'Content-Disposition': 'attachment; filename="download.dat"',
     'Content-Length': requestedSize.toString(),
-    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    /* 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
     'Pragma': 'no-cache',
     'Expires': '0',
     'Surrogate-Control': 'no-store',
+    */
+    'Cache-Control': 's-maxage=30000, stale-while-revalidate=30000',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET',
     'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization'
