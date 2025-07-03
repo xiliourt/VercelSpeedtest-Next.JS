@@ -10,20 +10,14 @@
 ## Change the server list in /components/servers.js
 Change it to your own (IP):3000, or vercel URL.
 
-## Via Vercel
-Clone and deploy to Vercel for an edge speedtest! Change URLs or add your server in pages/index.js
+### Via Vercel
+Clone and deploy to Vercel for an edge speedtest! Change URLs or add your server in /components/servers.js
 
-For a direct download link:
+Server will be available at the Vercel URL it provides, change the components/servers.js to that URL. IE:
 ```
-https://(vercelURL)vercel.app/api/download?size=Bytes
+const SERVERS = [{ name: 'Vercel', pingUrl: 'https://<vercelsubDomain>.vercel.app/api/ping', downloadUrl: 'https://<vercelsubDomain>.vercel.app/api/download', uploadUrl: 'https://<vercelsubDomain>.vercel.app/api/upload', maxUpload: '4194304'}[ //4MB
 ```
-
-ie 250MB:
-```
-https://(vercelURL).vercel.app/api/download?size=254857600
-```
-
-## Via node
+## #Via node
 ```
 npm install
 npm run build
