@@ -15,7 +15,7 @@ Clone and deploy to Vercel for an edge speedtest! Change URLs or add your server
 
 Server will be available at the Vercel URL it provides, change the components/servers.js to that URL. IE:
 ```
-const SERVERS = [{ name: 'Vercel', pingUrl: 'https://<vercelsubDomain>.vercel.app/api/ping', downloadUrl: 'https://<vercelsubDomain>.vercel.app/api/download', uploadUrl: 'https://<vercelsubDomain>.vercel.app/api/upload', maxUpload: '4194304'}[ //4MB
+const SERVERS = [{ name: 'Vercel', pingUrl: 'https://<vercelsubDomain>.vercel.app/api/ping', downloadUrl: 'https://<vercelsubDomain>.vercel.app/api/download', uploadUrl: 'https://<vercelsubDomain>.vercel.app/api/upload', maxUpload: '4194304'}]
 ```
 ## #Via node
 ```
