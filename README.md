@@ -8,7 +8,10 @@
 
 # Try it yourself
 ## Change the server list in /components/servers.js
-Change it to your own (IP):3000, or vercel URL.
+Change it to your own (IP):3000, or vercel URL. IE:
+```
+const SERVERS = [{ name: 'Vercel', pingUrl: 'https://<vercelsubDomain>.vercel.app/api/ping', downloadUrl: 'https://<vercelsubDomain>.vercel.app/api/download', uploadUrl: 'https://<vercelsubDomain>.vercel.app/api/upload', maxUpload: '4194304'}]
+```
 
 ### Via Vercel
 Clone and deploy to Vercel for an edge speedtest! Change URLs or add your server in /components/servers.js
