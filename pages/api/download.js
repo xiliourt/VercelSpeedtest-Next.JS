@@ -5,16 +5,18 @@ export const config = { runtime: 'edge', };
 function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
 
-
-  for (let i = 0; i < size; i++) {
-    buffer[i] = i % 256;
+  if (process.env.ENVIRONMENT == "vercel" {
+    console.error("test")
+    for (let i = 0; i < size; i++) { buffer[i] = i % 256; }
+  } else {
+    crypto.getRandomValues(buffer)
   }
   return buffer;
 }
 /*
 function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
-  crypto.getRandomValues(buffer)
+  
   return buffer;
 }*/
 
