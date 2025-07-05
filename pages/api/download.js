@@ -5,8 +5,7 @@ export const config = { runtime: 'edge', };
 function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
 
-  if (process.env.ENVIRONMENT == "vercel") {
-    console.error("test")
+  if (process.env.VERCEL_ENV? == "production") {
     for (let i = 0; i < size; i++) { buffer[i] = i % 256; }
   } else {
     crypto.getRandomValues(buffer)
