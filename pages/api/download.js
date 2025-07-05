@@ -1,7 +1,7 @@
 
 export const runtime = 'edge'; 
 export const config = { runtime: 'edge', };
-/*
+
 function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
 
@@ -10,13 +10,13 @@ function generateRandomChunk(size) {
     buffer[i] = i % 256;
   }
   return buffer;
-}*/
-  
+}
+/*
 function generateRandomChunk(size) {
   const buffer = new Uint8Array(size);
   crypto.getRandomValues(buffer)
   return buffer;
-}
+}*/
 
 export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
