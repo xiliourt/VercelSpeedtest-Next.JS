@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import styles from './globals.css'
 import html2canvas from 'html2canvas';
 
 export const metadata = { icons: { icon: '/icon.png' } }
@@ -373,7 +374,7 @@ export default function App() {
                             const label = statType.charAt(0).toUpperCase() + statType.slice(1);
                             
                             return (
-                                <div key={statType} className="text-center bg-slate-900/50 md:bg-transparent p-2 rounded-lg md:p-0 md:w-1/3">
+                                <div key={statType} className="p-2 rounded-lg md:p-0 md:w-1/3">
                                     <span className="text-xs font-bold tracking-wider text-slate-400 md:hidden">{label}</span>
                                     <div className="mt-1 md:mt-0">
                                         <span className={`font-mono text-lg md:text-xl font-bold ${value === 'ERR' && value === 'Disabled' ?  'text-red-400' : 'text-slate-100'}`}>{value}</span>
@@ -390,7 +391,7 @@ export default function App() {
 
     // --- Main Render Block ---
     return (
-        <div className="bg-slate-900 text-white flex items-center justify-center min-h-screen p-2 sm:p-4 bg-grid-slate-800/[0.2]" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="flex items-center justify-center min-h-screen p-2 sm:p-4" style={{ fontFamily: "'Inter', sans-serif" }}>
             <div className="w-full max-w-3xl mx-auto">
                 <header className="text-center mb-6 md:mb-8">
                     <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-cyan-300 py-2">
