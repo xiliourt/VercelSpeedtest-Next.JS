@@ -12,12 +12,6 @@ function generateRandomChunk(size) {
   }
   return buffer;
 }
-/*
-function generateRandomChunk(size) {
-  const buffer = new Uint8Array(size);
-  
-  return buffer;
-}*/
 
 export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
