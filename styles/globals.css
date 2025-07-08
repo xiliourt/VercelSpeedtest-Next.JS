@@ -12,11 +12,16 @@ html {
 }
 
 body {
-  min-height: 100%; /* Ensure body takes at least full height */
-  -webkit-font-smoothing: antialiased; /* Improves font rendering on WebKit (Chrome, Safari) */
-  -moz-osx-font-smoothing: grayscale; /* Improves font rendering on Firefox */
-  overscroll-behavior-y: contain; /* Prevents scroll chaining from body to html, can feel 'sleeker' */
-  background: theme('colors.slate.900');
+  min-height: 100%; 
+  overscroll-behavior-y: contain; 
+  font-family: var(--font-primary);
+  margin: 0;
+  background-image: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+  color: var(--text-main);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer base {
