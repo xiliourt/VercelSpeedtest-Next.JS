@@ -16,8 +16,11 @@ body {
   overscroll-behavior-y: contain; 
   font-family: var(--font-primary);
   margin: 0;
-  background-image: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
-  color: var(--text-main);
+	background-color: #141d30;
+	color: #ffffff;
+	background-image: linear-gradient(hsla(0, 0%, 100%, .05) 1px, transparent 0), linear-gradient(90deg, hsla(0, 0%, 100%, .05) 1px, transparent 0);
+	background-size: 50px 50px;
+	background-position: 50%;
   line-height: 1.7;
   font-size: 17px;
   -webkit-font-smoothing: antialiased;
