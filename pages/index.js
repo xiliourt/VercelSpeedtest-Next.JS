@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import styles from './globals.css'
 import html2canvas from 'html2canvas';
 
 export const metadata = { icons: { icon: '/icon.png' } }
