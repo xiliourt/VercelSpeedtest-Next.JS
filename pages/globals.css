@@ -1,0 +1,11 @@
+body {
+    font-family: var(--font-primary);
+    margin: 0;
+    /* background-color: var(--primary-blue-deep); Removed */
+    background-image: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-end));
+    color: var(--text-main);
+    line-height: 1.7;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
