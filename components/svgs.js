@@ -10,13 +10,52 @@ export const PlayIcon = () => (
     </svg>
 );
 
-export const StatusIcon = () => {
-    if (isTestingThis) return <SpinnerIcon />;
-    if (isComplete) return <CheckCircleIcon />;
-    if (isError) return <ExclamationTriangleIcon />;
-    if (isSelected) return <CheckboxCheckedIcon />;
-    return <CheckboxUncheckedIcon />;
- };
+export const ResultRow = ({ result, isSelected, onToggle, isTestingGlobal }) => {
+    const isTestingThis = result.status === 'testing';
+    const isComplete = result.status === 'complete';
+    const isError = result.status === 'error';
+    const StatusIcon = () => {
+        if (isTestingThis) return <SpinnerIcon />;
+        if (isComplete) return <CheckCircleIcon />;
+        if (isError) return <ExclamationTriangleIcon />;
+        if (isSelected) return <CheckboxCheckedIcon />;
+        return <CheckboxUncheckedIcon />;
+    };
+    
+    const rowBg = isTestingThis ? 'bg-sky-900/50' : 'bg-slate-800/60';
+    return (
+        <div className={`rounded-xl transition-all duration-300 ${rowBg} hover:bg-slate-700/60 transform hover:scale-[1.02]`}>
+            <div className="flex flex-col md:flex-row md:items-center p-3 md:p-4">
+                <div className="flex items-center justify-between md:w-1/3 lg:w-2/5 md:pr-4">
+                    <div className="flex items-center gap-4">
+                        <button onClick={() => onToggle(result.name)} disabled={isTestingGlobal} className="flex-shrink-0 flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500/50 disabled:cursor-not-allowed transition-transform active:scale-90" >
+                                <StatusIcon />
+                            </button>
+                        <span className="font-semibold text-slate-200 truncate">{result.name}</span>
+                    </div>
+                </div>
+                <div className="mt-3 md:mt-0 grid grid-cols-3 gap-2 md:flex md:w-2/3 lg:w-3/5 md:justify-around">
+                    {['ping', 'download', 'upload'].map(statType => {
+                        const value = result[statType];
+                        const unit = statType === 'ping' ? 'ms' : 'Mbps';
+                        const label = statType.charAt(0).toUpperCase() + statType.slice(1);
+                            
+                        return (
+                            <div key={statType} className="p-2 rounded-lg md:p-0 md:w-1/3">
+                                <span className="text-xs font-bold tracking-wider text-slate-400 md:hidden">{label}</span>
+                                <div className="mt-1 md:mt-0">
+                                    <span className={`font-mono text-lg md:text-xl font-bold ${value === 'ERR' || value === 'Disabled' ? 'text-red-400' : 'text-slate-100'}`}>{value}</span>
+                                    <span className="text-sm text-slate-400 ml-1">{value !== '--' && value !== 'ERR' && value !== 'Disabled' ? unit : ''}</span>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 
 
 export const SpinnerIcon = () => (
