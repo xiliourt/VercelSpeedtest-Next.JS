@@ -50,8 +50,12 @@ const DownloadIcon = () => (
 );
 
 
+
 // --- SERVER CONFIGURATION ---
-const SERVERS = require('../components/servers.js');
+const host = context.req.headers['host'];
+const configUrl = `https://${host}/api/servers`;
+const configRes = await fetch(configUrl);
+const SERVERS = await configRes.json();
 
 // --- TEST CONFIGURATION ---
 const PING_COUNT = 10;
