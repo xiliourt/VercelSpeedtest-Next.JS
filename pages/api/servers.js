@@ -18,8 +18,7 @@ export default function handler(req, res) {
     }
   }
 
-  // 2. If the primary source fails or is empty, try Vercel fallback.
-  // The Vercel URL is automatically set by the Vercel platform.
+  /* If SERVERS_JSON fails, try using Vercel URL, else local host idk */
   const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
   loadEnvConfig(vercelUrl)
   if (servers.length === 0 && vercelUrl) {
