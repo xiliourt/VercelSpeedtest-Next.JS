@@ -34,7 +34,7 @@ export default function App() {
     const resultsPanelRef = useRef(null);
 
     // --- **NEW**: Effect to fetch servers on component mount ---
-    useEffect(()  {
+    useEffect(() => {
         const fetchServers = async ()  {
             try {
                 // Fetch from the new API route
@@ -60,7 +60,7 @@ export default function App() {
     }, []); // Empty dependency array ensures this runs only once
 
     // --- **NEW**: Effect to initialize results after servers are loaded ---
-    useEffect(()  {
+    useEffect(() => {
         if (servers.length > 0) {
             // Initialize the results table
             setTestResults(servers.map(s  ({
@@ -132,16 +132,16 @@ export default function App() {
             onProgress((i + 1) * pingProgressIncrement);
             if (i < PING_COUNT - 1) await new Promise(resolve  setTimeout(resolve, 200));
         }
-        const validPings = pings.filter(p => p !== null);
+        const validPings = pings.filter(p p !== null);
         if (validPings.length > 0) {
-            const avgPing = validPings.reduce((a, b) => a + b, 0) / validPings.length;
+            const avgPing = validPings.reduce((a, b) a + b, 0) / validPings.length;
             return Math.round(avgPing);
         } else {
             throw new Error('Ping test failed for all attempts.');
         }
     };
 
-    const measureDownload = async (downloadUrl, downloadSize, onProgress) => {
+    const measureDownload = async (downloadUrl, downloadSize, onProgress) {
         const startTime = performance.now();
         try {
             const response = await fetch(`${downloadUrl}?size=${downloadSize}`);
