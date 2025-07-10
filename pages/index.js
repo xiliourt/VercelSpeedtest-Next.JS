@@ -43,7 +43,7 @@ export default function App() {
                     throw new Error(`Failed to fetch servers: ${response.status} ${response.statusText}`);
                 }
                 const data = await response.json();
-                if (!Array.isArray(data.SERVERS) || data.length === 0) {
+                if (!Array.isArray(data) || data.length === 0) {
                     console.log(data)
                     throw new Error("No servers were returned from the API.");
                 }
