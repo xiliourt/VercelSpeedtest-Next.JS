@@ -49,16 +49,6 @@ const DownloadIcon = () => (
     </svg>
 );
 
-
-async function loadServers() {
-    // --- SERVER CONFIGURATION ---
-    const host = context.req.headers['host'];
-    const configUrl = `https://${host}/api/servers`;
-    const configRes = fetch(configUrl);
-    const SERVERS = configRes.json();
-    return SERVERS;
-}
-
 // --- TEST CONFIGURATION ---
 const PING_COUNT = 10;
 const PING_TIMEOUT_MS = 2000;
@@ -73,7 +63,12 @@ const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10;
 
 // --- Main App Component ---
 export default function App(req, res) {
-    const SERVERS = loadServers()
+    const host = context.req.headers['host'];
+    const configUrl = `https://${host}/api/servers`;
+    const SERVERS = []
+    fetch(configUrl).then
+        ((configRes) => {SERVERS = configRes.json()});
+    
     const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
     const [statusMessage, setStatusMessage] = useState('Select servers and click "Start Tests" to begin.');
