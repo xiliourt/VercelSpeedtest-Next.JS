@@ -44,6 +44,7 @@ export default function App() {
                 }
                 const data = await response.json();
                 if (!Array.isArray(data) || data.length === 0) {
+                    console.log(data)
                     throw new Error("No servers were returned from the API.");
                 }
                 setServers(data); // Set the fetched servers into state
