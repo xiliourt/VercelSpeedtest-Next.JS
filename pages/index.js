@@ -68,6 +68,7 @@ export default function App(req, res) {
         const configUrl = `https://${host}/api/servers`;
         fetch(configUrl).then
             ((configRes) => {const SERVERS = configRes.json()});
+        console.error(SERVERS)
         return SERVERS;
     }
     
