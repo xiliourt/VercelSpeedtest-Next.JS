@@ -51,12 +51,6 @@ const DownloadIcon = () => (
 
 
 
-// --- SERVER CONFIGURATION ---
-const host = context.req.headers['host'];
-const configUrl = `https://${host}/api/servers`;
-const configRes = await fetch(configUrl);
-const SERVERS = await configRes.json();
-
 // --- TEST CONFIGURATION ---
 const PING_COUNT = 10;
 const PING_TIMEOUT_MS = 2000;
@@ -70,7 +64,8 @@ const SUPER_CONNECTION_THRESHOLD_MBPS = 200;
 const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10;
 
 // --- Main App Component ---
-export default function App() {
+export default function App(req, res) {
+    
     const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
     const [statusMessage, setStatusMessage] = useState('Select servers and click "Start Tests" to begin.');
@@ -78,6 +73,12 @@ export default function App() {
     const [overallProgress, setOverallProgress] = useState(0);
     const [selectedServers, setSelectedServers] = useState(() => new Set(SERVERS.map(s => s.name)));
     
+    // --- SERVER CONFIGURATION ---
+    const host = context.req.headers['host'];
+    const configUrl = `https://${host}/api/servers`;
+    const configRes = await fetch(configUrl);
+    const SERVERS = await configRes.json();
+        
     // --- **NEW**: Ref for the element to screenshot ---
     const resultsPanelRef = useRef(null);
 
