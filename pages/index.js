@@ -66,7 +66,7 @@ export default function App(req, res) {
     const host = context.req.headers['host'];
     const configUrl = `https://${host}/api/servers`;
     fetch(configUrl).then
-        ((configRes) => {SERVERS = configRes.json()});
+        ((configRes) => {const SERVERS = configRes.json()});
     
     const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
