@@ -1,10 +1,10 @@
 import { loadEnvConfig } from '@next/env'
 export const runtime = 'edge'
-export default function handler(req, res) {
+export default function handler(req) {
   let servers = [];
 
   // 1. Try to load from the primary environment variable.
-  const serversJson = process.env.SERVERS_JSON;
+  const serversJson = process.env.NEXT_PUBLIC_SERVERS_JSON;
   loadEnvConfig(serversJson)
   if (serversJson) {
     try {
@@ -58,5 +58,5 @@ export default function handler(req, res) {
     console.error("Using localhost as the final fallback server configuration. You didn't set SERVERS_JSON as an environment variable");
     servers = [ { name: 'Localhost', serverUrl: 'http://127.0.0.1:3000', maxUpload: '27262976'}] ;
   }
-  res.status(200).json(servers);
+  return new Response(JSON.stringify(servers), { status: 200, headers: {'Content-Type': 'application/json',},});
 }
