@@ -5,7 +5,10 @@ export default function handler(req, res) {
   loadEnvConfig(SERVERS);
   const serverUrlVercel = process.env.NEXT_PUBLIC_VERCEL_URL;
   loadEnvConfig(serverUrlVercel);
-  if (!SERVERS && serverUrlVercel) {
+  if (SERVERS) {
+    res.status(200).json({ SERVERS });
+  }
+  else if (serverUrlVercel) {
         console.warn("Using fallback vercel, no servers in environment variables but Vercel URL found")
         const SERVERS = [{ name: 'Vercel', pingUrl: 'https://{NEXT_PUBLIC_VERCEL_URL}/api/ping', downloadUrl: 'http:/{NEXT_PUBLIC_VERCEL_URL}/api/download', uploadUrl: 'https://{NEXT_PUBLIC_VERCEL_URL}/api/upload', maxUpload: '27262976' } ];
   } else {
