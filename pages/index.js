@@ -226,6 +226,8 @@ export default function App() {
         const pingUrl = `${serversToTest[0].serverUrl}/api/ping`;
         const downloadUrl = `${serversToTest[0].serverUrl}/api/download`;
         const uploadUrl = `${serversToTest[0].serverUrl}/api/upload`;
+        const maxUpload = server.maxUpload? server.maxUpload : LARGE_UPLOAD_SIZE_BYTES
+        
         for (let i = 0; i < serversToTest.length; i++) {
             const server = serversToTest[i];
             const originalIndex = servers.findIndex(s => s.name === server.name);
@@ -281,7 +283,7 @@ export default function App() {
                 await new Promise(res => setTimeout(res, 200));
 
                 // Upload Test
-                const initialUploadSize = Math.min(INITIAL_UPLOAD_SIZE_BYTES, server.maxUpload);
+                const initialUploadSize = Math.min(INITIAL_UPLOAD_SIZE_BYTES, maxUpload);
 
                 if (initialUploadSize == 0) {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'Disabled', status: 'complete' } : r));
@@ -292,7 +294,7 @@ export default function App() {
                     finalUpload = await measureUpload(uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUpload } : r));
                     
-                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && server.maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
+                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
                          setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                          const finalUploadLarge = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                          if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
