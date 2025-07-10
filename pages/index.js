@@ -65,7 +65,6 @@ const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10;
 export default function App(req, res) {
     const host = context.req.headers['host'];
     const configUrl = `https://${host}/api/servers`;
-    const SERVERS = []
     fetch(configUrl).then
         ((configRes) => {SERVERS = configRes.json()});
     
