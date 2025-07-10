@@ -1,44 +1,118 @@
 import { PlayIcon, SpinnerIcon, CheckCircleIcon, ExclamationTriangleIcon, CheckboxCheckedIcon, CheckboxUncheckedIcon, DownloadIcon } from '../components/svgs'
 import { useState, useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
+
 export const metadata = { icons: { icon: '/icon.png' } }
 
-// --- SERVER CONFIGURATION ---
-const SERVERS = require('../components/servers.js');
+// --- Icon Components (unchanged) ---
+const PlayIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+        <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
+    </svg>
+);
+const SpinnerIcon = () => (
+    <svg className="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+);
+const CheckCircleIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-green-400">
+        <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
+    </svg>
+);
+const ExclamationTriangleIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-red-400">
+        <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clipRule="evenodd" />
+    </svg>
+);
+const CheckboxCheckedIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-sky-400">
+        <path fillRule="evenodd" d="M8.25 12a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V13.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M12.75 12a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V13.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
+    </svg>
+);
+const CheckboxUncheckedIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-slate-500 hover:text-slate-400">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+);
+const DownloadIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+        <path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
+    </svg>
+);
 
-// --- TEST CONFIGURATION ---
+
+// --- TEST CONFIGURATION (unchanged) ---
 const PING_COUNT = 10;
 const PING_TIMEOUT_MS = 2000;
-const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
-const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
-const SUPER_DOWNLOAD_SIZE_BYTES = 100 * 1024 * 1024; // 50MB
-const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
-const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024; // 25MB
+const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024;
+const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024;
+const SUPER_DOWNLOAD_SIZE_BYTES = 100 * 1024 * 1024;
+const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024;
+const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024;
 const FAST_CONNECTION_THRESHOLD_MBPS = 50;
 const SUPER_CONNECTION_THRESHOLD_MBPS = 200;
 const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10;
 
 // --- Main App Component ---
 export default function App() {
+    // --- **NEW**: State for dynamically loaded servers ---
+    const [servers, setServers] = useState([]);
+    const [isLoadingServers, setIsLoadingServers] = useState(true);
+    const [serverLoadError, setServerLoadError] = useState(null);
+
+    // --- State for test results and UI ---
     const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
     const [statusMessage, setStatusMessage] = useState('Select servers and click "Start Tests" to begin.');
     const [currentTestProgress, setCurrentTestProgress] = useState(0);
     const [overallProgress, setOverallProgress] = useState(0);
-    const [selectedServers, setSelectedServers] = useState(() => new Set(SERVERS.map(s => s.name)));
-    
-    // --- **NEW**: Ref for the element to screenshot ---
+    const [selectedServers, setSelectedServers] = useState(new Set());
     const resultsPanelRef = useRef(null);
 
+    // --- **NEW**: Effect to fetch servers on component mount ---
     useEffect(() => {
-        setTestResults(SERVERS.map(s => ({
-            name: s.name,
-            ping: '--',
-            download: '--',
-            upload: '--',
-            status: 'pending'
-        })));
-    }, []);
+        const fetchServers = async () => {
+            try {
+                // Fetch from the new API route
+                const response = await fetch('/api/servers');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch servers: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                if (!Array.isArray(data) || data.length === 0) {
+                    throw new Error("No servers were returned from the API.");
+                }
+                setServers(data); // Set the fetched servers into state
+                setServerLoadError(null);
+            } catch (error) {
+                console.error(error);
+                setServerLoadError(error.message);
+            } finally {
+                setIsLoadingServers(false);
+            }
+        };
+        fetchServers();
+    }, []); // Empty dependency array ensures this runs only once
+
+    // --- **NEW**: Effect to initialize results after servers are loaded ---
+    useEffect(() => {
+        if (servers.length > 0) {
+            // Initialize the results table
+            setTestResults(servers.map(s => ({
+                name: s.name,
+                ping: '--',
+                download: '--',
+                upload: '--',
+                status: 'pending'
+            })));
+            // Pre-select all servers by default
+            setSelectedServers(new Set(servers.map(s => s.name)));
+        }
+    }, [servers]); // This effect runs whenever the `servers` state changes
 
     const handleToggleServer = (serverName) => {
         if (isTesting) return;
@@ -53,18 +127,13 @@ export default function App() {
         });
     };
 
-    // --- **NEW**: Screenshot download handler ---
     const handleDownloadScreenshot = async () => {
-        if (!resultsPanelRef.current) {
-            console.error("Results panel ref not found!");
-            return;
-        }
-
+        if (!resultsPanelRef.current) return;
         try {
             const canvas = await html2canvas(resultsPanelRef.current, {
-                backgroundColor: '#1e293b', // Match the panel's background
-                useCORS: true, // Important for external resources if any
-                scale: 2 // Increase resolution for better quality
+                backgroundColor: '#1e293b',
+                useCORS: true,
+                scale: 2
             });
             const dataUrl = canvas.toDataURL('image/png');
             const link = document.createElement('a');
@@ -74,8 +143,7 @@ export default function App() {
             link.click();
             document.body.removeChild(link);
         } catch (error) {
-            console.error("Oops, something went wrong!", error);
-            // Optionally, update status message to inform user of the error
+            console.error("Screenshot capture failed:", error);
             setStatusMessage("Could not capture screenshot.");
         }
     };
@@ -177,7 +245,8 @@ export default function App() {
     const startAllTests = async () => {
         if (isTesting) return;
         
-        const serversToTest = SERVERS.filter(s => selectedServers.has(s.name));
+        // **MODIFIED**: Use `servers` from state
+        const serversToTest = servers.filter(s => selectedServers.has(s.name));
         
         if (serversToTest.length === 0) {
             setStatusMessage("Please select at least one server to test.");
@@ -195,7 +264,8 @@ export default function App() {
 
         for (let i = 0; i < serversToTest.length; i++) {
             const server = serversToTest[i];
-            const originalIndex = SERVERS.findIndex(s => s.name === server.name);
+            // **MODIFIED**: Use `servers` from state
+            const originalIndex = servers.findIndex(s => s.name === server.name);
 
             setTestResults(prev => prev.map((r, index) => index === originalIndex ? { ...r, status: 'testing' } : r));
             
@@ -248,7 +318,7 @@ export default function App() {
 
                 if (initialUploadSize == 0) {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'Disabled', status: 'complete' } : r));
-                    return r;
+                    continue; // Corrected from `return r` to `continue`
                 }
                 setStatusMessage(`Uploading ${initialUploadSize / 1024 / 1024}MB to ${server.name}...`);
                 try {
@@ -259,7 +329,7 @@ export default function App() {
                          setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                          const finalUploadLarge = await measureUpload(server.uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                          if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
-                              setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUploadLarge } : r));
+                               setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUploadLarge } : r));
                          }
                     }
                 } catch (error) {
@@ -329,7 +399,7 @@ export default function App() {
                                 <div key={statType} className="p-2 rounded-lg md:p-0 md:w-1/3">
                                     <span className="text-xs font-bold tracking-wider text-slate-400 md:hidden">{label}</span>
                                     <div className="mt-1 md:mt-0">
-                                        <span className={`font-mono text-lg md:text-xl font-bold ${value === 'ERR' && value === 'Disabled' ?  'text-red-400' : 'text-slate-100'}`}>{value}</span>
+                                        <span className={`font-mono text-lg md:text-xl font-bold ${value === 'ERR' || value === 'Disabled' ? 'text-red-400' : 'text-slate-100'}`}>{value}</span>
                                         <span className="text-sm text-slate-400 ml-1">{value !== '--' && value !== 'ERR' && value !== 'Disabled' ? unit : ''}</span>
                                     </div>
                                 </div>
@@ -343,7 +413,7 @@ export default function App() {
 
     // --- Main Render Block ---
     return (
-        <div className="flex items-center justify-center min-h-screen p-2 sm:p-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="flex items-center justify-center min-h-screen p-2 sm:p-4 bg-slate-900 text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
             <div className="w-full max-w-3xl mx-auto">
                 <header className="text-center mb-6 md:mb-8">
                     <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-cyan-300 py-2">
@@ -352,85 +422,101 @@ export default function App() {
                     <p className="text-slate-400 mt-1 text-base md:text-lg">Test your connection to available free Next.js hosts.</p>
                 </header>
 
-                {/* Main Results Panel - **ADDED ref HERE** */}
-                <div ref={resultsPanelRef} className="bg-slate-800/60 p-3 md:p-4 rounded-2xl shadow-2xl w-full border border-slate-700/80 backdrop-blur-xl">
-                    {/* -- Results Header -- */}
-                    <div className="flex px-4 pb-3 border-b border-slate-700">
-                        <h3 className="font-bold text-slate-300 text-sm w-1/3 lg:w-2/5">Server</h3>
-                        <div className="hidden md:flex w-2/3 lg:w-3/5 justify-around">
-                            <h3 className="font-bold text-slate-300 text-sm w-1/3 text-center">Ping</h3>
-                            <h3 className="font-bold text-slate-300 text-sm w-1/3 text-center">Download</h3>
-                            <h3 className="font-bold text-slate-300 text-sm w-1/3 text-center">Upload</h3>
-                        </div>
+                {/* **NEW**: Conditional rendering for server loading state */}
+                {isLoadingServers ? (
+                    <div className="flex flex-col items-center justify-center p-10 bg-slate-800/60 rounded-2xl">
+                        <SpinnerIcon />
+                        <p className="mt-4 text-slate-300">Loading server list...</p>
                     </div>
+                ) : serverLoadError ? (
+                     <div className="flex flex-col items-center justify-center p-10 bg-red-900/50 rounded-2xl border border-red-700">
+                        <ExclamationTriangleIcon />
+                        <p className="mt-4 font-semibold text-red-200">Could not load servers</p>
+                        <p className="mt-2 text-sm text-red-300 text-center">{serverLoadError}</p>
+                    </div>
+                ) : (
+                    <>
+                        {/* Main Results Panel */}
+                        <div ref={resultsPanelRef} className="bg-slate-800/60 p-3 md:p-4 rounded-2xl shadow-2xl w-full border border-slate-700/80 backdrop-blur-xl">
+                            {/* -- Results Header -- */}
+                            <div className="flex px-4 pb-3 border-b border-slate-700">
+                                <h3 className="font-bold text-slate-300 text-sm w-1/3 lg:w-2/5">Server</h3>
+                                <div className="hidden md:flex w-2/3 lg:w-3/5 justify-around">
+                                    <h3 className="font-bold text-slate-300 text-sm w-1/3 text-center">Ping</h3>
+                                    <h3 className="font-bold text-slate-300 text-sm w-1/3 text-center">Download</h3>
+                                    <h3 className="font-bold text-slate-300 text-sm w-1/3 text-center">Upload</h3>
+                                </div>
+                            </div>
 
-                    {/* Results List */}
-                    <div className="space-y-2 mt-2 md:mt-3">
-                        {testResults.map((result, index) => (
-                            <ResultRow 
-                                key={index} 
-                                result={result}
-                                isSelected={selectedServers.has(result.name)}
-                                onToggle={handleToggleServer}
-                                isTestingGlobal={isTesting}
-                            />
-                        ))}
-                    </div>
-                </div>
-
-                {/* Controls and Progress Footer */}
-                <div className="mt-6 md:mt-8">
-                    {/* Current Test Progress */}
-                    <div className={`transition-opacity duration-300 h-10 ${isTesting ? 'opacity-100' : 'opacity-0'}`}>
-                         <p className="text-center text-sky-300/80 text-sm h-5">{statusMessage}</p>
-                          <div className="w-full bg-slate-700/50 rounded-full h-1.5 mt-1 overflow-hidden">
-                               <div className="bg-gradient-to-r from-sky-500 to-cyan-400 h-1.5 rounded-full transition-all duration-300 ease-linear" style={{ width: `${currentTestProgress}%` }}></div>
-                          </div>
-                    </div>
-
-                    {/* Overall Progress */}
-                    <div className="mb-4">
-                        <div className="flex justify-between items-center mb-1">
-                            <span className="text-sm font-medium text-slate-300">Overall Progress</span>
-                            <span className="text-sm font-medium text-slate-300">{Math.round(overallProgress)}%</span>
+                            {/* Results List */}
+                            <div className="space-y-2 mt-2 md:mt-3">
+                                {testResults.map((result, index) => (
+                                    <ResultRow 
+                                        key={index} 
+                                        result={result}
+                                        isSelected={selectedServers.has(result.name)}
+                                        onToggle={handleToggleServer}
+                                        isTestingGlobal={isTesting}
+                                    />
+                                ))}
+                            </div>
                         </div>
-                        <div className="w-full bg-slate-700/50 rounded-full h-2.5">
-                            <div className="bg-gradient-to-r from-green-500 to-emerald-400 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallProgress}%` }}></div>
+
+                        {/* Controls and Progress Footer */}
+                        <div className="mt-6 md:mt-8">
+                            {/* Current Test Progress */}
+                            <div className={`transition-opacity duration-300 h-10 ${isTesting ? 'opacity-100' : 'opacity-0'}`}>
+                                 <p className="text-center text-sky-300/80 text-sm h-5">{statusMessage}</p>
+                                  <div className="w-full bg-slate-700/50 rounded-full h-1.5 mt-1 overflow-hidden">
+                                      <div className="bg-gradient-to-r from-sky-500 to-cyan-400 h-1.5 rounded-full transition-all duration-300 ease-linear" style={{ width: `${currentTestProgress}%` }}></div>
+                                  </div>
+                            </div>
+
+                            {/* Overall Progress */}
+                            <div className="mb-4">
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="text-sm font-medium text-slate-300">Overall Progress</span>
+                                    <span className="text-sm font-medium text-slate-300">{Math.round(overallProgress)}%</span>
+                                </div>
+                                <div className="w-full bg-slate-700/50 rounded-full h-2.5">
+                                    <div className="bg-gradient-to-r from-green-500 to-emerald-400 h-2.5 rounded-full transition-all duration-500 ease-out" style={{ width: `${overallProgress}%` }}></div>
+                                </div>
+                            </div>
+                            
+                            {/* Action Buttons Container */}
+                            <div className="flex flex-col sm:flex-row items-center gap-3 mt-4">
+                                {/* Start Button */}
+                                <button
+                                    onClick={startAllTests}
+                                    disabled={isTesting || selectedServers.size === 0}
+                                    className="w-full bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-sky-400/50 flex items-center justify-center transform active:scale-98 shadow-lg hover:shadow-sky-500/20"
+                                >
+                                    {isTesting ? (
+                                        <>
+                                            <SpinnerIcon />
+                                            <span className="ml-3 text-lg">Testing...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <PlayIcon />
+                                            <span className="ml-2 text-lg">Start Tests ({selectedServers.size})</span>
+                                        </>
+                                    )}
+                                </button>
+                                
+                                <button
+                                    onClick={handleDownloadScreenshot}
+                                    disabled={isTesting}
+                                    className="w-full sm:w-auto bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-5 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-slate-500/50 flex items-center justify-center gap-2 transform active:scale-98 shadow-lg hover:shadow-slate-600/20"
+                                    title="Download Results as Image"
+                                >
+                                   <DownloadIcon />
+                                   <span className="hidden sm:inline">Save Results</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    {/* **UPDATED**: Action Buttons Container */}
-                    <div className="flex flex-col sm:flex-row items-center gap-3 mt-4">
-                        {/* Start Button */}
-                        <button
-                            onClick={startAllTests}
-                            disabled={isTesting || selectedServers.size === 0}
-                            className="w-full bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-sky-400/50 flex items-center justify-center transform active:scale-98 shadow-lg hover:shadow-sky-500/20"
-                        >
-                            {isTesting ? (
-                                <>
-                                    <SpinnerIcon />
-                                    <span className="ml-3 text-lg">Testing...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <PlayIcon />
-                                    <span className="ml-2 text-lg">Start Tests ({selectedServers.size})</span>
-                                </>
-                            )}
-                        </button>
-                        
-                        <button
-                            onClick={handleDownloadScreenshot}
-                            disabled={isTesting}
-                            className="w-full sm:w-auto bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 px-5 rounded-xl transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-slate-500/50 flex items-center justify-center gap-2 transform active:scale-98 shadow-lg hover:shadow-slate-600/20"
-                            title="Download Results as Image"
-                        >
-                           <DownloadIcon />
-                           <span className="hidden sm:inline">Save Results</span>
-                        </button>
-                    </div>
-                </div>
+                    </>
+                )}
             </div>
         </div>
     );
