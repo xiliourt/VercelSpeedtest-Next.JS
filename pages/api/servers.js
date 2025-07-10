@@ -1,11 +1,9 @@
-import { loadEnvConfig } from '@next/env'
 export const runtime = 'edge'
 export default function handler(req) {
   let servers = [];
 
   // 1. Try to load from the primary environment variable.
   const serversJson = process.env.NEXT_PUBLIC_SERVERS_JSON;
-  loadEnvConfig(serversJson)
   if (serversJson) {
     try {
       const parsedServers = JSON.parse(serversJson);
@@ -26,28 +24,24 @@ export default function handler(req) {
   ** Try using Cloudflare Pages URL
   ** Give up and use localhost:3000 */
   const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-  loadEnvConfig(vercelUrl)
   if (servers.length === 0 && vercelUrl) {
     console.warn("Using Vercel URL as a fallback server configuration.");
     servers = [ { name: 'Vercel (This Deployment)', serverUrl: `https://${vercelUrl}`, maxUpload: '4194304' } ];
   }
 
   const renderUrl = process.env.RENDER_EXTERNAL_URL
-  loadEnvConfig(renderUrl)
   if (servers.length === 0 && renderUrl) {
     console.warn("Using Vercel URL as a fallback server configuration.");
     servers = [ { name: 'Render (this deployment)', serverUrl: `https://${renderUrl}`, maxUpload: '4194304' } ];
   }
 
   const netlifyUrl = process.env.DEPLOY_PRIME_URL
-  loadEnvConfig(netlifyUrl)
   if (servers.length === 0 && netlifyUrl) {
     console.warn("Using Vercel URL as a fallback server configuration.");
     servers = [ { name: 'Netlifgy (this deployment)', serverUrl: `https://${netlifyUrl}`, maxUpload: '4194304' } ];
   }
 
   const CFPagesURL = process.env.CF_PAGES_URL
-  loadEnvConfig(CFPagesURL)
   if (servers.length === 0 && CFPagesURL) {
     console.warn("Using Vercel URL as a fallback server configuration.");
     servers = [ { name: 'Netlifgy (this deployment)', serverUrl: `https://${CFPagesURL}`, maxUpload: '4194304' } ];
