@@ -1,0 +1,74 @@
+name: Push Standalne
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'pages/**'
+      - 'styles/*'
+      - 'components/**'
+      - 'postcss.config.js'
+      - 'next.config.js'
+      - 'package.json'
+      - 'postcss.config.js'
+      - 'tailwind.config.js'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'pages/**'
+      - 'styles/*'
+      - 'components/**'
+      - 'postcss.config.js'
+      - 'next.config.js'
+      - 'package.json'
+      - 'postcss.config.js'
+      - 'tailwind.config.js'
+  workflow_dispatch:
+
+jobs:
+ updatenodejs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout profile repo
+        uses: actions/checkout@v4
+        
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+        run: |
+          npm install --omit=dev
+          npm run build
+
+      - name: Prepare directory
+        run: |
+          mkdir -p ./Speedtest-NextJS_Node-Standalone/.next/static
+          cp -r ./.next/static/* ./Speedtest-NextJS_Node-Standalone/.next/static/
+          cp -r ./.next/standalone/* ./Speedtest-NextJS_Node-Standalone/
+          cp -r ./public ./Speedtest-NextJS_Node-Standalone
+          
+      - name: Zip artifact for deployment
+        working-directory: ./Speedtest-NextJS_Node-Standalone
+        run: | 
+            zip release.zip ./ -r
+            zip release.zip ./.next/* -j -r
+  
+      - name: Upload Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "standalone/release.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: "latest"
+          allowUpdates: "true"
+
+      - name: Sync with Speedtest-NextJS_Node-Standalone
+        working-directory: ./Speedtest-NextJS_Node-Standalone
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          source-directory: './'
+          destination-github-username: 'xiliourt'
+          destination-repository-name: 'Speedtest-NextJS_Node-Standalone'
+          target-branch: 'main'
+          commit-message: '🚀 Deploying latest Node standalone Build'
+      
