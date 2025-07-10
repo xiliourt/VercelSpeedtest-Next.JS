@@ -223,11 +223,6 @@ export default function App() {
         }));
         setOverallProgress(0);
         
-        const pingUrl = `${serversToTest[0].serverUrl}/api/ping`;
-        const downloadUrl = `${serversToTest[0].serverUrl}/api/download`;
-        const uploadUrl = `${serversToTest[0].serverUrl}/api/upload`;
-        const maxUpload = server.maxUpload? server.maxUpload : LARGE_UPLOAD_SIZE_BYTES
-        
         for (let i = 0; i < serversToTest.length; i++) {
             const server = serversToTest[i];
             const originalIndex = servers.findIndex(s => s.name === server.name);
@@ -235,6 +230,7 @@ export default function App() {
             const pingUrl = `${server.serverUrl}/api/ping`;
             const downloadUrl = `${server.serverUrl}/api/download`;
             const uploadUrl = `${server.serverUrl}/api/upload`;
+            const maxUpload = server.maxUpload? server.maxUpload : LARGE_UPLOAD_SIZE_BYTES;
 
             setTestResults(prev => prev.map((r, index) => index === originalIndex ? { ...r, status: 'testing' } : r));
             
