@@ -1,7 +1,7 @@
 import { loadEnvConfig } from '@next/env'
 export default function handler(req, res) {
   let SERVERS = [];
-  const SERVERS = process.env.SERVERS_JSON;
+  SERVERS = process.env.SERVERS_JSON;
   loadEnvConfig(SERVERS);
   const serverUrlVercel = process.env.NEXT_PUBLIC_VERCEL_URL;
   loadEnvConfig(serverUrlVercel);
