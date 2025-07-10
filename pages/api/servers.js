@@ -1,4 +1,6 @@
 import { loadEnvConfig } from '@next/env'
+export const runtime = 'edge'; 
+export const config = { runtime: 'edge', };
 export default function handler(req, res) {
   let servers = [];
 
