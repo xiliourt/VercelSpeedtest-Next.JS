@@ -1,4 +1,4 @@
-import { PlayIcon, SpinnerIcon, CheckCircleIcon, ExclamationTriangleIcon, CheckboxCheckedIcon, CheckboxUncheckedIcon, DownloadIcon } from '../components/svgs'
+import { StatusIcon, PlayIcon, DownloadIcon } from '../components/svgs'
 import { useState, useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
 
@@ -328,14 +328,6 @@ export default function App() {
         const isError = result.status === 'error';
         
         const rowBg = isTestingThis ? 'bg-sky-900/50' : 'bg-slate-800/60';
-
-        const StatusIcon = () => {
-            if (isTestingThis) return <SpinnerIcon />;
-            if (isComplete) return <CheckCircleIcon />;
-            if (isError) return <ExclamationTriangleIcon />;
-            if (isSelected) return <CheckboxCheckedIcon />;
-            return <CheckboxUncheckedIcon />;
-        };
 
         return (
             <div className={`rounded-xl transition-all duration-300 ${rowBg} hover:bg-slate-700/60 transform hover:scale-[1.02]`}>
