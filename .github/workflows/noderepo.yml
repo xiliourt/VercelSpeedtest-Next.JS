@@ -63,12 +63,11 @@ jobs:
           allowUpdates: "true"
 
       - name: Sync with Speedtest-NextJS_Node-Standalone
-        working-directory: ./Speedtest-NextJS_Node-Standalone
         uses: cpina/github-action-push-to-another-repository@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.REPO_API_KEY }}
         with:
-          source-directory: './'
+          source-directory: './Speedtest-NextJS_Node-Standalone'
           destination-github-username: 'xiliourt'
           destination-repository-name: 'Speedtest-NextJS_Node-Standalone'
           target-branch: 'main'
