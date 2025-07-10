@@ -31,14 +31,8 @@ export default function handler(req) {
 
   const renderUrl = process.env.RENDER_EXTERNAL_URL
   if (servers.length === 0 && renderUrl) {
-    console.warn("Using Vercel URL as a fallback server configuration.");
+    console.warn("Using Render URL as a fallback server configuration.");
     servers = [ { name: 'Render (this deployment)', serverUrl: `https://${renderUrl}`, maxUpload: '4194304' } ];
-  }
-
-  const netlifyUrl = process.env.DEPLOY_PRIME_URL
-  if (servers.length === 0 && netlifyUrl) {
-    console.warn("Using Vercel URL as a fallback server configuration.");
-    servers = [ { name: 'Netlifgy (this deployment)', serverUrl: `https://${netlifyUrl}`, maxUpload: '4194304' } ];
   }
 
   const CFPagesURL = process.env.CF_PAGES_URL
@@ -47,9 +41,15 @@ export default function handler(req) {
     servers = [ { name: 'Netlifgy (this deployment)', serverUrl: `https://${CFPagesURL}`, maxUpload: '4194304' } ];
   }
   
+  const deployUrl = process.env.DEPLOY_PRIME_URL
+  if (servers.length === 0 && deployUrl) {
+    console.warn("Using generic deploy_prime_url URL as a fallback server configuration.");
+    servers = [ { name: 'Unknown (This deployment)', serverUrl: `https://${deployUrl}`, maxUpload: '4194304' } ];
+  }
+
   /* Fuck it, using local host as the URL */
   if (servers.length === 0) {
-    console.error("Using localhost as the final fallback server configuration. You didn't set SERVERS_JSON as an environment variable");
+    console.error("Using localhost as the final fallback server configuration. You didn't set SERVERS_JSON as an environment variable and we coudln't determine the URL from any variables.");
     servers = [ { name: 'Localhost', serverUrl: 'http://127.0.0.1:3000', maxUpload: '27262976'}] ;
   }
   return new Response(JSON.stringify(servers), { status: 200, headers: {'Content-Type': 'application/json',},});
