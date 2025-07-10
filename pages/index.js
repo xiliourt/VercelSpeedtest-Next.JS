@@ -225,7 +225,12 @@ export default function App() {
 
         for (let i = 0; i < serversToTest.length; i++) {
             const server = serversToTest[i];
-            // **MODIFIED**: Use `servers` from state
+            const originalIndex = servers.findIndex(s => s.name === name);
+            
+            const pingUrl = `${server.serverUrl}/api/ping`;
+            const downloadUrl = `${server.serverUrl}/api/download`;
+            const uploadUrl = `${server.serverUrl}/api/upload`;
+            const maxUpload = `${server.maxUpload? server.maxUpload : LARGE_UPLOAD_SIZE_BYTES} `
             const originalIndex = servers.findIndex(s => s.name === server.name);
 
             setTestResults(prev => prev.map((r, index) => index === originalIndex ? { ...r, status: 'testing' } : r));
@@ -236,7 +241,7 @@ export default function App() {
                 // Ping
                 setStatusMessage(`Pinging ${server.name}...`);
                 try {
-                    const finalPing = await measurePing(server.pingUrl, (p) => setCurrentTestProgress(p));
+                    const finalPing = await measurePing(pingUrl, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, ping: finalPing } : r));
                 } catch (error) {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, ping: 'ERR', status: 'error' } : r));
@@ -249,19 +254,19 @@ export default function App() {
                 // Download Test
                 setStatusMessage(`Downloading ${INITIAL_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                 try {
-                    finalDownload = await measureDownload(server.downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                    finalDownload = await measureDownload(downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: finalDownload } : r));
                     
                     if (parseFloat(finalDownload) > SUPER_CONNECTION_THRESHOLD_MBPS) {
                         setStatusMessage(`Downloading ${SUPER_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
-                        const finalDownloadSuper = await measureDownload(server.downloadUrl, SUPER_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                        const finalDownloadSuper = await measureDownload(downloadUrl, SUPER_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                         setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalDownloadSuper), parseFloat(finalDownload))} : r));
                     } else if (parseFloat(finalDownload) > FAST_CONNECTION_THRESHOLD_MBPS) {
                         setStatusMessage(`Downloading ${LARGE_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
-                        const finalDownloadLarge = await measureDownload(server.downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                        const finalDownloadLarge = await measureDownload(downloadUrl, LARGE_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                         if (parseFloat(finalDownloadLarge) > SUPER_CONNECTION_THRESHOLD_MBPS) {
                             setStatusMessage(`Downloading ${SUPER_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
-                            const finalDownloadSuper = await measureDownload(server.downloadUrl, SUPER_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                            const finalDownloadSuper = await measureDownload(downloadUrl, SUPER_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                             setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalDownloadSuper), parseFloat(finalDownloadLarge), parseFloat(finalDownload))} : r));
                         } else {
                             setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalDownloadLarge), parseFloat(finalDownload))} : r));
@@ -275,7 +280,7 @@ export default function App() {
                 await new Promise(res => setTimeout(res, 200));
 
                 // Upload Test
-                const initialUploadSize = Math.min(INITIAL_UPLOAD_SIZE_BYTES, server.maxUpload);
+                const initialUploadSize = Math.min(INITIAL_UPLOAD_SIZE_BYTES, maxUpload);
 
                 if (initialUploadSize == 0) {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'Disabled', status: 'complete' } : r));
@@ -283,12 +288,12 @@ export default function App() {
                 }
                 setStatusMessage(`Uploading ${initialUploadSize / 1024 / 1024}MB to ${server.name}...`);
                 try {
-                    finalUpload = await measureUpload(server.uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
+                    finalUpload = await measureUpload(uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUpload } : r));
                     
-                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && server.maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
+                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && maxUpload => LARGE_UPLOAD_SIZE_BYTES) {
                          setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
-                         const finalUploadLarge = await measureUpload(server.uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                         const finalUploadLarge = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                          if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
                                setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUploadLarge } : r));
                          }
