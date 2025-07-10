@@ -61,7 +61,12 @@ jobs:
           token: ${{ secrets.REPO_API_KEY }}
           tag: "latest"
           allowUpdates: "true"
-
+          
+      - name: Clean up pre-sync
+        working-directory: ./Speedtest-NextJS_Node-Standalone
+        run: |
+          rm release.zip
+        
       - name: Sync with Speedtest-NextJS_Node-Standalone
         uses: cpina/github-action-push-to-another-repository@main
         env:
