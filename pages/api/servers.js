@@ -1,30 +1,36 @@
 import { loadEnvConfig } from '@next/env'
 export default function handler(req, res) {
+  let servers = [];
 
-  /* If SERVERS_JSON is set */
-  const jsonServers = process.env.SERVERS_JSON;
-  const SERVERS = JSON.parse(jsonServers);
-  loadEnvConfig(SERVERS);
-  console.error(SERVERS);
-  if (SERVERS) {
-    res.status(200).json({ SERVERS });
-    return;
+  // 1. Try to load from the primary environment variable.
+  const serversJson = process.env.SERVERS_JSON;
+  loadEnvConfig(serversJson)
+  if (serversJson) {
+    try {
+      const parsedServers = JSON.parse(serversJson);
+      if (Array.isArray(parsedServers) && parsedServers.length > 0) {
+        servers = parsedServers;
+      } else {
+        console.warn("SERVERS_JSON was found but is not a valid, non-empty JSON array. Falling back.");
+      }
+    } catch (error) {
+      console.error("Error parsing SERVERS_JSON environment variable:", error);
+    }
   }
 
-  /* Vercel Fallback */
-  const serverUrlVercel = process.env.NEXT_PUBLIC_VERCEL_URL;
-  loadEnvConfig(serverUrlVercel);
-  if (serverUrlVercel) {
-        console.warn("Using fallback vercel, no servers in environment variables but Vercel URL found")
-        const SERVERS = [{ name: 'Vercel', pingUrl: 'https://{NEXT_PUBLIC_VERCEL_URL}/api/ping', downloadUrl: 'http:/{NEXT_PUBLIC_VERCEL_URL}/api/download', uploadUrl: 'https://{NEXT_PUBLIC_VERCEL_URL}/api/upload', maxUpload: '27262976' } ];
-  } 
-
-  
-  
-  else {
-        console.error("No servers and not running on Vercel, using local host")
-        const SERVERS = [{ name: 'Localhost', pingUrl: 'https://127.0.0.1/api:3000/ping', downloadUrl: 'http:/127.0.0.1:3000/api/download', uploadUrl: 'https://127.0.0.1:3000/api/upload', maxUpload: '27262976' } ];
+  // 2. If the primary source fails or is empty, try Vercel fallback.
+  // The Vercel URL is automatically set by the Vercel platform.
+  const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
+  loadEnvConfig(vercelUrl)
+  if (servers.length === 0 && vercelUrl) {
+    console.warn("Using Vercel URL as a fallback server configuration.");
+    servers = [ { name: 'Vercel (This Deployment)', pingUrl: `https://${vercelUrl}/api/ping`, downloadUrl: `https://${vercelUrl}/api/download`, uploadUrl: `https://${vercelUrl}/api/upload`, maxUpload: '4194304' } ];
   }
-  res.status(200).json(SERVERS);
-  return;
+  
+  if (servers.length === 0) {
+    console.warn("Using localhost as the final fallback server configuration.");
+    servers = [ { name: 'Localhost', pingUrl: 'http://127.0.0.1:3000/api/ping', downloadUrl: 'http://127.0.0.1:3000/api/download', uploadUrl: 'http://127.0.0.1:3000/api/upload', maxUpload: '27262976' } ];
+  }
+
+  res.status(200).json(servers);
 }
