@@ -1,6 +1,7 @@
 import { loadEnvConfig } from '@next/env'
 export default function handler(req, res) {
   let SERVERS = [];
+  console.error(process.env.SERVERS_JSON)
   SERVERS = JSON.parse(process.env.SERVERS_JSON);
   loadEnvConfig(SERVERS);
   if (SERVERS.SERVERS) {
