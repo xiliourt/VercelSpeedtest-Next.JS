@@ -3,7 +3,7 @@ export default function handler(req, res) {
   console.error(process.env.SERVERS_JSON)
   SERVERS = process.env.SERVERS_JSON;
   loadEnvConfig(SERVERS);
-  if (SERVERS.SERVERS) {
+  if (SERVERS) {
     res.status(200).json({ SERVERS });
   }
 
