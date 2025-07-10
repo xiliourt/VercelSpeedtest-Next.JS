@@ -73,7 +73,7 @@ export default function App() {
             // Pre-select all servers by default
             setSelectedServers(new Set(servers.map(s => s.name)));
         }
-    }, [servers]); // This effect runs whenever the `servers` state changes
+    }, [servers]);
 
     const handleToggleServer = (serverName) => {
         if (isTesting) return;
@@ -222,7 +222,10 @@ export default function App() {
             return res;
         }));
         setOverallProgress(0);
-
+        
+        const pingUrl = `${serversToTest[0].serverUrl}/api/ping`;
+        const downloadUrl = `${serversToTest[0].serverUrl}/api/download`;
+        const uploadUrl = `${serversToTest[0].serverUrl}/api/upload`;
         for (let i = 0; i < serversToTest.length; i++) {
             const server = serversToTest[i];
             const originalIndex = servers.findIndex(s => s.name === server.name);
