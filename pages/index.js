@@ -76,8 +76,8 @@ export default function App(req, res) {
     // --- SERVER CONFIGURATION ---
     const host = context.req.headers['host'];
     const configUrl = `https://${host}/api/servers`;
-    const configRes = await fetch(configUrl);
-    const SERVERS = await configRes.json();
+    const configRes = fetch(configUrl);
+    const SERVERS = configRes.json();
         
     // --- **NEW**: Ref for the element to screenshot ---
     const resultsPanelRef = useRef(null);
