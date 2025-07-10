@@ -1,5 +1,5 @@
 import { loadEnvConfig } from '@next/env'
-export const runtime = 'nodejs';
+export const runtime = 'edge'
 export default function handler(req, res) {
   let servers = [];
 
