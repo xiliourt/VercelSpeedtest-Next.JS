@@ -6,6 +6,7 @@ on:
     paths:
       - 'pages/**'
       - 'styles/*'
+      - 'components/**'
       - 'postcss.config.js'
       - 'next.config.js'
       - 'package.json'
@@ -16,6 +17,7 @@ on:
     paths:
       - 'pages/**'
       - 'styles/*'
+      - 'components/**'
       - 'postcss.config.js'
       - 'next.config.js'
       - 'package.json'
