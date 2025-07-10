@@ -34,8 +34,8 @@ export default function App() {
     const resultsPanelRef = useRef(null);
 
     // --- **NEW**: Effect to fetch servers on component mount ---
-    useEffect(() => {
-        const fetchServers = async () => {
+    useEffect(()  {
+        const fetchServers = async ()  {
             try {
                 // Fetch from the new API route
                 const response = await fetch('/api/servers');
@@ -60,10 +60,10 @@ export default function App() {
     }, []); // Empty dependency array ensures this runs only once
 
     // --- **NEW**: Effect to initialize results after servers are loaded ---
-    useEffect(() => {
+    useEffect(()  {
         if (servers.length > 0) {
             // Initialize the results table
-            setTestResults(servers.map(s => ({
+            setTestResults(servers.map(s  ({
                 name: s.name,
                 ping: '--',
                 download: '--',
@@ -71,13 +71,13 @@ export default function App() {
                 status: 'pending'
             })));
             // Pre-select all servers by default
-            setSelectedServers(new Set(servers.map(s => s.name)));
+            setSelectedServers(new Set(servers.map(s  s.name)));
         }
     }, [servers]); // This effect runs whenever the `servers` state changes
 
-    const handleToggleServer = (serverName) => {
+    const handleToggleServer = (serverName)  {
         if (isTesting) return;
-        setSelectedServers(prevSelected => {
+        setSelectedServers(prevSelected  {
             const newSelected = new Set(prevSelected);
             if (newSelected.has(serverName)) {
                 newSelected.delete(serverName);
@@ -88,7 +88,7 @@ export default function App() {
         });
     };
 
-    const handleDownloadScreenshot = async () => {
+    const handleDownloadScreenshot = async ()  {
         if (!resultsPanelRef.current) return;
         try {
             const canvas = await html2canvas(resultsPanelRef.current, {
@@ -110,13 +110,13 @@ export default function App() {
     };
     
     // --- Core Measurement Functions (unchanged) ---
-    const measurePing = async (pingUrl, onProgress) => {
+    const measurePing = async (pingUrl, onProgress)  {
         let pings = [];
         const pingProgressIncrement = 100 / PING_COUNT;
         await fetch(`${pingUrl}`, { method: 'GET', cache: 'no-store' });
         for (let i = 0; i < PING_COUNT; i++) {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), PING_TIMEOUT_MS);
+            const timeoutId = setTimeout(()  controller.abort(), PING_TIMEOUT_MS);
             const startTime = performance.now();
             try {
                 await fetch(`${pingUrl}`, { method: 'GET', cache: 'no-store', signal: controller.signal });
@@ -130,7 +130,7 @@ export default function App() {
                 clearTimeout(timeoutId);
             }
             onProgress((i + 1) * pingProgressIncrement);
-            if (i < PING_COUNT - 1) await new Promise(resolve => setTimeout(resolve, 200));
+            if (i < PING_COUNT - 1) await new Promise(resolve  setTimeout(resolve, 200));
         }
         const validPings = pings.filter(p => p !== null);
         if (validPings.length > 0) {
@@ -291,7 +291,7 @@ export default function App() {
                     finalUpload = await measureUpload(uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUpload } : r));
                     
-                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && maxUpload => LARGE_UPLOAD_SIZE_BYTES) {
+                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && maxUpload >= LARGE_UPLOAD_SIZE_BYTES) {
                          setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                          const finalUploadLarge = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                          if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
