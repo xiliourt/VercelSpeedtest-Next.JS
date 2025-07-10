@@ -63,17 +63,20 @@ const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10;
 
 // --- Main App Component ---
 export default function App(req, res) {
-    const host = context.req.headers['host'];
-    const configUrl = `https://${host}/api/servers`;
-    fetch(configUrl).then
-        ((configRes) => {const SERVERS = configRes.json()});
+    async function GetServers(req) {
+        const host = context.req.headers['host'];
+        const configUrl = `https://${host}/api/servers`;
+        fetch(configUrl).then
+            ((configRes) => {const SERVERS = configRes.json()});
+        return SERVERS;
+    }
     
     const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
     const [statusMessage, setStatusMessage] = useState('Select servers and click "Start Tests" to begin.');
     const [currentTestProgress, setCurrentTestProgress] = useState(0);
     const [overallProgress, setOverallProgress] = useState(0);
-    const [selectedServers, setSelectedServers] = useState(() => new Set(SERVERS.map(s => s.name)));
+    const [selectedServers, setSelectedServers] = useState(() => new Set(GetServers(req).map(s => s.name)));
         
     // --- **NEW**: Ref for the element to screenshot ---
     const resultsPanelRef = useRef(null);
