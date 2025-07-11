@@ -323,7 +323,7 @@ export default function App() {
 
     // --- Main Render Block ---
     return (
-        <div className="flex items-center justify-center min-h-screen p-2 sm:p-4 bg-slate-900 text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <div className="flex items-center justify-center min-h-screen p-2 sm:p-4 bg-slate-900 text-white bg-[image:linear-gradient(hsla(0,0%,100%,.05)_1px,transparent_0),linear-gradient(90deg,hsla(0,0%,100%,.05)_1px,transparent_0)] bg-[size:50px_50px] bg-center" style={{ fontFamily: "'Inter', sans-serif" }}>
             <div className="w-full max-w-3xl mx-auto">
                 <header className="text-center mb-6 md:mb-8">
                     <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-cyan-300 py-2">
