@@ -17,7 +17,7 @@ export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
   // We need to parse query parameters from the URL.
   const url = new URL(req.url);
-  const requestedSize = parseInt(url.searchParams.get('size')) || (10 * 1024 * 1023); // Default to just under 10MB so vercel caches
+  const requestedSize = parseInt(url.searchParams.get('size')) || (9.5 * 1024 * 1024); // Default to just under 10MB so vercel caches, it appears to cache 10 * 1000 * 1000
   const chunkSize = 64 * 1024; // 64KB chunks
 
   const headers = {
