@@ -19,7 +19,7 @@ export default async function handler(req) {
 
       return new Response(JSON.stringify({ message: 'Upload received' }), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },,
+        headers: { 'Content-Type': 'application/json' },
       });
 
     } catch (error) {
