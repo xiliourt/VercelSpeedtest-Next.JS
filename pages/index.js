@@ -290,7 +290,7 @@ export default function App() {
                     finalUpload = await measureUpload(uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUpload } : r));
                     
-                    if ((parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS) && ((maxUpload? maxUpload : LARGE_UPLOAD_SIZE_BYTES)) >= LARGE_UPLOAD_SIZE_BYTES) {
+                    if ((parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS) && ((maxUpload? maxUpload : LARGE_UPLOAD_SIZE_BYTES) >= LARGE_UPLOAD_SIZE_BYTES)) {
                          setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                          const finalUploadLarge = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                          if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
