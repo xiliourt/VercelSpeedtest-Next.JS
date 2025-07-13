@@ -41,29 +41,36 @@ services:
     ports:
       - 3000:3000
 ```
-### Via node NPM (Maintained)
+### Via node NPM
 ```
-export JSON_SERVERS='[{ "name": "Server 1", "pingUrl": "https://(externalIP):3000/api/ping", "downloadUrl": "https:/(externalIP):3000/api/download",  "uploadUrl": "https://(externalIP):3000/api/upload" "maxUpload": "27262976" }'
 npm install
 npm run build
 npm run start
 ```
-server will be available on http://(externaIP):3000
+server will be available on http://(externaIP):3000 and will default to listing only that server with a 4MB upload limit, unless NEXT_PUBLIC_JSON_SERVERS variable is set
 
 ### Standalone package via node
 Download the [latest](https://github.com/xiliourt/VercelSpeedtest-Next.JS/releases/tag/latest) release from the repo
 Unzip it
-Set JSON_SERVERS variable
+Optional: (required for multiple servers) set JSON_SERVERS variable
 node server.js
 ```
-export JSON_SERVERS='[
-  {
-    "name": "Server 1!",
-    "pingUrl": "https://(externalIP):3000/api/ping
-    "downloadUrl": "https:/(externalIP):3000/api/download
-    "uploadUrl": "https://(externalIP):3000/api/upload"
-    "maxUpload": "27262976"
-  }'
 node server.js
 ```
 server will be available on http://(externaIP):3000
+
+Example settings NEXT_PUBLIC_JSON_SERVERS:
+*(Note if maxUpload isn't set, it'll default to the 10MB value. If no JSON servers are listed, baseUrl defaults to the connection URL and max upload to 4MB)*
+```
+export NEXT_PUBLIC_JSON_SERVER='[
+  {
+    "name": "Server 1",
+    "baseUrl": "https://(externalIP):3000
+  },
+  {
+    "name": "Server 2",
+    "baseUrl": "https://(externalIP):3000
+    "maxUpload": "27262976"
+  }
+]'
+```
