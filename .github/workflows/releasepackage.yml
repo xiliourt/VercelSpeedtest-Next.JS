@@ -57,7 +57,7 @@ jobs:
       - name: Upload Release
         uses: ncipollo/release-action@v1.12.0
         with:
-          artifacts: "standalone/release.zip"
+          artifacts: "Speedtest-NextJS_Node-Standalone/release.zip"
           token: ${{ secrets.REPO_API_KEY }}
           tag: "latest"
           allowUpdates: "true"
