@@ -8,7 +8,7 @@ export const metadata = {
     icons: { icon: '/icon.png', },
     author: 'Xiliourt Web Design, https://xiliourt.ovh',
     copyright: 'MIT License - available at https://github.com/xiliourt/VercelSpeedtest-Next.JS/',
-    original-source: 'https://github.com/xiliourt/VercelSpeedtest-Next.JS/',
+    'original-source': 'https://github.com/xiliourt/VercelSpeedtest-Next.JS/',
     keywords: ['speedtest', 'next.js speedtest', 'vercel vs cloudflare', 'best next.js host'],
     openGraph: {
         title: 'Next.JS Speedtest Deployment',
