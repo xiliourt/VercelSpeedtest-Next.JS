@@ -1,4 +1,4 @@
-import App from './HomePage'
+import HomePage from './HomePage'
 
 export const metadata = {
     title: 'Next.JS Speedtest Deployment | Xiliourt Web Design',
@@ -23,4 +23,4 @@ export const metadata = {
     },
 };
 
-export default function Page(<Homepage />)
+export default function Page(<HomePage />)
