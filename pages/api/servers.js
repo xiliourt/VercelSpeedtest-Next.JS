@@ -3,7 +3,7 @@ export default function handler(req) {
   let servers = [];
 
   // 1. Try to load from the primary environment variable.
-  const serversJson = process.env.NEXT_PUBLIC_SERVERS_JSON;
+  const serversJson = process.env.SERVERS_JSON;
   if (serversJson) {
     try {
       const parsedServers = JSON.parse(serversJson);
