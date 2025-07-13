@@ -18,6 +18,10 @@ const nextConfig = {
           {
             key: "Access-Control-Allow-Headers",
             value: "X-Requested-With, Content-Type, Authorization",
+          },  
+          {
+            key: "CDN-Cache-Control",
+            value: "max-age=86400",
           },
         ],
       },
