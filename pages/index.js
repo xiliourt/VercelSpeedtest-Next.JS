@@ -23,4 +23,4 @@ export const metadata = {
     },
 };
 
-export default function Page(return (<HomePage />))
+export default function Page() {return (<HomePage />)}
