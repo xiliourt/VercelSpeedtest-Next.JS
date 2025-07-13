@@ -39,19 +39,18 @@ services:
 ```
 
 ### Standalone package via node
-Download the [latest](https://github.com/xiliourt/VercelSpeedtest-Next.JS/releases/tag/latest) release from the repo
-Unzip it
+Download the [latest](https://github.com/xiliourt/VercelSpeedtest-Next.JS/releases/tag/latest) release from the repo and unzip it
+
 Optional: (required for multiple servers) set JSON_SERVERS variable
-node server.js
 ```
 node server.js
 ```
 server will be available on http://(externaIP):3000
 
-Example settings NEXT_PUBLIC_JSON_SERVERS:
-*(Note if maxUpload isn't set, it'll default to the 10MB value. If no JSON servers are listed, baseUrl defaults to the connection URL and max upload to 4MB)*
+Example settings JSON_SERVERS (use export JSON_SERVERs='(the below') on Linux, etc)
+*(Note if maxUpload isn't set, it'll default to the 10MB value. If no JSON servers are listed, only the URL you're connecting via will be tested)*
 ```
-export JSON_SERVER='[
+[
   {
     "name": "Server 1",
     "serverUrl": "https://(externalIP):3000
@@ -59,7 +58,7 @@ export JSON_SERVER='[
   {
     "name": "Server 2",
     "serverUrl": "https://(externalIP):3000
-    "maxUpload": "27262976"
+    "maxUpload": "4194304"
   }
-]'
+]
 ```
