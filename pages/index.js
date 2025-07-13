@@ -17,7 +17,7 @@ const SUPER_UPLOAD_SIZE_BYTES = 100 * 1024 * 1024;
 const FAST_CONNECTION_THRESHOLD_MBPS = 50;
 const SUPER_CONNECTION_THRESHOLD_MBPS = 200;
 const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10;
-const SUPER_CONNECTION_THRESHOLD_UP_MBPS = 400;
+const SUPER_CONNECTION_THRESHOLD_UP_MBPS = 200;
 
 // --- Main App Component ---
 export default function App() {
@@ -294,17 +294,17 @@ export default function App() {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUpload } : r));
 
                     /* Super & Fast Upload Test Size Logic */
-                    if (parseFloat(finalUpload) > SUPER_CONNECTION_THRESHOLD_UP_MBPS && maxUpload > SUPER_UPLOAD_SIZE_BYTES) {
+                    if ((parseFloat(finalUpload) > SUPER_CONNECTION_THRESHOLD_UP_MBPS) && (maxUpload? maxUpload : SUPER_UPLOAD_SIZE_BYTES >= SUPER_UPLOAD_SIZE_BYTES)) {
                         setStatusMessage(`Uploading ${SUPER_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                          const finalUploadSuper = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                          setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalUpload), parseFloat(finalUploadSuper))} : r));
 
-                    } else if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
+                    } else if ((parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS) && (maxUpload? maxUpload : SUPER_UPLOAD_SIZE_BYTES >= LARGE_UPLOAD_SIZE_BYTES)) {
                         setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                         const finalUploadLarge = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                         setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalUpload), parseFloat(finalUploadLarge))} : r));
                         /* Fast Speed Above Super Test Speed Logic (yes, this means it uploads 3 files total)*/
-                        if (parseFloat(finalUpload) > SUPER_CONNECTION_THRESHOLD_UP_MBPS && maxUpload > SUPER_UPLOAD_SIZE_BYTES) {
+                        if ((parseFloat(finalUpload) > SUPER_CONNECTION_THRESHOLD_UP_MBPS) && (maxUpload? maxUpload : SUPER_UPLOAD_SIZE_BYTES >= SUPER_UPLOAD_SIZE_BYTES)) {
                             setStatusMessage(`Uploading ${SUPER_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                             const finalUploadSuper = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                             setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalUpload), parseFloat(finalUploadLarge), parseFloat(finalUploadSuper))} : r));
