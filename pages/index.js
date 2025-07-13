@@ -25,7 +25,6 @@ export const metadata = {
     },
 };
 
-
 // --- TEST CONFIGURATION (unchanged) ---
 const PING_COUNT = 10;
 const PING_TIMEOUT_MS = 2000;
