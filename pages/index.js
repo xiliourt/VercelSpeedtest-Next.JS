@@ -12,7 +12,6 @@ const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024;
 const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024;
 const SUPER_DOWNLOAD_SIZE_BYTES = 100 * 1024 * 1024;
 const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024;
-const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024;
 const FAST_CONNECTION_THRESHOLD_MBPS = 50;
 const SUPER_CONNECTION_THRESHOLD_MBPS = 200;
 
@@ -229,7 +228,7 @@ export default function App() {
             const pingUrl = `${server.serverUrl}/api/ping`;
             const downloadUrl = `${server.serverUrl}/api/download`;
             const uploadUrl = `${server.serverUrl}/api/upload`;
-            const maxUpload = server.maxUpload? server.maxUpload : LARGE_UPLOAD_SIZE_BYTES;
+            const maxUpload = server.maxUpload? server.maxUpload : INITIAL_UPLOAD_SIZE_BYTES;
 
             setTestResults(prev => prev.map((r, index) => index === originalIndex ? { ...r, status: 'testing' } : r));
             
