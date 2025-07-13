@@ -1,4 +1,4 @@
-import { DownloadIcon, PlayIcon, SpinnerIcon, ResultRow } from '../components/svgs'
+import { DownloadIcon, PlayIcon, SpinnerIcon, ResultRow, ExclamationTriangleIcon } from '../components/svgs'
 import { useState, useEffect, useRef } from 'react';
 import html2canvas from 'html2canvas';
 
