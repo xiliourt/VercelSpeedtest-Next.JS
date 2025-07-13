@@ -11,7 +11,7 @@ const PING_TIMEOUT_MS = 2000;
 const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024;
 const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024;
 const SUPER_DOWNLOAD_SIZE_BYTES = 100 * 1024 * 1024;
-const INITIAL_UPLOAD_SIZE_BYTES = 20 * 1024 * 1024;
+const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024;
 const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024;
 const FAST_CONNECTION_THRESHOLD_MBPS = 50;
 const SUPER_CONNECTION_THRESHOLD_MBPS = 200;
@@ -290,7 +290,7 @@ export default function App() {
                     finalUpload = await measureUpload(uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUpload } : r));
                     
-                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
+                    if ((parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS) && ((maxUpload? maxUpload : LARGE_UPLOAD_SIZE_BYTES)) >= LARGE_UPLOAD_SIZE_BYTES) {
                          setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
                          const finalUploadLarge = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                          if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
