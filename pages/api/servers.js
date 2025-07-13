@@ -17,40 +17,18 @@ export default function handler(req) {
     }
   }
 
-  /*** If SERVERS_JSON fails...
-  ** Try using Vercel URL 
-  ** Try using Render URL
-  ** Try using Netlify URL
-  ** Try using Cloudflare Pages URL
-  ** Give up and use localhost:3000 */
-  const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-  if (servers.length === 0 && vercelUrl) {
-    console.warn("Using Vercel URL as a fallback server configuration.");
-    servers = [ { name: 'Vercel (This Deployment)', serverUrl: `https://${vercelUrl}`, maxUpload: '4194304' } ];
-  }
-
-  const renderUrl = process.env.RENDER_EXTERNAL_URL
-  if (servers.length === 0 && renderUrl) {
-    console.warn("Using Render URL as a fallback server configuration.");
-    servers = [ { name: 'Render (this deployment)', serverUrl: `https://${renderUrl}`, maxUpload: '4194304' } ];
-  }
-
   const CFPagesURL = process.env.CF_PAGES_URL
   if (servers.length === 0 && CFPagesURL) {
-    console.warn("Using Vercel URL as a fallback server configuration.");
-    servers = [ { name: 'Netlifgy (this deployment)', serverUrl: `https://${CFPagesURL}`, maxUpload: '4194304' } ];
-  }
-  
-  const deployUrl = process.env.DEPLOY_PRIME_URL
-  if (servers.length === 0 && deployUrl) {
-    console.warn("Using generic deploy_prime_url URL as a fallback server configuration.");
-    servers = [ { name: 'Unknown (This deployment)', serverUrl: `https://${deployUrl}`, maxUpload: '4194304' } ];
+    console.warn("NEXT_PUBLIC_SERVERS_JSON not set or an error occured reading JSON. Falling back to local server.")
+    console.log("Detected Cloudflare, using >25MB as maxUpload.");
+    servers = [ { name: 'Cloudflare (this deployment)', serverUrl: '', maxUpload: '27525120' } ];
   }
 
-  /* Fuck it, using local host as the URL */
+  /* Fallback - Uses the URL connected to and maxUpload 4MB, typical max upload size */
   if (servers.length === 0) {
-    console.error("Using localhost as the final fallback server configuration. You didn't set SERVERS_JSON as an environment variable and we coudln't determine the URL from any variables.");
-    servers = [ { name: 'Localhost', serverUrl: 'http://127.0.0.1:3000', maxUpload: '27262976'}] ;
+    console.warn("NEXT_PUBLIC_SERVERS_JSON not set or an error occured reading JSON. Falling back to local server.");
+    console.warn("Didn't detect host as Cloudflare, setting upload limit to 4MB assuming Vercel, Render or Netlify")
+    servers = [ { name: 'This Deployment', serverUrl: '', maxUpload: '4194304'}] ;
   }
   return new Response(JSON.stringify(servers), { status: 200, headers: {'Content-Type': 'application/json',},});
 }
