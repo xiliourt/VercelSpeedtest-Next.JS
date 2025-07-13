@@ -5,7 +5,7 @@ import html2canvas from 'html2canvas';
 export const metadata = { icons: { icon: '/icon.png' } }
 
 
-// --- TEST CONFIGURATION (unchanged) ---
+// --- TEST CONFIGURATION  ---
 const PING_COUNT = 10;
 const PING_TIMEOUT_MS = 2000;
 const INITIAL_DOWNLOAD_SIZE_BYTES = 9.5 * 1024 * 1024;
@@ -13,18 +13,18 @@ const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024;
 const SUPER_DOWNLOAD_SIZE_BYTES = 100 * 1024 * 1024;
 const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024;
 const LARGE_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024;
+const SUPER_UPLOAD_SIZE_BYTES = 100 * 1024 * 1024;
 const FAST_CONNECTION_THRESHOLD_MBPS = 50;
 const SUPER_CONNECTION_THRESHOLD_MBPS = 200;
 const FAST_CONNECTION_THRESHOLD_UP_MBPS = 10;
+const SUPER_CONNECTION_THRESHOLD_UP_MBPS = 400;
 
 // --- Main App Component ---
 export default function App() {
-    // --- **NEW**: State for dynamically loaded servers ---
+    // --- States ---
     const [servers, setServers] = useState([]);
     const [isLoadingServers, setIsLoadingServers] = useState(true);
     const [serverLoadError, setServerLoadError] = useState(null);
-
-    // --- State for test results and UI ---
     const [testResults, setTestResults] = useState([]);
     const [isTesting, setIsTesting] = useState(false);
     const [statusMessage, setStatusMessage] = useState('Select servers and click "Start Tests" to begin.');
@@ -33,7 +33,7 @@ export default function App() {
     const [selectedServers, setSelectedServers] = useState(new Set());
     const resultsPanelRef = useRef(null);
 
-    // --- **NEW**: Effect to fetch servers on component mount ---
+    // --- Fetch Server List ---
     useEffect(() => {
         const fetchServers = async () => {
             try {
@@ -57,12 +57,11 @@ export default function App() {
             }
         };
         fetchServers();
-    }, []); // Empty dependency array ensures this runs only once
+    }, []); 
 
-    // --- **NEW**: Effect to initialize results after servers are loaded ---
+    // --- Populate Page With Servers---
     useEffect(() => {
         if (servers.length > 0) {
-            // Initialize the results table
             setTestResults(servers.map(s => ({
                 name: s.name,
                 ping: '--',
@@ -75,6 +74,7 @@ export default function App() {
         }
     }, [servers]);
 
+    // Toggle server button handler
     const handleToggleServer = (serverName) => {
         if (isTesting) return;
         setSelectedServers(prevSelected => {
@@ -88,6 +88,7 @@ export default function App() {
         });
     };
 
+    // Screenshot button handler
     const handleDownloadScreenshot = async () => {
         if (!resultsPanelRef.current) return;
         try {
@@ -109,7 +110,7 @@ export default function App() {
         }
     };
     
-    // --- Core Measurement Functions (unchanged) ---
+    // --- Core measurement functions ---
     const measurePing = async (pingUrl, onProgress) => {
         let pings = [];
         const pingProgressIncrement = 100 / PING_COUNT;
@@ -203,10 +204,10 @@ export default function App() {
         });
     };
 
+    /* --- CORE START TESTS FUNCTION --- */
     const startAllTests = async () => {
         if (isTesting) return;
         
-        // **MODIFIED**: Use `servers` from state
         const serversToTest = servers.filter(s => selectedServers.has(s.name));
         
         if (serversToTest.length === 0) {
@@ -237,7 +238,7 @@ export default function App() {
             let finalDownload = 'ERR', finalUpload = 'ERR';
 
             try {
-                // Ping
+                // --- Ping ---
                 setStatusMessage(`Pinging ${server.name}...`);
                 try {
                     const finalPing = await measurePing(pingUrl, (p) => setCurrentTestProgress(p));
@@ -250,12 +251,13 @@ export default function App() {
                 
                 await new Promise(res => setTimeout(res, 200));
 
-                // Download Test
+                // --- Download Test ---
                 setStatusMessage(`Downloading ${INITIAL_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                 try {
                     finalDownload = await measureDownload(downloadUrl, INITIAL_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: finalDownload } : r));
                     
+                    // --- Fast and Super Retry Size Logic ---
                     if (parseFloat(finalDownload) > SUPER_CONNECTION_THRESHOLD_MBPS) {
                         setStatusMessage(`Downloading ${SUPER_DOWNLOAD_SIZE_BYTES / 1024 / 1024}MB from ${server.name}...`);
                         const finalDownloadSuper = await measureDownload(downloadUrl, SUPER_DOWNLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
@@ -278,24 +280,36 @@ export default function App() {
                 
                 await new Promise(res => setTimeout(res, 200));
 
-                // Upload Test
+                // --- Upload Test ---
                 const initialUploadSize = Math.min(INITIAL_UPLOAD_SIZE_BYTES, maxUpload);
 
                 if (initialUploadSize == 0) {
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: 'Disabled', status: 'complete' } : r));
-                    continue; // Corrected from `return r` to `continue`
+                    break; // Upload disabled on this server
                 }
+                
                 setStatusMessage(`Uploading ${initialUploadSize / 1024 / 1024}MB to ${server.name}...`);
                 try {
-                    finalUpload = await measureUpload(uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
+                    const finalUpload = await measureUpload(uploadUrl, initialUploadSize, (p) => setCurrentTestProgress(p));
                     setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUpload } : r));
-                    
-                    if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
-                         setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
-                         const finalUploadLarge = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
-                         if (parseFloat(finalUploadLarge) > parseFloat(finalUpload) ) {
-                               setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, upload: finalUploadLarge } : r));
-                         }
+
+                    /* Super & Fast Upload Test Size Logic */
+                    if (parseFloat(finalUpload) > SUPER_CONNECTION_THRESHOLD_UP_MBPS && maxUpload > SUPER_UPLOAD_SIZE_BYTES) {
+                        setStatusMessage(`Uploading ${SUPER_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
+                         const finalUploadSuper = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                         setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalUpload), parseFloat(finalUploadSuper))} : r));
+
+                    } else if (parseFloat(finalUpload) > FAST_CONNECTION_THRESHOLD_UP_MBPS && maxUpload > LARGE_UPLOAD_SIZE_BYTES) {
+                        setStatusMessage(`Uploading ${LARGE_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
+                        const finalUploadLarge = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                        setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalUpload), parseFloat(finalUploadLarge))} : r));
+                        /* Fast Speed Above Super Test Speed Logic (yes, this means it uploads 3 files total)*/
+                        if (parseFloat(finalUpload) > SUPER_CONNECTION_THRESHOLD_UP_MBPS && maxUpload > SUPER_UPLOAD_SIZE_BYTES) {
+                            setStatusMessage(`Uploading ${SUPER_UPLOAD_SIZE_BYTES / 1024 / 1024}MB to ${server.name}...`);
+                            const finalUploadSuper = await measureUpload(uploadUrl, LARGE_UPLOAD_SIZE_BYTES, (p) => setCurrentTestProgress(p));
+                            setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalUpload), parseFloat(finalUploadLarge), parseFloat(finalUploadSuper))} : r));
+                        }
+                        setTestResults(prev => prev.map((r, idx) => idx === originalIndex ? { ...r, download: Math.max(parseFloat(finalUpload), parseFloat(finalUploadLarge))} : r))
                     }
                 } catch (error) {
                     console.error(`Upload test failed for ${server.name}:`, error);
