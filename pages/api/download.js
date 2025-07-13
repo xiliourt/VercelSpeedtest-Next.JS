@@ -24,7 +24,7 @@ export default async function handler(req) {
     'Content-Type': 'application/octet-stream',
     'Content-Disposition': 'attachment; filename="download.dat"',
     'Content-Length': requestedSize.toString(),
-    'Cache-Control': 'no-store, no-cache, must-revalidate',
+    'Cache-Control': 's-maxage=3600',
     'Pragma': 'no-cache',
     'Expires': '0',
     'Surrogate-Control': 'no-store',
