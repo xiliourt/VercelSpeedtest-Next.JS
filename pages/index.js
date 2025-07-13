@@ -8,7 +8,7 @@ export const metadata = { icons: { icon: '/icon.png' } }
 // --- TEST CONFIGURATION (unchanged) ---
 const PING_COUNT = 10;
 const PING_TIMEOUT_MS = 2000;
-const INITIAL_DOWNLOAD_SIZE_BYTES = 10 * 1024 * 1024;
+const INITIAL_DOWNLOAD_SIZE_BYTES = 9.5 * 1024 * 1024;
 const LARGE_DOWNLOAD_SIZE_BYTES = 50 * 1024 * 1024;
 const SUPER_DOWNLOAD_SIZE_BYTES = 100 * 1024 * 1024;
 const INITIAL_UPLOAD_SIZE_BYTES = 10 * 1024 * 1024;
