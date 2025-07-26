@@ -2,18 +2,14 @@
 export const runtime = 'edge'; 
 export const config = { runtime: 'edge', };
 
-function generateRandomChunk(size) {
+/*function generateRandomChunk(size) {
   if (process.env.VERCEL_ENV == "production") {
-    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charsetLength = charset.length;
-    return Array.from(crypto.getRandomValues(new Uint8Array(size))
-      .map(value => charset[value % charsetLength])
-      .join(''));
+    return crypto.getRandomValues(new Uint8Array(size)
   } else {
     return crypto.getRandomValues(new Uint8Array(size))
   }
   
-}
+}*/
 
 export default async function handler(req) {
   // In the Edge Runtime, req is a standard Request object.
@@ -28,8 +24,8 @@ export default async function handler(req) {
     'Content-Length': requestedSize.toString(),
   };
 
-  let bytesSent = 0;
-  const stream = new ReadableStream({
+/*  let bytesSent = 0;
+ const stream = new ReadableStream({
     async pull(controller) {
       if (bytesSent >= requestedSize) {
         controller.close();
@@ -53,7 +49,24 @@ export default async function handler(req) {
       console.log('Download stream cancelled by client.', reason);
       // Perform any cleanup here if necessary
     }
-  }, { highWaterMark: 32 } );
+  }, { highWaterMark: 32 } ); */
+    const stream = new ReadableStream({
+    start(controller) {
+      let bytesSent = 0
+      if (bytesSent >= requestedSize) {
+        controller.close();
+        return;
+      }
+      const buffer = new Uint8Array(16 * 1024);
+      const pump = () => {
+        crypto.getRandomValues(buffer);
+        controller.enqueue(buffer);
+        pump();
+        bytesSent += buffer.length;
+      };
+      pump();
+    },
+  }, { highWaterMark: 32 });
 
   return new Response(stream, { headers });
 }
