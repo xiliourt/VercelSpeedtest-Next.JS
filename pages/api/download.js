@@ -19,8 +19,7 @@ export default async function handler(req) {
       while (bytesSent < requestedSize) {
         const remainingBytes = requestedSize - bytesSent;
         const chunk = new Uint8Array(Math.min(CHUNKSIZE, remainingBytes));
-        if (process.env.VERCEL_ENV == "production") { for (let i = 0; i < chunk.length; i++) { chunk[i] =  i % 256; }
-        } else { crypto.getRandomValues(chunk); }
+        crypto.getRandomValues(chunk);
         controller.enqueue(chunk);
         bytesSent += chunk.length;
       }
