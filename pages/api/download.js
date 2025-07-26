@@ -16,7 +16,7 @@ export default async function handler(req) {
   // We need to parse query parameters from the URL.
   const url = new URL(req.url);
   const requestedSize = parseInt(url.searchParams.get('size')) || (9.5 * 1024 * 1024); // Default to just under 10MB so vercel caches, it appears to cache 10 * 1000 * 1000
-  const chunkSize = 64 * 1024; // 64KB chunks
+  const CHUNKSIZE = 64 * 1024; // 64KB chunks
 
   const headers = {
     'Content-Type': 'application/octet-stream',
@@ -50,21 +50,18 @@ export default async function handler(req) {
       // Perform any cleanup here if necessary
     }
   }, { highWaterMark: 32 } ); */
-    const stream = new ReadableStream({
+  const stream = new ReadableStream({
     start(controller) {
-      let bytesSent = 0
-      if (bytesSent >= requestedSize) {
-        controller.close();
-        return;
+      let bytesSent = 0;
+      while (bytesSent < requestedSize) {
+        const remainingBytes = requestedSize - bytesSent;
+        const chunkSize = Math.min(CHUNKSIZE, remainingBytes);
+        const chunk = new Uint8Array(chunkSize);
+        crypto.getRandomValues(chunk);
+        controller.enqueue(chunk);
+        bytesSent += chunk.length;
       }
-      const buffer = new Uint8Array(16 * 1024);
-      const pump = () => {
-        crypto.getRandomValues(buffer);
-        controller.enqueue(buffer);
-        pump();
-        bytesSent += buffer.length;
-      };
-      pump();
+      controller.close();
     },
   }, { highWaterMark: 32 });
 
