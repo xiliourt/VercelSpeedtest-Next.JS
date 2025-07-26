@@ -18,7 +18,7 @@ export default async function handler(req) {
   const chunkSize = 64 * 1024; // 64KB chunks
 
   const headers = {
-    'Content-Type': 'application/octet-stream',
+    'Content-Type': 'text/plain',
     'Content-Disposition': 'attachment; filename="download.dat"',
     'Content-Length': requestedSize.toString(),
   };
