@@ -3,11 +3,16 @@ export const runtime = 'edge';
 export const config = { runtime: 'edge', };
 
 function generateRandomChunk(size) {
-const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-const charsetLength = charset.length;
-return Array.from(crypto.getRandomValues(new Uint8Array(size)))
-  .map(value => charset[value % charsetLength])
-  .join('');
+  if (process.env.VERCEL_ENV == "production") {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charsetLength = charset.length;
+    return Array.from(crypto.getRandomValues(new Uint8Array(size))
+      .map(value => charset[value % charsetLength])
+      .join(''));
+  } else {
+    return crypto.getRandomValues(new Uint8Array(size))
+  }
+  
 }
 
 export default async function handler(req) {
@@ -24,7 +29,6 @@ export default async function handler(req) {
   };
 
   let bytesSent = 0;
-  const encoder = new TextEncoder()
   const stream = new ReadableStream({
     async pull(controller) {
       if (bytesSent >= requestedSize) {
@@ -37,7 +41,7 @@ export default async function handler(req) {
       
       try {
         const chunk = generateRandomChunk(currentChunkSize);
-        controller.enqueue(encoder.encode(chunk));
+        controller.enqueue(chunk);
         bytesSent += currentChunkSize;
       } catch (error) {
         console.error("Error generating or enqueuing chunk:", error);
