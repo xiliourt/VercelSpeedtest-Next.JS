@@ -38,10 +38,11 @@ export default async function handler(req) {
 
       const bytesRemaining = requestedSize - bytesSent;
       const currentChunkSize = Math.min(chunkSize, bytesRemaining);
-      
+      const encoder = new TextEncoder();
       try {
         const chunk = generateRandomChunk(currentChunkSize);
-        controller.enqueue(chunk);
+        if (process.env.VERCEL_ENV == "production") { controller.enqueue(encoder.encode(chunk)); } 
+        else { controller.enqueue(chunk); }
         bytesSent += currentChunkSize;
       } catch (error) {
         console.error("Error generating or enqueuing chunk:", error);
